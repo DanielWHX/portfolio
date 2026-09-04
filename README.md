@@ -1,10 +1,12 @@
 # Hongxiang Wang — Portfolio
 
-Interactive single-page portfolio for Hongxiang Wang, a full-stack software engineer.
+Interactive portfolio for Hongxiang Wang, a full-stack software engineer.
 
 ## Features
 
 - Minimal single-screen introduction and question interface
+- Me-only portfolio agent powered by `gpt-5.6-luna`
+- Read-only `get_resume_profile` tool backed by approved resume facts
 - WebGL fluid cursor with colorful, fading ink trails
 - Glassmorphism controls layered above the animation
 - Responsive desktop and mobile layouts
@@ -21,12 +23,23 @@ Interactive single-page portfolio for Hongxiang Wang, a full-stack software engi
 
 Requires Node.js 22.13 or newer.
 
+Create `.env.local` with a newly generated runtime key (never commit it):
+
+```bash
+OPENAI_API_KEY=your_new_key_here
+```
+
+Any key previously shared in a chat or screenshot must be revoked rather than reused.
+
 ```bash
 npm install
 npm run dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000).
+
+This first slice supports questions about Hongxiang's background, education,
+experience, and skills. Projects, Fun, and Contact remain planned.
 
 ## Verification
 
