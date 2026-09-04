@@ -5,43 +5,40 @@ const quickOptions = [
     label: "Me",
     icon: "☺",
     tone: "cyan",
-    query: "Who are you? I want to know more about you.",
+    query: "Who are you?",
+    ready: true,
   },
   {
     label: "Projects",
     icon: "▣",
     tone: "green",
     query: "Show me your projects.",
+    ready: false,
   },
   {
     label: "Skills",
     icon: "◇",
     tone: "violet",
     query: "What are your strongest skills?",
+    ready: false,
   },
   {
-    label: "Fun",
+    label: "Fun Facts",
     icon: "✦",
     tone: "pink",
     query: "What do you enjoy outside of engineering?",
+    ready: false,
   },
   {
     label: "Contact",
-    icon: "⌁",
+    icon: "☎ ",
     tone: "amber",
     query: "How can I contact you?",
+    ready: false,
   },
 ] as const;
 
-type HomeProps = {
-  searchParams: Promise<{ query?: string | string[] }>;
-};
-
-export default async function Home({ searchParams }: HomeProps) {
-  const params = await searchParams;
-  const rawQuery = Array.isArray(params.query) ? params.query[0] : params.query;
-  const query = (rawQuery ?? "").trim().slice(0, 160);
-
+export default function Home() {
   return (
     <main className="single-page">
       <SplashCursor
@@ -62,24 +59,20 @@ export default async function Home({ searchParams }: HomeProps) {
       </div>
 
       <section className="hero" aria-labelledby="hero-title">
-        <div className="brand-mark" aria-hidden="true">
-          HW
-        </div>
-
         <p className="greeting">
           Hey, I&apos;m Hongxiang <span aria-hidden="true">👋</span>
         </p>
         <h1 id="hero-title">Full-Stack Engineer</h1>
 
-        <div
+        <img
           className="portrait"
-          role="img"
-          aria-label="Stylized avatar representing Hongxiang Wang"
-        >
-          🧑🏻
-        </div>
+          src="/hongxiang-avatar.png"
+          width={1229}
+          height={1280}
+          alt="Muscular pink character representing Hongxiang Wang"
+        />
 
-        <form className="query-box" action="/" method="get">
+        <form className="query-box" action="/chat" method="get">
           <label className="sr-only" htmlFor="portfolio-query">
             Ask Hongxiang anything
           </label>
@@ -87,10 +80,9 @@ export default async function Home({ searchParams }: HomeProps) {
             id="portfolio-query"
             name="query"
             type="text"
-            defaultValue={query}
-            placeholder="Ask me anything..."
+            placeholder="Ask about me..."
             autoComplete="off"
-            maxLength={160}
+            maxLength={1000}
             required
           />
           <button type="submit" aria-label="Send question">
@@ -99,16 +91,33 @@ export default async function Home({ searchParams }: HomeProps) {
         </form>
 
         <nav className="quick-options" aria-label="Quick questions">
-          {quickOptions.map((option) => (
-            <a
-              key={option.label}
-              className={`tone-${option.tone}`}
-              href={`/?query=${encodeURIComponent(option.query)}`}
-            >
-              <span aria-hidden="true">{option.icon}</span>
-              <strong>{option.label}</strong>
-            </a>
-          ))}
+          {quickOptions.map((option) => {
+            const content = (
+              <>
+                <span aria-hidden="true">{option.icon}</span>
+                <strong>{option.label}</strong>
+              </>
+            );
+
+            return option.ready ? (
+              <a
+                key={option.label}
+                className={`quick-option tone-${option.tone}`}
+                href={`/chat?query=${encodeURIComponent(option.query)}`}
+              >
+                {content}
+              </a>
+            ) : (
+              <span
+                key={option.label}
+                className={`quick-option is-pending tone-${option.tone}`}
+                aria-disabled="true"
+                title="Planned"
+              >
+                {content}
+              </span>
+            );
+          })}
         </nav>
       </section>
     </main>
