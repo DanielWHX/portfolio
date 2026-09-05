@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState, type FormEvent } from "react";
 
 import type { ResumeOverviewCard } from "@/lib/portfolio/resume-profile";
+import ProfileCard from "./ProfileCard";
 
 type ProfileModule = {
   type: "profile";
@@ -17,48 +18,6 @@ type Message = {
 
 const MAX_USER_TURNS = 15;
 const CHAT_REQUEST_TIMEOUT_MS = 35_000;
-
-function ProfileCard({ profile }: { profile: ResumeOverviewCard }) {
-  return (
-    <article className="profile-card" aria-label={`${profile.name} profile`}>
-      <header className="profile-card-header">
-        <span className="profile-card-avatar" aria-hidden="true" />
-        <div>
-          <span className="profile-card-kicker">Profile</span>
-          <h2>{profile.name}</h2>
-          <p>{profile.headline}</p>
-        </div>
-      </header>
-
-      <p className="profile-card-summary">{profile.summary}</p>
-
-      <div className="profile-card-grid">
-        <section>
-          <h3>Education</h3>
-          <ul>
-            {profile.education.map((item) => (
-              <li key={item}>{item}</li>
-            ))}
-          </ul>
-        </section>
-        <section>
-          <h3>Experience</h3>
-          <ul>
-            {profile.experience.map((item) => (
-              <li key={item}>{item}</li>
-            ))}
-          </ul>
-        </section>
-      </div>
-
-      <ul className="profile-card-skills" aria-label="Core skills">
-        {profile.skills.map((skill) => (
-          <li key={skill}>{skill}</li>
-        ))}
-      </ul>
-    </article>
-  );
-}
 
 export default function ChatClient({ initialQuery }: { initialQuery: string }) {
   const [messages, setMessages] = useState<Message[]>([]);
@@ -152,7 +111,7 @@ export default function ChatClient({ initialQuery }: { initialQuery: string }) {
       <div className="chat-messages" aria-live="polite" aria-busy={loading}>
         {messages.length === 0 && !loading ? (
           <p className="chat-empty">
-            Ask about my background, education, experience, or skills.
+            Ask about my work, school, fitness, or your next SaaS idea.
           </p>
         ) : null}
 
@@ -205,7 +164,7 @@ export default function ChatClient({ initialQuery }: { initialQuery: string }) {
       </form>
 
       <p className="chat-disclosure">
-        AI-assisted answers based on Hongxiang&apos;s approved resume.
+        Hongxiang&apos;s AI portfolio · Shared background, interests, and conversation.
       </p>
     </div>
   );

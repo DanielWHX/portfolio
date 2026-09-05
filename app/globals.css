@@ -504,88 +504,67 @@ h1 {
 }
 
 .profile-card {
-  width: min(680px, 94%);
-  padding: 20px;
+  width: min(780px, 100%);
+  flex-shrink: 0;
+  padding: 24px;
   align-self: flex-start;
-  border: 1px solid rgb(255 255 255 / 78%);
+  border: 1px solid rgb(255 255 255 / 88%);
   border-radius: 24px;
-  background: linear-gradient(
-    135deg,
-    rgb(255 255 255 / 68%),
-    rgb(245 248 252 / 42%)
-  );
-  box-shadow:
-    0 16px 40px rgb(31 45 58 / 10%),
-    inset 0 1px 0 rgb(255 255 255 / 90%);
+  background: linear-gradient(135deg, rgb(255 255 255 / 88%), rgb(247 250 254 / 78%));
+  box-shadow: 0 16px 40px rgb(31 45 58 / 8%), inset 0 1px 0 rgb(255 255 255 / 90%);
   -webkit-backdrop-filter: blur(20px) saturate(150%);
   backdrop-filter: blur(20px) saturate(150%);
 }
 
 .profile-card-header {
-  display: flex;
+  display: grid;
+  grid-template-columns: 180px minmax(0, 1fr);
   align-items: center;
-  gap: 15px;
+  gap: 24px;
 }
 
-.profile-card-avatar {
-  width: 76px;
-  height: 76px;
-  flex: 0 0 auto;
-  border: 1px solid rgb(255 255 255 / 82%);
-  border-radius: 22px;
-  background: rgb(255 255 255 / 44%) url("/hongxiang-avatar.png") center / contain
-    no-repeat;
-  box-shadow: 0 10px 26px rgb(31 45 58 / 9%);
+.profile-card-portrait {
+  overflow: hidden;
+  aspect-ratio: 4 / 5;
+  border-radius: 18px;
+  background: #edf4fc;
+}
+
+.profile-card-portrait img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
 }
 
 .profile-card-kicker {
-  color: #6597dc;
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
+  margin: 0 0 10px;
+  color: #49698f;
+  font-size: 0.8125rem;
+  font-weight: 600;
 }
 
 .profile-card h2 {
-  margin: 3px 0 0;
-  font-size: 25px;
+  margin: 0;
+  font-size: clamp(1.625rem, 3vw, 2rem);
   letter-spacing: -0.04em;
-  line-height: 1.08;
+  line-height: 1.1;
 }
 
-.profile-card-header p {
-  margin: 5px 0 0;
-  color: #737b88;
-  font-size: 14px;
+.profile-card-headline {
+  margin: 6px 0 0;
+  color: #657083;
+  font-size: 0.9375rem;
 }
 
 .profile-card-summary {
-  margin: 18px 0;
-  color: #424a57;
-  font-size: 14px;
-  line-height: 1.65;
-}
-
-.profile-card-grid {
-  display: grid;
-  grid-template-columns: 1fr 1.15fr;
-  gap: 12px;
-}
-
-.profile-card-grid section {
-  padding: 13px 14px;
-  border: 1px solid rgb(255 255 255 / 72%);
-  border-radius: 16px;
-  background: rgb(255 255 255 / 34%);
-}
-
-.profile-card h3 {
-  margin: 0 0 8px;
-  color: #737b88;
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+  margin: 14px 0;
+  color: #3f4856;
+  font-size: 1rem;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
 }
 
 .profile-card ul {
@@ -594,32 +573,114 @@ h1 {
   list-style: none;
 }
 
-.profile-card-grid li {
-  color: #444c59;
-  font-size: 12px;
-  line-height: 1.5;
-}
-
-.profile-card-grid li + li {
-  margin-top: 5px;
-}
-
+.profile-card-interests,
 .profile-card-skills {
-  margin-top: 14px !important;
   display: flex;
   flex-wrap: wrap;
   gap: 7px;
 }
 
-.profile-card-skills li {
-  padding: 6px 9px;
-  border: 1px solid rgb(255 255 255 / 76%);
+.profile-card-interests li {
+  padding: 6px 10px;
   border-radius: 999px;
-  background: rgb(255 255 255 / 42%);
-  color: #596271;
-  font-size: 11px;
-  font-weight: 600;
+  background: #f0f3f7;
+  color: #414e60;
+  font-size: 0.875rem;
 }
+
+.profile-card h3 {
+  margin: 0 0 12px;
+  color: #46556b;
+  font-size: 0.875rem;
+  font-weight: 650;
+}
+
+.profile-card-education { margin-top: 24px; }
+
+.profile-card-schools {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.profile-school {
+  min-width: 0;
+  padding: 16px;
+  border: 1px solid #e0e6ef;
+  border-radius: 16px;
+  background: rgb(255 255 255 / 78%);
+}
+
+.profile-school-heading {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.profile-school-logo {
+  flex: 0 0 52px;
+  height: 64px;
+  display: grid;
+  place-items: center;
+}
+
+.profile-school-logo img { width: 40px; height: 50px; object-fit: contain; }
+.profile-school-osu .profile-school-logo { background: #ba0c2f; border-radius: 10px; }
+
+.profile-school h4 {
+  margin: 0 0 7px;
+  color: #27364b;
+  font-size: 0.9375rem;
+  line-height: 1.35;
+}
+
+.profile-school p {
+  margin: 0;
+  color: #46556b;
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+.profile-school .profile-school-period { margin-top: 4px; color: #697588; font-size: 0.8125rem; }
+
+.profile-school-ranking {
+  display: block;
+  margin-top: 14px;
+  color: #56667c;
+  font-size: 0.75rem;
+  line-height: 1.6;
+  text-decoration: underline;
+  text-decoration-color: #bcc9d9;
+  text-underline-offset: 3px;
+}
+
+.profile-school-badge {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin-top: 10px;
+  padding: 6px 9px;
+  border-radius: 8px;
+  background: #fff0e5;
+  color: #823800;
+  font-size: 0.75rem;
+  line-height: 1.4;
+}
+
+.profile-school-badge > span:first-child { font-weight: 750; }
+.profile-school a:focus-visible { outline: 2px solid #4d8de6; outline-offset: 4px; }
+.profile-school a:hover { color: #184e96; }
+
+.profile-card-experience {
+  margin-top: 20px;
+  padding-top: 18px;
+  border-top: 1px solid #e3e8ef;
+}
+
+.profile-card-experience li { color: #4c5869; font-size: 0.875rem; line-height: 1.65; }
+.profile-card-skills { margin-top: 14px !important; }
+.profile-card-skills li { padding: 5px 9px; border-radius: 7px; background: #edf2f8; color: #4f6077; font-size: 0.75rem; }
 
 .chat-loading {
   width: fit-content;
@@ -777,19 +838,19 @@ h1 {
     border-radius: 21px;
   }
 
-  .profile-card-avatar {
-    width: 64px;
-    height: 64px;
-    border-radius: 18px;
+  .profile-card-header {
+    grid-template-columns: 100px minmax(0, 1fr);
+    align-items: start;
+    gap: 14px;
   }
 
-  .profile-card h2 {
-    font-size: 22px;
-  }
-
-  .profile-card-grid {
-    grid-template-columns: 1fr;
-  }
+  .profile-card h2 { font-size: 1.5rem; }
+  .profile-card-portrait { border-radius: 12px; }
+  .profile-card-summary { font-size: 1rem; }
+  .profile-card-schools { grid-template-columns: 1fr; }
+  .profile-card-kicker { font-size: 0.75rem; }
+  .profile-card-headline { font-size: 0.875rem; }
+  .profile-card-interests li { font-size: 0.8125rem; }
 
   .chat-form {
     min-height: 58px;
@@ -817,4 +878,9 @@ h1 {
   .chat-loading {
     animation: none;
   }
+}
+
+@media (max-width: 420px) {
+  .profile-card-header { display: block; }
+  .profile-card-portrait { width: 112px; margin: 0 0 16px; }
 }

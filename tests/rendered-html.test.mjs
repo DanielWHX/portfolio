@@ -95,7 +95,7 @@ test("renders the minimal resume chat page", async () => {
   assert.match(html, /<main class="chat-page">/i);
   assert.match(html, /<h1[^>]*>Ask about me<\/h1>/i);
   assert.match(html, /class="chat-form"/i);
-  assert.match(html, /AI-assisted answers based on Hongxiang(?:&#x27;|')s approved resume\./i);
+  assert.match(html, /Hongxiang(?:&#x27;|')s AI portfolio/i);
 });
 
 test("ships the complete glass chat layout and current main-page styles", async () => {
@@ -235,7 +235,15 @@ test(
       assert.equal(payload.message, testCase.message);
 
       if (testCase.presentation === "profile_card") {
-        assert.deepEqual(payload.module, {
+        const { schools, interests, portrait, ...legacyProfile } = payload.module.profile;
+        assert.equal(portrait, "/hongxiang-profile.png");
+        assert.deepEqual(interests, ["Fitness", "SaaS companies"]);
+        assert.equal(schools.length, 2);
+        assert.equal(schools[0].programRanking.label, "CS #5");
+        assert.equal(schools[0].programRanking.category, "Graduate Computer Science");
+        assert.equal(schools[0].ranking.year, 2026);
+        assert.equal(schools[1].ranking.label, "#41 National Universities");
+        assert.deepEqual({ ...payload.module, profile: legacyProfile }, {
           type: "profile",
           profile: {
             name: "Hongxiang Wang",
@@ -261,6 +269,8 @@ test(
     assert.equal(requests.length, cases.length * 2);
     assert.equal(answerCount, cases.length);
     assert.match(requests[0].instructions, /介绍一下你自己/);
+    const toolResult = requests[1].input.find(item => item.type === "function_call_output");
+    assert.deepEqual(JSON.parse(toolResult.output).interests, ["Fitness", "SaaS companies"]);
     assert.equal(requests[1].text.format.type, "json_schema");
     assert.equal(requests[1].text.format.strict, true);
     assert.deepEqual(requests[1].text.format.schema.properties.presentation.enum, [

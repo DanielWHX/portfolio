@@ -1,15 +1,38 @@
 export const resumeProfile = {
   source: "Hongxiang_wang_resume_revised.pdf",
+  interests: ["Fitness", "SaaS companies"],
   name: "Hongxiang Wang",
   headline: "Full-Stack Engineer",
   education: [
     {
+      id: "uiuc",
+      logo: "/schools/illinois.svg",
       school: "University of Illinois Urbana-Champaign (UIUC)",
+      ranking: {
+        label: "#36 National Universities",
+        publisher: "U.S. News",
+        year: 2026,
+        sourceUrl: "https://fightingillini.com/documents/download/2025/11/5/1-Media.pdf",
+      },
+      programRanking: {
+        label: "CS #5",
+        category: "Graduate Computer Science",
+        year: 2026,
+        sourceUrl: "https://siebelschool.illinois.edu/about/facts-and-rankings",
+      },
       degree: "Master of Computer Science (MCS)",
       period: "Aug. 2026 - Apr. 2028",
     },
     {
+      id: "osu",
+      logo: "/schools/ohio-state.svg",
       school: "The Ohio State University",
+      ranking: {
+        label: "#41 National Universities",
+        publisher: "U.S. News",
+        year: 2026,
+        sourceUrl: "https://news.osu.edu/ohio-state-maintains-position-as-one-of-nations-top-public-universities-in-new-rankings/",
+      },
       degree: "Bachelor of Art and Science in Computer Science",
       period: "Aug. 2021 - Apr. 2026",
     },
@@ -78,11 +101,17 @@ export type ResumeOverviewCard = {
   headline: string;
   summary: string;
   education: readonly string[];
+  schools: typeof resumeProfile.education;
+  interests: typeof resumeProfile.interests;
+  portrait: string;
   experience: readonly string[];
   skills: readonly string[];
 };
 
 const resumeOverviewCard: Omit<ResumeOverviewCard, "summary"> = {
+  schools: resumeProfile.education,
+  interests: resumeProfile.interests,
+  portrait: "/hongxiang-profile.png",
   name: resumeProfile.name,
   headline: resumeProfile.headline,
   education: [

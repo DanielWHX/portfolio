@@ -5,8 +5,9 @@ Interactive portfolio for Hongxiang Wang, a full-stack software engineer.
 ## Features
 
 - Minimal single-screen introduction and question interface
-- Me-only portfolio agent powered by `gpt-5.6-luna`
-- Read-only `get_resume_profile` tool backed by approved resume facts
+- Conversational portfolio voice powered by `gpt-5.6-luna`
+- Read-only `get_resume_profile` tool backed by approved resume facts and shared interests
+- Personal Profile Card with a corrected portrait, university logos, and sourced rankings
 - WebGL fluid cursor with colorful, fading ink trails
 - Glassmorphism controls layered above the animation
 - Responsive desktop and mobile layouts
@@ -38,8 +39,9 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000).
 
-This first slice supports questions about Hongxiang's background, education,
-experience, and skills. Projects, Fun, and Contact remain planned.
+The agent can discuss Hongxiang's background and interests, as well as general
+conversation, technology, fitness, and SaaS ideas. Personal claims stay grounded
+in the shared profile. Homepage quick-link availability is unchanged.
 
 ## Verification
 
@@ -76,6 +78,32 @@ Before release, also check the real model on the private deployed site:
 - Confirm the answer agrees with the approved resume and Thinking stops.
 
 Mocks verify the UI and API contract; this live check verifies real-model behavior.
+
+## Conversational acceptance check
+
+With the version under review running and its runtime key configured:
+
+```bash
+node scripts/evaluate-persona.mjs http://127.0.0.1:3104
+```
+
+This makes real model requests. It checks response shape and prints six answers
+for human review: introduction, interests, a general SaaS question, a coding joke,
+unshared personal details, and AI identity. Mock tests do not establish real-model
+personality. Evaluate against the new app version, not an older deployment.
+
+## Profile content and sources
+
+Portrait editing and school-logo sources are recorded in `public/ASSET_SOURCES.md`.
+School ranking links are stored with the profile data and visible in the card:
+
+- [UIUC: #36 National Universities, U.S. News 2026](https://fightingillini.com/documents/download/2025/11/5/1-Media.pdf#page=2).
+- [Ohio State: #41 National Universities, U.S. News 2026](https://news.osu.edu/ohio-state-maintains-position-as-one-of-nations-top-public-universities-in-new-rankings/).
+- [UIUC: #5 Graduate Computer Science, U.S. News 2026](https://siebelschool.illinois.edu/about/facts-and-rankings).
+
+Fitness and interest in SaaS companies were supplied by Hongxiang. The portrait
+is an AI-assisted edit of his supplied photograph. Neither interest implies a
+specific workout record, business ownership, or other unshared biography.
 
 ## Acknowledgements
 
