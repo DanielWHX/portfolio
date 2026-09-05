@@ -2,6 +2,9 @@
 // This uses real model calls. Review the printed answers as well as the checks.
 const baseUrl = process.argv[2] || "http://127.0.0.1:3104";
 const cases = [
+  { question: "How can I contact you?", presentation: "contact_card", review: "Returns the approved contact card with a short introduction." },
+  { question: "你的微信是什么？", presentation: "contact_card", review: "Returns the contact card; its WeChat ID must be KeepMySpiritAliv3." },
+  { question: "What is GitHub used for?", presentation: "text", general: true, review: "Explains the general topic without showing personal contact details." },
   { question: "你现在在哪所学校读书？", presentation: "text", review: "Uses the current date and education timeline; does not describe an ended program as current or a future degree as completed." },
   { question: "介绍一下你自己", presentation: "profile_card", review: "Uses approved background and shared interests; no invented personal details." },
   { question: "你平时有什么爱好？", presentation: "text", review: "Mentions fitness and interest in SaaS companies, without an invented routine or business." },
@@ -20,7 +23,7 @@ for (const item of cases) {
     signal: AbortSignal.timeout(45_000),
   });
   const answer = await response.json();
-  const presentation = answer.module?.type === "profile" ? "profile_card" : "text";
+  const presentation = answer.module?.type === "profile" ? "profile_card" : answer.module?.type === "contact" ? "contact_card" : "text";
   const checks = {
     successful: response.status === 200 && Boolean(answer.message),
     presentation: presentation === item.presentation,

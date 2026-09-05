@@ -34,7 +34,7 @@ const quickOptions = [
     icon: "☎ ",
     tone: "amber",
     query: "How can I contact you?",
-    ready: false,
+    ready: true,
   },
 ] as const;
 

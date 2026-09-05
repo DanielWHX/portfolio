@@ -1,5 +1,8 @@
+import { contactProfile } from "./contact-profile";
+
 export const resumeProfile = {
   source: "Hongxiang_wang_resume_revised.pdf",
+  contact: contactProfile,
   interests: ["Fitness", "SaaS companies"],
   name: "Hongxiang Wang",
   headline: "Full-Stack Engineer",

@@ -8,6 +8,7 @@ Interactive portfolio for Hongxiang Wang, a full-stack software engineer.
 - Conversational portfolio voice powered by `gpt-5.6-luna`
 - Read-only `get_resume_profile` tool backed by approved resume facts and shared interests
 - Personal Profile Card with a corrected portrait, university logos, and sourced rankings
+- Contact Card with clickable email, phone, GitHub, LinkedIn, and a copyable WeChat ID
 - WebGL fluid cursor with colorful, fading ink trails
 - Glassmorphism controls layered above the animation
 - Responsive desktop and mobile layouts
@@ -41,7 +42,8 @@ Open [http://localhost:3000](http://localhost:3000).
 
 The agent can discuss Hongxiang's background and interests, as well as general
 conversation, technology, fitness, and SaaS ideas. Personal claims stay grounded
-in the shared profile. Homepage quick-link availability is unchanged.
+in the shared profile. Me and Contact are available from the homepage. Ask for contact details in English
+or Chinese to receive a Contact Card; the remaining quick links are planned.
 
 ## Verification
 
@@ -69,6 +71,8 @@ the question must be restored, Thinking must stop, and retry must send a valid
 conversation without duplicate user messages. Skills answers must render as text.
 Desktop and mobile navigation checks enter a conversation from Me, receive a
 Profile Card, and verify that the back arrow restores the actual homepage.
+Contact checks verify all destination links, successful clipboard writes and the
+manual-copy fallback, valid follow-ups, and return navigation.
 
 After a successful build, use `npm run test:api` or `npm run test:ui` to rerun
 only the relevant checks. Browser failures save traces under `test-results/`.
@@ -89,9 +93,9 @@ With the version under review running and its runtime key configured:
 node scripts/evaluate-persona.mjs http://127.0.0.1:3104
 ```
 
-This makes real model requests. It checks response shape and prints six answers
-for human review: introduction, interests, a general SaaS question, a coding joke,
-unshared personal details, and AI identity. Mock tests do not establish real-model
+This makes real model requests. It checks response shape and prints answers
+for human review: contact requests, general GitHub questions, current education,
+introduction, interests, SaaS, a coding joke, unshared personal details, and AI identity. Mock tests do not establish real-model
 personality. Evaluate against the new app version, not an older deployment.
 
 ## Profile content and sources

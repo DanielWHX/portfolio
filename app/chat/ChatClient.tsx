@@ -3,17 +3,21 @@
 import { useCallback, useEffect, useRef, useState, type FormEvent } from "react";
 
 import type { ResumeOverviewCard } from "@/lib/portfolio/resume-profile";
+import type { ContactCardData } from "@/lib/portfolio/contact-profile";
 import ProfileCard from "./ProfileCard";
+import ContactCard from "./ContactCard";
 
 type ProfileModule = {
   type: "profile";
   profile: ResumeOverviewCard;
 };
 
+type ChatModule = ProfileModule | { type: "contact"; contact: ContactCardData };
+
 type Message = {
   role: "user" | "assistant";
   content: string;
-  module?: ProfileModule;
+  module?: ChatModule;
 };
 
 const MAX_USER_TURNS = 15;
@@ -59,7 +63,7 @@ export default function ChatClient({ initialQuery }: { initialQuery: string }) {
         });
         const payload = (await response.json()) as {
           message?: string;
-          module?: ProfileModule;
+          module?: ChatModule;
           error?: string;
         };
 
@@ -120,6 +124,12 @@ export default function ChatClient({ initialQuery }: { initialQuery: string }) {
             <ProfileCard
               key={`${message.role}-${index}`}
               profile={message.module.profile}
+            />
+          ) : message.role === "assistant" && message.module?.type === "contact" ? (
+            <ContactCard
+              key={`${message.role}-${index}`}
+              contact={message.module.contact}
+              message={message.content}
             />
           ) : (
             <div
