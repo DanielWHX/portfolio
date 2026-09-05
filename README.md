@@ -99,7 +99,7 @@ personality. Evaluate against the new app version, not an older deployment.
 Portrait editing and school-logo sources are recorded in `public/ASSET_SOURCES.md`.
 School ranking links are stored with the profile data and visible in the card:
 
-- [UIUC: #36 National Universities, U.S. News 2026](https://fightingillini.com/documents/download/2025/11/5/1-Media.pdf#page=2).
+- [UIUC: #36 National Universities, U.S. News 2026](https://www.archive.admissions.illinois.edu/discover/illinois-facts).
 - [Ohio State: #41 National Universities, U.S. News 2026](https://news.osu.edu/ohio-state-maintains-position-as-one-of-nations-top-public-universities-in-new-rankings/).
 - [UIUC: #5 Graduate Computer Science, U.S. News 2026](https://siebelschool.illinois.edu/about/facts-and-rankings).
 

@@ -12,7 +12,7 @@ export const resumeProfile = {
         label: "#36 National Universities",
         publisher: "U.S. News",
         year: 2026,
-        sourceUrl: "https://fightingillini.com/documents/download/2025/11/5/1-Media.pdf",
+        sourceUrl: "https://www.archive.admissions.illinois.edu/discover/illinois-facts",
       },
       programRanking: {
         label: "CS #5",
