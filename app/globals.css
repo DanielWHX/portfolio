@@ -520,8 +520,7 @@ h1 {
 .contact-card-intro { margin: 10px 0 20px; color: #5b687a; font-size: 14px; line-height: 1.6; white-space: pre-wrap; overflow-wrap: anywhere; }
 .contact-card-methods { display: grid; gap: 8px; list-style: none; margin: 0; padding: 0; }
 .contact-method { display: flex; align-items: center; gap: 12px; min-width: 0; padding: 12px; border: 1px solid #e8edf5; border-radius: 14px; background: #ffffffb3; color: #27364b; text-decoration: none; transition: border-color 160ms ease, background 160ms ease; }
-a.contact-method:hover { border-color: #a9c8ee; background: #f5f9ff; }
-a.contact-method:focus-visible, .contact-copy:focus-visible { outline: 2px solid #568ed1; outline-offset: 3px; }
+.contact-copy:focus-visible { outline: 2px solid #568ed1; outline-offset: 3px; }
 .contact-icon { flex: 0 0 36px; height: 36px; display: grid; place-items: center; border-radius: 11px; font-size: 18px; font-weight: 700; }
 .contact-icon-email { background: #eaf2ff; color: #4577b7; }
 .contact-icon-phone { background: #ecf7f0; color: #3d825c; }
@@ -531,8 +530,7 @@ a.contact-method:focus-visible, .contact-copy:focus-visible { outline: 2px solid
 .contact-method-text { flex: 1; min-width: 0; display: grid; gap: 4px; }
 .contact-method-text strong { font-size: 12px; font-weight: 600; color: #6a7789; }
 .contact-method-text > span { font-size: 14px; line-height: 1.4; overflow-wrap: anywhere; }
-.contact-method-arrow { flex-shrink: 0; color: #8798ad; }
-.contact-wechat-id { user-select: all; }
+.contact-value { user-select: all; }
 .contact-copy { flex-shrink: 0; padding: 7px 9px; border: 1px solid #d5e7d3; border-radius: 8px; background: #f0f8ee; color: #37682e; font: inherit; font-size: 12px; cursor: pointer; }
 .contact-copy:hover { background: #e3f1df; }
 .contact-copy-status { min-height: 18px; margin: 10px 0 0; font-size: 12px; color: #5b687a; line-height: 1.5; }
@@ -541,7 +539,6 @@ a.contact-method:focus-visible, .contact-copy:focus-visible { outline: 2px solid
   .contact-card { padding: 18px; border-radius: 20px; }
   .contact-method { padding: 10px; gap: 9px; }
   .contact-icon { flex-basis: 30px; height: 34px; }
-  .contact-method-wechat { flex-wrap: wrap; }
 }
 
 .profile-card {

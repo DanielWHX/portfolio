@@ -28,24 +28,31 @@ for (const viewport of [{ width: 1280, height: 900 }, { width: 390, height: 844 
     await expect(card).toBeVisible();
     await expect(page.getByRole("article", { name: "Hongxiang Wang profile" })).toHaveCount(0);
     expect(requests[0]).toEqual([{ role: "user", content: "How can I contact you?" }]);
-    for (const [label, href] of [
-      ["Email", "mailto:hxjob1017@gmail.com"],
-      ["Phone", "tel:3147533414"],
+    await expect(card.getByRole("link")).toHaveCount(0);
+    await expect(card.getByRole("button")).toHaveCount(5);
+    const cardUrl = page.url();
+    for (const [label, value] of [
+      ["Email", "hxjob1017@gmail.com"],
+      ["Phone", "3147533414"],
       ["GitHub", "https://github.com/DanielWHX"],
       ["LinkedIn", "https://www.linkedin.com/in/hongxiang-wang-5aa597221"],
-    ]) await expect(card.getByRole("link", { name: new RegExp(label) })).toHaveAttribute("href", href);
-    for (const label of ["GitHub", "LinkedIn"]) {
-      await expect(card.getByRole("link", { name: new RegExp(label) })).toHaveAttribute("target", "_blank");
-      await expect(card.getByRole("link", { name: new RegExp(label) })).toHaveAttribute("rel", "noopener noreferrer");
-    }
-    await expect(card.getByText("KeepMySpiritAliv3", { exact: true })).toBeVisible();
-    await card.getByRole("button", { name: "Copy WeChat ID" }).click();
-    if (viewport.width === 1280) {
-      await expect(card.getByRole("status")).toHaveText("WeChat ID copied.");
-      expect(copied).toBe("KeepMySpiritAliv3");
-    } else {
-      await expect(card.getByRole("status")).toContainText("Select the WeChat ID to copy it.");
-      expect(copied).toBe("");
+      ["WeChat ID", "KeepMySpiritAliv3"],
+    ]) {
+      await expect(card.getByText(value, { exact: true })).toBeVisible();
+      const button = card.getByRole("button", { name: `Copy ${label}`, exact: true });
+      await button.click();
+      if (viewport.width === 1280) {
+        await expect(card.getByRole("status")).toHaveText(`${label} copied.`);
+        await expect(button).toHaveText("Copied ✓");
+        await expect(card.getByRole("button").filter({ hasText: "Copied ✓" })).toHaveCount(1);
+        expect(copied).toBe(value);
+      } else {
+        await expect(card.getByRole("status")).toHaveText(`Copy unavailable. Select the ${label} value to copy it.`);
+        await expect(button).toHaveText("Copy");
+        expect(copied).toBe("");
+      }
+      expect(page.url()).toBe(cardUrl);
+      expect(page.context().pages()).toHaveLength(1);
     }
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
     expect(await card.evaluate(e => e.scrollWidth <= e.clientWidth)).toBe(true);

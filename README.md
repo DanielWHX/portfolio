@@ -8,7 +8,7 @@ Interactive portfolio for Hongxiang Wang, a full-stack software engineer.
 - Conversational portfolio voice powered by `gpt-5.6-luna`
 - Read-only `get_resume_profile` tool backed by approved resume facts and shared interests
 - Personal Profile Card with a corrected portrait, university logos, and sourced rankings
-- Contact Card with clickable email, phone, GitHub, LinkedIn, and a copyable WeChat ID
+- Contact Card with copy buttons for email, phone, GitHub, LinkedIn, and WeChat
 - WebGL fluid cursor with colorful, fading ink trails
 - Glassmorphism controls layered above the animation
 - Responsive desktop and mobile layouts
@@ -71,8 +71,8 @@ the question must be restored, Thinking must stop, and retry must send a valid
 conversation without duplicate user messages. Skills answers must render as text.
 Desktop and mobile navigation checks enter a conversation from Me, receive a
 Profile Card, and verify that the back arrow restores the actual homepage.
-Contact checks verify all destination links, successful clipboard writes and the
-manual-copy fallback, valid follow-ups, and return navigation.
+Contact checks verify all five clipboard values without navigation, successful
+copy feedback and the manual-copy fallback, valid follow-ups, and return navigation.
 
 After a successful build, use `npm run test:api` or `npm run test:ui` to rerun
 only the relevant checks. Browser failures save traces under `test-results/`.
