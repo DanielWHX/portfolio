@@ -25,7 +25,7 @@ export const resumeProfile = {
     },
     {
       id: "osu",
-      logo: "/schools/ohio-state.svg",
+      logo: "/schools/ohio-state.png",
       school: "The Ohio State University",
       ranking: {
         label: "#41 National Universities",

@@ -625,7 +625,7 @@ h1 {
 }
 
 .profile-school-logo img { width: 40px; height: 50px; object-fit: contain; }
-.profile-school-osu .profile-school-logo { background: #ba0c2f; border-radius: 10px; }
+.profile-school-osu .profile-school-logo img { width: 52px; height: 52px; }
 
 .profile-school h4 {
   margin: 0 0 7px;
