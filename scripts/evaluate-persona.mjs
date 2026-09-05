@@ -2,6 +2,7 @@
 // This uses real model calls. Review the printed answers as well as the checks.
 const baseUrl = process.argv[2] || "http://127.0.0.1:3104";
 const cases = [
+  { question: "你现在在哪所学校读书？", presentation: "text", review: "Uses the current date and education timeline; does not describe an ended program as current or a future degree as completed." },
   { question: "介绍一下你自己", presentation: "profile_card", review: "Uses approved background and shared interests; no invented personal details." },
   { question: "你平时有什么爱好？", presentation: "text", review: "Mentions fitness and interest in SaaS companies, without an invented routine or business." },
   { question: "做一个 SaaS 产品，应该先想清楚什么？", presentation: "text", review: "Gives a useful general answer, not a resume-only refusal.", general: true },
