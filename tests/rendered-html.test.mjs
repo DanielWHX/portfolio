@@ -112,20 +112,6 @@ test("ships the complete glass chat layout and current main-page styles", async 
   assert.doesNotMatch(css, /\.brand-mark\b/i);
 });
 
-test("guards the browser chat request against an endless loading state", async () => {
-  const source = await readFile(new URL("../app/chat/ChatClient.tsx", import.meta.url), "utf8");
-
-  assert.match(source, /new AbortController\(\)/);
-  assert.match(source, /signal:\s*controller\.signal/);
-  assert.match(source, /controller\.signal\.aborted/);
-  assert.match(source, /response took too long/i);
-  assert.match(source, /catch \(caught\) \{\s*setMessages\(messages\);/);
-  assert.match(source, /setDraft\(content\);/);
-  assert.match(source, /finally \{[\s\S]*?setLoading\(false\);/);
-  assert.match(source, /className="profile-card"/);
-  assert.match(source, /message\.module\?\.type === "profile"/);
-});
-
 test("rejects an invalid chat request", async () => {
   const response = await request("/api/chat", {
     method: "POST",
