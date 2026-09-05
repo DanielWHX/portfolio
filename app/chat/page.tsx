@@ -1,5 +1,3 @@
-import Link from "next/link";
-
 import ChatClient from "./ChatClient";
 
 type ChatPageProps = {
@@ -15,9 +13,10 @@ export default async function ChatPage({ searchParams }: ChatPageProps) {
     <main className="chat-page">
       <section className="chat-shell" aria-labelledby="chat-title">
         <header className="chat-header">
-          <Link className="chat-back" href="/" aria-label="Back to portfolio">
+          {/* eslint-disable-next-line @next/next/no-html-link-for-pages -- Native navigation avoids the pinned vinext Link runtime error. */}
+          <a className="chat-back" href="/" aria-label="Back to portfolio">
             <span aria-hidden="true">←</span>
-          </Link>
+          </a>
           <span className="chat-avatar" aria-hidden="true" />
           <div>
             <h1 id="chat-title">Ask about me</h1>

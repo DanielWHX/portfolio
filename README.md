@@ -67,6 +67,8 @@ Browser tests start the built app on `127.0.0.1:3103` and stop it when finished.
 They cover an initial-question failure, a failed follow-up, and a stalled request:
 the question must be restored, Thinking must stop, and retry must send a valid
 conversation without duplicate user messages. Skills answers must render as text.
+Desktop and mobile navigation checks enter a conversation from Me, receive a
+Profile Card, and verify that the back arrow restores the actual homepage.
 
 After a successful build, use `npm run test:api` or `npm run test:ui` to rerun
 only the relevant checks. Browser failures save traces under `test-results/`.
