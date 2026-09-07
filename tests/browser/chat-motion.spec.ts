@@ -48,6 +48,7 @@ test("answers reveal progressively and reduced motion shows the complete answer 
   await expect(letters.last()).toHaveCSS("opacity", "0");
   await expect(letters.last()).toHaveCSS("opacity", "1");
   await expect(page.locator(".answer-reveal")).toHaveText(answer);
+  await page.getByRole("button", { name: "New chat", exact: true }).click();
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.goto("/chat?query=Hello");
   await expect(letters.last()).toHaveCSS("animation-name", "none");

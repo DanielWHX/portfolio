@@ -2,25 +2,14 @@
 
 import { useCallback, useEffect, useRef, useState, type FormEvent } from "react";
 
-import type { ResumeOverviewCard } from "@/lib/portfolio/resume-profile";
-import type { ContactCardData } from "@/lib/portfolio/contact-profile";
 import ProfileCard from "./ProfileCard";
 import ContactCard from "./ContactCard";
 import AnimatedText from "./AnimatedText";
 import { quickQuestions } from "@/lib/portfolio/quick-questions";
 
-type ProfileModule = {
-  type: "profile";
-  profile: ResumeOverviewCard;
-};
+import { clearChatSession, readChatSession, saveChatSession, type ConversationMessage as Message } from "@/lib/portfolio/chat-session";
 
-type ChatModule = ProfileModule | { type: "contact"; contact: ContactCardData };
-
-type Message = {
-  role: "user" | "assistant";
-  content: string;
-  module?: ChatModule;
-};
+type ChatModule = Message["module"];
 
 const MAX_USER_TURNS = 15;
 const CHAT_REQUEST_TIMEOUT_MS = 35_000;
@@ -31,6 +20,8 @@ export default function ChatClient({ initialQuery }: { initialQuery: string }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const initialQuerySent = useRef(false);
+  const sessionInitialized = useRef(false);
+  const [sessionReady, setSessionReady] = useState(false);
   const messagesRef = useRef<HTMLDivElement>(null);
   const followReply = useRef(true);
   const requestInFlight = useRef(false);
@@ -44,6 +35,7 @@ export default function ChatClient({ initialQuery }: { initialQuery: string }) {
       const turns = messages.filter((message) => message.role === "user").length;
 
       if (!content || requestInFlight.current || turns >= MAX_USER_TURNS) return;
+      saveChatSession(messages, content);
       requestInFlight.current = true;
       followReply.current = true;
 
@@ -106,12 +98,28 @@ export default function ChatClient({ initialQuery }: { initialQuery: string }) {
   );
 
   useEffect(() => {
-    if (!initialQuery || initialQuerySent.current) return;
+    if (sessionInitialized.current) return;
+    sessionInitialized.current = true;
+    const saved = readChatSession();
+    setMessages(saved.messages);
+    setDraft(saved.draft);
+    setSessionReady(true);
+  }, []);
 
+  useEffect(() => {
+    if (sessionReady && !requestInFlight.current) saveChatSession(messages, draft);
+  }, [sessionReady, messages, draft, loading]);
+
+  useEffect(() => {
+    if (!sessionReady || initialQuerySent.current) return;
     initialQuerySent.current = true;
+    if (!initialQuery) return;
     window.history.replaceState({}, "", "/chat");
+    // The homepage Me entry resumes an existing session without asking Me again.
+    if (initialQuery === "Who are you?" && (messages.length || draft)) return;
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- Start the URL-requested conversation once, after session hydration.
     void sendMessage(initialQuery);
-  }, [initialQuery, sendMessage]);
+  }, [sessionReady, initialQuery, sendMessage, messages.length, draft]);
 
   useEffect(() => {
     const container = messagesRef.current;
@@ -124,6 +132,13 @@ export default function ChatClient({ initialQuery }: { initialQuery: string }) {
       container.scrollTo({ top, behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
     }
   }, [messages]);
+
+  function startNewChat() {
+    clearChatSession();
+    setMessages([]);
+    setDraft("");
+    setError("");
+  }
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -138,14 +153,14 @@ export default function ChatClient({ initialQuery }: { initialQuery: string }) {
           if (loading && container) followReply.current = container.scrollHeight - container.scrollTop - container.clientHeight < 80;
         }}>
 
-        {messages.length === 0 && !loading ? (
+        {sessionReady && messages.length === 0 && !loading ? (
           <p className="chat-empty">
             Ask about my work, school, fitness, or your next SaaS idea.
           </p>
         ) : null}
 
         {messages.map((message, index) => (
-          <div className={`chat-turn chat-turn-${message.role}`} data-message-index={index} key={`${message.role}-${index}`}>
+          <div className={`chat-turn chat-turn-${message.role}${message.restored ? " chat-turn-restored" : ""}`} data-message-index={index} key={`${message.role}-${index}`}>
             {message.role === "assistant" && message.module?.type === "profile" ? (
               <ProfileCard profile={message.module.profile} />
             ) : message.role === "assistant" && message.module?.type === "contact" ? (
@@ -170,7 +185,7 @@ export default function ChatClient({ initialQuery }: { initialQuery: string }) {
       <nav className="chat-quick-questions" aria-label="Quick questions">
         {quickQuestions.map(({ label, icon, tone, query }) => (
           <button key={label} type="button" className={`chat-quick-question tone-${tone}`}
-            disabled={loading || limitReached} onClick={() => void sendMessage(query)}>
+            disabled={!sessionReady || loading || limitReached} onClick={() => void sendMessage(query)}>
             <span className="chat-quick-icon" aria-hidden="true">{icon}</span>
             <span>{label}</span>
           </button>
@@ -188,21 +203,26 @@ export default function ChatClient({ initialQuery }: { initialQuery: string }) {
           placeholder={limitReached ? "Question limit reached" : "Ask about me..."}
           autoComplete="off"
           maxLength={1000}
-          disabled={loading || limitReached}
+          disabled={!sessionReady || loading || limitReached}
           required
         />
         <button
           type="submit"
-          disabled={loading || limitReached || !draft.trim()}
+          disabled={!sessionReady || loading || limitReached || !draft.trim()}
           aria-label="Send question"
         >
           <span aria-hidden="true">→</span>
         </button>
       </form>
 
-      <p className="chat-disclosure">
-        Hongxiang&apos;s AI portfolio · Shared background, interests, and conversation.
-      </p>
+      <div className="chat-footer">
+        <p className="chat-disclosure">
+          Hongxiang&apos;s AI portfolio · Shared background, interests, and conversation.
+        </p>
+        <button type="button" className="chat-reset" disabled={!sessionReady || loading || (!messages.length && !draft)} onClick={startNewChat}>
+          New chat
+        </button>
+      </div>
     </div>
   );
 }

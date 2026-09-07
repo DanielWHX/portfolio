@@ -17,9 +17,11 @@ export default function ProfileCard({ profile }: { profile: ResumeOverviewCard }
           />
         </div>
         <div className="profile-card-intro">
-          <p className="profile-card-kicker">A little about me <span aria-hidden="true">👋</span></p>
-          <h2>{profile.name}</h2>
-          <p className="profile-card-headline">{profile.headline}</p>
+          <div className="profile-card-identity">
+            <p className="profile-card-kicker">A little about me <span aria-hidden="true">👋</span></p>
+            <h2>{profile.name}</h2>
+            <p className="profile-card-headline">{profile.headline}</p>
+          </div>
           <p className="profile-card-summary"><AnimatedText text={profile.summary} /></p>
           <ul className="profile-card-interests" aria-label="Interests">
             {profile.interests.map((interest, index) => (

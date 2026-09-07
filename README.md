@@ -127,3 +127,18 @@ disable these animations.
 The five quick questions continue the current conversation. New replies scroll
 to their beginning unless the visitor scrolls up while waiting. Profile and
 Contact retain their existing data and copy actions.
+
+## Conversation continuity
+
+The browser tab retains completed turns and unsent drafts in sessionStorage.
+Refresh or return through Me to continue without another automatic introduction.
+Other homepage questions continue the saved conversation. Interrupted requests
+restore as drafts for manual retry; they are never inserted as unmatched history
+turns. New chat clears the session and resets the 15-question limit. Storage that
+is unavailable or corrupt does not prevent ordinary chat. This is tab-local
+storage, with no account sync or server-side conversation database.
+
+Saved records contain only message text and card type. Profile and Contact cards
+are rebuilt from the current approved data and do not replay old entrance or text
+animations. On phones, the portrait and identity share a row, with the introduction
+and interests at full width underneath so education appears earlier.

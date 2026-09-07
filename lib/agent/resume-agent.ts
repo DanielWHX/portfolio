@@ -116,7 +116,7 @@ export function parseChatMessages(payload: unknown): ChatMessage[] {
     throw new ChatValidationError("The conversation must contain between 1 and 29 messages.");
   }
 
-  const messages = payload.messages.map((item, index) => {
+  const messages = payload.messages.map<ChatMessage>((item, index) => {
     if (!isObject(item) || (item.role !== "user" && item.role !== "assistant")) {
       throw new ChatValidationError("Each message must have a supported role.");
     }

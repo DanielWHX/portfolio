@@ -30,3 +30,25 @@ for (const viewport of [{ width: 1280, height: 900 }, { width: 390, height: 844 
     await expect(page.getByRole("alert")).toHaveCount(0);
   });
 }
+
+for (const width of [320, 390]) {
+  test(`mobile identity sits next to the portrait with education visible at ${width}px`, async ({ page }, testInfo) => {
+    await page.setViewportSize({ width, height: 844 });
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    await page.route("**/api/chat", route => route.fulfill({
+      json: { message: introduction, module: { type: "profile", profile: getResumeOverviewCard(introduction) } },
+    }));
+    await page.goto("/chat?query=Who%20are%20you%3F");
+    const card = page.getByRole("article", { name: "Hongxiang Wang profile" });
+    await expect(card).toBeVisible();
+    const name = await card.getByRole("heading", { name: "Hongxiang Wang", exact: true }).boundingBox();
+    const portrait = await card.locator(".profile-card-portrait").boundingBox();
+    expect(name!.x).toBeGreaterThanOrEqual(portrait!.x + portrait!.width);
+    expect(name!.y).toBeLessThan(portrait!.y + portrait!.height);
+    const summary = await card.locator(".profile-card-summary").boundingBox();
+    expect(summary!.x).toBeLessThanOrEqual(portrait!.x + 1);
+    await expect(card.getByRole("heading", { name: "Education", exact: true })).toBeInViewport();
+    expect(await card.evaluate(el => el.scrollWidth <= el.clientWidth)).toBe(true);
+    await page.screenshot({ path: testInfo.outputPath("profile-mobile.png") });
+  });
+}

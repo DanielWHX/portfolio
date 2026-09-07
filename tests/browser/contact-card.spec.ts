@@ -10,7 +10,7 @@ for (const viewport of [{ width: 1280, height: 900 }, { width: 390, height: 844 
       Object.defineProperty(navigator, "clipboard", { configurable: true, value: {
         writeText: async (text: string) => {
           if (rejectCopy) throw new Error("Clipboard unavailable");
-          await (window as Window & { recordContactCopy: (text: string) => Promise<void> }).recordContactCopy(text);
+          await (window as unknown as Window & { recordContactCopy: (text: string) => Promise<void> }).recordContactCopy(text);
         },
       } });
     }, { rejectCopy: viewport.width === 390 });
