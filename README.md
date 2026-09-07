@@ -42,8 +42,9 @@ Open [http://localhost:3000](http://localhost:3000).
 
 The agent can discuss Hongxiang's background and interests, as well as general
 conversation, technology, fitness, and SaaS ideas. Personal claims stay grounded
-in the shared profile. Me and Contact are available from the homepage. Ask for contact details in English
-or Chinese to receive a Contact Card; the remaining quick links are planned.
+in the shared profile. All five quick questions are available on the homepage and above the chat input.
+Me and Contact can return cards; Projects, Skills, and Fun Facts currently use text answers.
+Ask for contact details in English or Chinese to receive a Contact Card.
 
 ## Verification
 
@@ -114,3 +115,15 @@ specific workout record, business ownership, or other unshared biography.
 ## Acknowledgements
 
 The fluid simulation is adapted from [React Bits Splash Cursor](https://www.reactbits.dev/animations/splash-cursor). See [THIRD_PARTY_NOTICES.md](./THIRD_PARTY_NOTICES.md) for its license notice.
+
+## Chat motion
+
+Cards and portraits enter with a short staggered slide. Answer text reveals over
+at most about 2.4 seconds after the complete JSON response arrives; this is a
+frontend presentation effect, not API streaming. Existing messages do not replay
+when a new question or Copy action updates the page. Reduced-motion preferences
+disable these animations.
+
+The five quick questions continue the current conversation. New replies scroll
+to their beginning unless the visitor scrolls up while waiting. Profile and
+Contact retain their existing data and copy actions.

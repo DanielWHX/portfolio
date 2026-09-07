@@ -39,7 +39,7 @@ function restoreApiKey(value) {
   else process.env.OPENAI_API_KEY = value;
 }
 
-test("renders the Hongxiang Wang landing page with Me and Contact enabled", async () => {
+test("renders the Hongxiang Wang landing page with all five quick questions enabled", async () => {
   const response = await request();
   assert.equal(response.status, 200);
   const html = visibleMarkup(await response.text());
@@ -68,9 +68,9 @@ test("renders the Hongxiang Wang landing page with Me and Contact enabled", asyn
     /<nav\b[^>]*aria-label="Quick questions"[^>]*>([\s\S]*?)<\/nav>/i,
   )?.[1];
   assert.ok(options, "expected quick-question options");
-  assert.equal(options.match(/<a\b/g)?.length, 2);
+  assert.equal(options.match(/<a\b/g)?.length, 5);
   assert.match(options, /<a\b[^>]*href="\/chat\?query=Who%20are%20you%3F"[^>]*>/i);
-  assert.equal(options.match(/aria-disabled="true"/g)?.length, 3);
+  assert.doesNotMatch(options, /aria-disabled="true"/);
   for (const label of ["Me", "Projects", "Skills", "Fun Facts", "Contact"]) {
     assert.match(options, new RegExp(`<strong>${label}</strong>`));
   }

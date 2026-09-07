@@ -1,4 +1,5 @@
 import Image from "next/image";
+import AnimatedText from "./AnimatedText";
 
 import type { ResumeOverviewCard } from "@/lib/portfolio/resume-profile";
 
@@ -19,7 +20,7 @@ export default function ProfileCard({ profile }: { profile: ResumeOverviewCard }
           <p className="profile-card-kicker">A little about me <span aria-hidden="true">👋</span></p>
           <h2>{profile.name}</h2>
           <p className="profile-card-headline">{profile.headline}</p>
-          <p className="profile-card-summary">{profile.summary}</p>
+          <p className="profile-card-summary"><AnimatedText text={profile.summary} /></p>
           <ul className="profile-card-interests" aria-label="Interests">
             {profile.interests.map((interest, index) => (
               <li key={interest}><span aria-hidden="true">{index === 0 ? "💪" : "🚀"}</span> {interest}</li>

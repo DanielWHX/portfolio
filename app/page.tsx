@@ -1,42 +1,6 @@
 import SplashCursor from "./SplashCursor";
 
-const quickOptions = [
-  {
-    label: "Me",
-    icon: "☺",
-    tone: "cyan",
-    query: "Who are you?",
-    ready: true,
-  },
-  {
-    label: "Projects",
-    icon: "▣",
-    tone: "green",
-    query: "Show me your projects.",
-    ready: false,
-  },
-  {
-    label: "Skills",
-    icon: "◇",
-    tone: "violet",
-    query: "What are your strongest skills?",
-    ready: false,
-  },
-  {
-    label: "Fun Facts",
-    icon: "✦",
-    tone: "pink",
-    query: "What do you enjoy outside of engineering?",
-    ready: false,
-  },
-  {
-    label: "Contact",
-    icon: "☎ ",
-    tone: "amber",
-    query: "How can I contact you?",
-    ready: true,
-  },
-] as const;
+import { quickQuestions } from "@/lib/portfolio/quick-questions";
 
 export default function Home() {
   return (
@@ -91,7 +55,7 @@ export default function Home() {
         </form>
 
         <nav className="quick-options" aria-label="Quick questions">
-          {quickOptions.map((option) => {
+          {quickQuestions.map((option) => {
             const content = (
               <>
                 <span aria-hidden="true">{option.icon}</span>
@@ -99,7 +63,7 @@ export default function Home() {
               </>
             );
 
-            return option.ready ? (
+            return (
               <a
                 key={option.label}
                 className={`quick-option tone-${option.tone}`}
@@ -107,15 +71,6 @@ export default function Home() {
               >
                 {content}
               </a>
-            ) : (
-              <span
-                key={option.label}
-                className={`quick-option is-pending tone-${option.tone}`}
-                aria-disabled="true"
-                title="Planned"
-              >
-                {content}
-              </span>
             );
           })}
         </nav>

@@ -6,6 +6,8 @@ import type { ResumeOverviewCard } from "@/lib/portfolio/resume-profile";
 import type { ContactCardData } from "@/lib/portfolio/contact-profile";
 import ProfileCard from "./ProfileCard";
 import ContactCard from "./ContactCard";
+import AnimatedText from "./AnimatedText";
+import { quickQuestions } from "@/lib/portfolio/quick-questions";
 
 type ProfileModule = {
   type: "profile";
@@ -29,6 +31,9 @@ export default function ChatClient({ initialQuery }: { initialQuery: string }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const initialQuerySent = useRef(false);
+  const messagesRef = useRef<HTMLDivElement>(null);
+  const followReply = useRef(true);
+  const requestInFlight = useRef(false);
 
   const userTurns = messages.filter((message) => message.role === "user").length;
   const limitReached = userTurns >= MAX_USER_TURNS;
@@ -38,7 +43,9 @@ export default function ChatClient({ initialQuery }: { initialQuery: string }) {
       const content = value.trim().slice(0, 1000);
       const turns = messages.filter((message) => message.role === "user").length;
 
-      if (!content || loading || turns >= MAX_USER_TURNS) return;
+      if (!content || requestInFlight.current || turns >= MAX_USER_TURNS) return;
+      requestInFlight.current = true;
+      followReply.current = true;
 
       const nextMessages: Message[] = [...messages, { role: "user", content }];
       setMessages(nextMessages);
@@ -91,10 +98,11 @@ export default function ChatClient({ initialQuery }: { initialQuery: string }) {
         );
       } finally {
         window.clearTimeout(timeoutId);
+        requestInFlight.current = false;
         setLoading(false);
       }
     },
-    [loading, messages],
+    [messages],
   );
 
   useEffect(() => {
@@ -105,6 +113,18 @@ export default function ChatClient({ initialQuery }: { initialQuery: string }) {
     void sendMessage(initialQuery);
   }, [initialQuery, sendMessage]);
 
+  useEffect(() => {
+    const container = messagesRef.current;
+    const latest = container?.querySelector<HTMLElement>(`[data-message-index="${messages.length - 1}"]`);
+    if (!container || !latest || !messages.length) return;
+    if (messages[messages.length - 1].role === "user") {
+      container.scrollTop = container.scrollHeight;
+    } else if (followReply.current) {
+      const top = latest.getBoundingClientRect().top - container.getBoundingClientRect().top + container.scrollTop - 4;
+      container.scrollTo({ top, behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
+    }
+  }, [messages]);
+
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     void sendMessage(draft);
@@ -112,34 +132,31 @@ export default function ChatClient({ initialQuery }: { initialQuery: string }) {
 
   return (
     <div className="chat-body">
-      <div className="chat-messages" aria-live="polite" aria-busy={loading}>
+      <div className="chat-messages" ref={messagesRef} aria-live="polite" aria-busy={loading}
+        onScroll={() => {
+          const container = messagesRef.current;
+          if (loading && container) followReply.current = container.scrollHeight - container.scrollTop - container.clientHeight < 80;
+        }}>
+
         {messages.length === 0 && !loading ? (
           <p className="chat-empty">
             Ask about my work, school, fitness, or your next SaaS idea.
           </p>
         ) : null}
 
-        {messages.map((message, index) =>
-          message.role === "assistant" && message.module?.type === "profile" ? (
-            <ProfileCard
-              key={`${message.role}-${index}`}
-              profile={message.module.profile}
-            />
-          ) : message.role === "assistant" && message.module?.type === "contact" ? (
-            <ContactCard
-              key={`${message.role}-${index}`}
-              contact={message.module.contact}
-              message={message.content}
-            />
-          ) : (
-            <div
-              className={`chat-message chat-message-${message.role}`}
-              key={`${message.role}-${index}`}
-            >
-              {message.content}
-            </div>
-          ),
-        )}
+        {messages.map((message, index) => (
+          <div className={`chat-turn chat-turn-${message.role}`} data-message-index={index} key={`${message.role}-${index}`}>
+            {message.role === "assistant" && message.module?.type === "profile" ? (
+              <ProfileCard profile={message.module.profile} />
+            ) : message.role === "assistant" && message.module?.type === "contact" ? (
+              <ContactCard contact={message.module.contact} message={message.content} />
+            ) : (
+              <div className={`chat-message chat-message-${message.role}`}>
+                {message.role === "assistant" ? <AnimatedText text={message.content} /> : message.content}
+              </div>
+            )}
+          </div>
+        ))}
 
         {loading ? <div className="chat-loading">Thinking…</div> : null}
       </div>
@@ -149,6 +166,16 @@ export default function ChatClient({ initialQuery }: { initialQuery: string }) {
           {error}
         </p>
       ) : null}
+
+      <nav className="chat-quick-questions" aria-label="Quick questions">
+        {quickQuestions.map(({ label, icon, tone, query }) => (
+          <button key={label} type="button" className={`chat-quick-question tone-${tone}`}
+            disabled={loading || limitReached} onClick={() => void sendMessage(query)}>
+            <span className="chat-quick-icon" aria-hidden="true">{icon}</span>
+            <span>{label}</span>
+          </button>
+        ))}
+      </nav>
 
       <form className="chat-form" onSubmit={handleSubmit}>
         <label className="sr-only" htmlFor="chat-query">
