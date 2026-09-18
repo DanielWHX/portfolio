@@ -1,8 +1,11 @@
+import { portfolioProjects, lyntraCaseStudy } from "./projects";
 import { contactProfile } from "./contact-profile";
 
 export const resumeProfile = {
   source: "Hongxiang_wang_resume_revised.pdf",
   contact: contactProfile,
+  projects: portfolioProjects,
+  lyntraCaseStudy,
   interests: ["Fitness", "SaaS companies"],
   name: "Hongxiang Wang",
   headline: "Full-Stack Engineer",

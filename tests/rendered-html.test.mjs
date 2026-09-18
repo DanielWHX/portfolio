@@ -157,6 +157,7 @@ test(
     t.after(() => restoreApiKey(previousKey));
 
     const cases = [
+      { question: "Could I see some of your selected work?", message: "Here is my selected work.", presentation: "projects_card" },
       {
         question: "Who are you?",
         message: "I'm Hongxiang Wang, a full-stack engineer.",
@@ -276,6 +277,8 @@ test(
             skills: ["TypeScript", "Java", "Python", "React", "Spring Boot", "Docker"],
           },
         });
+      } else if (testCase.presentation === "projects_card") {
+        assert.deepEqual(payload, { message: testCase.message, module: { type: "projects" } });
       } else if (testCase.presentation === "contact_card") {
         assert.deepEqual(payload, {
           message: testCase.message,
@@ -301,12 +304,15 @@ test(
     const toolResult = requests[1].input.find(item => item.type === "function_call_output");
     assert.deepEqual(JSON.parse(toolResult.output).interests, ["Fitness", "SaaS companies"]);
     assert.equal(JSON.parse(toolResult.output).contact.email, "hxjob1017@gmail.com");
+    assert.equal(JSON.parse(toolResult.output).projects[0].id, "lyntra");
+    assert.match(JSON.parse(toolResult.output).lyntraCaseStudy.architecture, /Flask/);
     assert.equal(requests[1].text.format.type, "json_schema");
     assert.equal(requests[1].text.format.strict, true);
     assert.deepEqual(requests[1].text.format.schema.properties.presentation.enum, [
       "text",
       "profile_card",
       "contact_card",
+      "projects_card",
     ]);
   },
 );
@@ -484,3 +490,27 @@ test(
     assert.equal(JSON.parse(toolResult.output).name, "Hongxiang Wang");
   },
 );
+
+
+test("Projects is available without a model and validation still applies", async () => {
+  const previousKey = process.env.OPENAI_API_KEY;
+  delete process.env.OPENAI_API_KEY;
+  try {
+    const response = await request("/api/chat", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({messages:[{role:"user",content:"projects"}]}) });
+    assert.equal(response.status, 200);
+    assert.equal((await response.json()).module.type, "projects");
+    const invalid = await request("/api/chat", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({messages:[{role:"assistant",content:"projects"}]}) });
+    assert.equal(invalid.status, 400);
+  } finally { restoreApiKey(previousKey); }
+});
+
+test("Lyntra case study renders a demo and both English diagrams", async () => {
+  const response = await request("/projects/lyntra");
+  assert.equal(response.status, 200);
+  const html = visibleMarkup(await response.text());
+  assert.match(html, /A calendar that/);
+  assert.match(html, /src="\/projects\/lyntra\/demo.mp4"/);
+  assert.match(html, /src="\/projects\/lyntra\/workflow.svg"/);
+  assert.match(html, /src="\/projects\/lyntra\/architecture.svg"/);
+  assert.match(html, /remain in development/);
+});

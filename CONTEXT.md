@@ -2,7 +2,7 @@
 
 - **Profile Card**: the code-rendered personal overview returned for a broad introduction. Portrait, schools, rankings, interests, and experience are owned by the application; the model supplies a short introduction.
 - **Contact Card**: the code-rendered contact methods returned for a contact request. Email, phone, GitHub, LinkedIn, and WeChat are owned by the application and sourced from Hongxiang; the model selects the card and supplies a short lead-in.
-- **Quick questions**: the same five prompts on the homepage and above the chat composer. Me and Contact can return cards; Projects, Skills, and Fun Facts currently return grounded text.
+- **Quick questions**: the same five prompts on the homepage and above the chat composer. Me, Projects, and Contact return cards; Skills and Fun Facts return grounded text. The Projects quick question returns its code-owned card without an LLM request.
 - **Answer reveal**: a frontend visual animation applied after the complete API response arrives, not model streaming. Text remains available to selection and assistive technology; reduced-motion preferences show it immediately.
 - **Conversation session**: completed turns and the current draft retained in sessionStorage for the browser tab. Returning through Me resumes the conversation; New chat clears it. Interrupted requests return as drafts, never automatic retries. Restored cards use current approved data and skip entrance animations.
 - **Shared profile**: resume facts plus personal details Hongxiang explicitly supplies, currently fitness, an interest in SaaS companies, and approved contact details. An interest is not a claim of business ownership.
@@ -10,3 +10,6 @@
 - **School ranking**: a named category and edition with a source URL. National Universities rankings and Graduate Computer Science rankings are separate; CS #5 is not a separate MCS degree ranking.
 
 The homepage's pink character and Fun Facts remain part of the current visual direction. The personal photograph belongs inside the Profile Card.
+
+- **Projects Card**: selected work in chat. Lyntra is the featured case study; other entries are descriptive placeholders with no pretend destinations. Restored sessions rebuild the current card.
+- **Lyntra Case Study**: the English /projects/lyntra page, with a captioned local demo, contributions, core workflow, and simplified logical architecture. It distinguishes working rescheduling and task previews from unfinished background replanning and preview acceptance.

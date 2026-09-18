@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="920" viewBox="0 0 1280 920" role="img" aria-labelledby="title desc">
+  <title id="title">Lyntra high-level logical architecture</title>
+  <desc id="desc">The Expo and React Native interface connects with authenticated HTTP to a single Flask backend. The Flask application contains AI intent parsing and Task Breakdown, scheduling validation, and shared calendar context. It calls an external LLM provider and reads and writes core data in PostgreSQL. Boxes inside Flask are internal modules, not separate services. This is a logical architecture, not a deployment map.</desc>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="userSpaceOnUse"><path d="M2 1.5 8 5 2 8.5" fill="none" stroke="#879bb2" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></marker>
+    <marker id="reverse" markerWidth="10" markerHeight="10" refX="2" refY="5" orient="auto" markerUnits="userSpaceOnUse"><path d="m8 1.5-6 3.5 6 3.5" fill="none" stroke="#879bb2" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></marker>
+    <style>
+      text{font-family:Arial,Helvetica,sans-serif;fill:#172d47}
+      .eyebrow{font-size:22px;font-weight:700;letter-spacing:2px;fill:#4b83e6}
+      .title{font-size:50px;font-weight:700;letter-spacing:-1.8px}
+      .subtitle{font-size:26px;fill:#58718d}
+      .node-title{font-size:28px;font-weight:700;letter-spacing:-.65px}
+      .body{font-size:22px;fill:#58718d}
+      .icon{fill:none;stroke:#4b83e6;stroke-width:2.8;stroke-linecap:round;stroke-linejoin:round}
+      .flow{fill:none;stroke:#879bb2;stroke-width:2.3;marker-end:url(#arrow)}
+      .two-way{fill:none;stroke:#879bb2;stroke-width:2.3;marker-start:url(#reverse);marker-end:url(#arrow)}
+    </style>
+  </defs>
+  <rect width="1280" height="920" rx="28" fill="#f5f8fc"/>
+  <path d="M48 167H1232" stroke="#dce6f1" stroke-width="1.5"/>
+  <text x="48" y="53" class="eyebrow">LYNTRA / SYSTEM DESIGN</text>
+  <text x="48" y="113" class="title">One application, clear responsibilities</text>
+  <text x="48" y="149" class="subtitle">AI interprets intent; scheduling logic enforces calendar constraints.</text>
+
+  <!-- Frontend -->
+  <g transform="translate(48 320)">
+    <rect width="252" height="275" rx="20" fill="#fff" stroke="#d4e0ed" stroke-width="1.5"/>
+    <g class="icon" transform="translate(25 29)"><rect x="0" y="0" width="62" height="43" rx="5"/><path d="M22 44v10M10 55h31"/><rect x="45" y="19" width="27" height="42" rx="4" fill="#fff"/><path d="M53 54h10"/></g>
+    <text x="24" y="134" class="node-title"><tspan x="24">Web + mobile</tspan><tspan x="24" dy="34">interface</tspan></text>
+    <text x="24" y="218" class="body"><tspan x="24">Expo /</tspan><tspan x="24" dy="29">React Native</tspan></text>
+  </g>
+
+  <!-- Single backend boundary. -->
+  <rect x="370" y="216" width="566" height="573" rx="23" fill="#edf3fd" stroke="#b9cde9" stroke-width="1.7"/>
+  <text x="400" y="263" font-size="33" font-weight="700" letter-spacing="-.8">Flask application</text>
+  <text x="400" y="298" class="body">One backend · internal modules</text>
+
+  <g transform="translate(400 329)">
+    <rect width="506" height="132" rx="17" fill="#fff" stroke="#d0dfee" stroke-width="1.5"/>
+    <g class="icon" transform="translate(24 24)"><path d="m16 0 4 12 12 4-12 4-4 12-4-12-12-4 12-4Z"/><path d="m36 0 2 5 5 2-5 2-2 5-2-5-5-2 5-2Z"/></g>
+    <text x="84" y="52" class="node-title">AI interpretation</text>
+    <text x="24" y="102" class="body">Intent parsing + Task Breakdown</text>
+  </g>
+  <path d="M653 467v24" class="flow"/>
+  <g transform="translate(400 497)">
+    <rect width="506" height="117" rx="17" fill="#fff" stroke="#d0dfee" stroke-width="1.5"/>
+    <g class="icon" transform="translate(24 23)"><path d="M0 7h32M24 0l8 7-8 7M37 29H5M13 22l-8 7 8 7"/></g>
+    <text x="84" y="50" class="node-title">Scheduling validation</text>
+    <text x="24" y="90" class="body">Resolve conflicts · preserve duration</text>
+  </g>
+  <path d="M653 620v24" class="two-way"/>
+  <g transform="translate(400 650)">
+    <rect width="506" height="108" rx="17" fill="#e5f4f0" stroke="#beded8" stroke-width="1.5"/>
+    <text x="24" y="43" class="node-title">Shared calendar context</text>
+    <text x="24" y="80" class="body">User-scoped events + busy time</text>
+  </g>
+
+  <!-- Authenticated entry to the backend. -->
+  <path d="M306 395H364" class="two-way"/>
+  <text x="334" y="313" text-anchor="middle" class="body">HTTP</text>
+  <text x="334" y="343" text-anchor="middle" class="body">+ JWT</text>
+
+  <!-- External model: dashed link separates the provider boundary. -->
+  <path d="M912 395H980" class="two-way" stroke-dasharray="6 6"/>
+  <g transform="translate(986 329)">
+    <rect width="246" height="174" rx="20" fill="#fff" stroke="#d4e0ed" stroke-width="1.5"/>
+    <g class="icon" transform="translate(24 24)"><path d="M7 24a10 10 0 0 1-1-20A14 14 0 0 1 33 6a10 10 0 0 1 0 20H7"/><path d="m14 38 7-7 7 7M21 32v16"/></g>
+    <text x="24" y="109" class="node-title">LLM provider</text>
+    <text x="24" y="146" class="body">External model API</text>
+  </g>
+
+  <!-- Core persistence connects to the application boundary. -->
+  <path d="M942 704H980" class="two-way"/>
+  <g transform="translate(986 623)">
+    <rect width="246" height="190" rx="20" fill="#fff" stroke="#beded8" stroke-width="1.5"/>
+    <g class="icon" style="stroke:#248d82" transform="translate(24 22)"><ellipse cx="20" cy="7" rx="20" ry="7"/><path d="M0 7v25c0 4 9 7 20 7s20-3 20-7V7M0 19c0 4 9 7 20 7s20-3 20-7"/></g>
+    <text x="24" y="99" class="node-title">PostgreSQL</text>
+    <text x="24" y="136" class="body">Users · events</text>
+    <text x="24" y="164" class="body">Tasks · subtasks</text>
+  </g>
+  <circle cx="61" cy="869" r="5" fill="#4b83e6"/>
+  <text x="80" y="878" font-size="24" fill="#58718d">High-level logical architecture · Boxes inside Flask are internal modules.</text>
+</svg>

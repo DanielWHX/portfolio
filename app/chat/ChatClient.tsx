@@ -4,6 +4,8 @@ import { useCallback, useEffect, useRef, useState, type FormEvent } from "react"
 
 import ProfileCard from "./ProfileCard";
 import ContactCard from "./ContactCard";
+import ProjectsCard from "./ProjectsCard";
+import { isProjectsOverviewRequest } from "@/lib/portfolio/projects";
 import AnimatedText from "./AnimatedText";
 import { quickQuestions } from "@/lib/portfolio/quick-questions";
 
@@ -117,9 +119,10 @@ export default function ChatClient({ initialQuery }: { initialQuery: string }) {
     window.history.replaceState({}, "", "/chat");
     // The homepage Me entry resumes an existing session without asking Me again.
     if (initialQuery === "Who are you?" && (messages.length || draft)) return;
+    if (isProjectsOverviewRequest(initialQuery) && messages.at(-1)?.module?.type === "projects") return;
     // eslint-disable-next-line react-hooks/set-state-in-effect -- Start the URL-requested conversation once, after session hydration.
     void sendMessage(initialQuery);
-  }, [sessionReady, initialQuery, sendMessage, messages.length, draft]);
+  }, [sessionReady, initialQuery, sendMessage, messages, draft]);
 
   useEffect(() => {
     const container = messagesRef.current;
@@ -163,6 +166,8 @@ export default function ChatClient({ initialQuery }: { initialQuery: string }) {
           <div className={`chat-turn chat-turn-${message.role}${message.restored ? " chat-turn-restored" : ""}`} data-message-index={index} key={`${message.role}-${index}`}>
             {message.role === "assistant" && message.module?.type === "profile" ? (
               <ProfileCard profile={message.module.profile} />
+            ) : message.role === "assistant" && message.module?.type === "projects" ? (
+              <ProjectsCard />
             ) : message.role === "assistant" && message.module?.type === "contact" ? (
               <ContactCard contact={message.module.contact} message={message.content} />
             ) : (
