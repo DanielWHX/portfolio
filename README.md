@@ -118,6 +118,14 @@ The fluid simulation is adapted from [React Bits Splash Cursor](https://www.reac
 
 ## JChatMind case study
 
+The compact first screen contains the project name, one sentence, and the demo
+entry point. Set the server-side `JCHATMIND_DEMO_URL` to the verified HTTPS
+`/demo` URL of the original JChatMind deployment and redeploy to show the inline
+live chat above the recorded walkthrough. Until a backend is hosted, no live
+iframe or availability claim is shown. The original Spring Boot / pgvector /
+Ollama deployment is prepared in the sibling JChatMind repository, with private
+admin APIs and isolated guest sessions. Do not use a localhost URL here.
+
 The second project links to `/projects/jchatmind`. The English walkthrough uses
 eight original local-app screenshots and three highlighted handbook references
 to show five stages: recommendation, follow-up pricing, date-tool use, documented

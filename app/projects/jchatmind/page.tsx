@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import OrbitDeskDemo from "./OrbitDeskDemo";
+import LiveDemo from "./LiveDemo";
 import "./jchatmind.css";
 
 export const metadata: Metadata = {
@@ -25,18 +26,26 @@ const references = [
 ] as const;
 
 export default function JChatMindCaseStudy() {
+  let liveDemoUrl: string | undefined;
+  try {
+    const url = new URL(process.env.JCHATMIND_DEMO_URL ?? "");
+    if (url.protocol === "https:" && !url.username && !url.password && url.hostname !== "localhost") liveDemoUrl = url.href;
+  } catch { /* Keep the verified walkthrough until the original backend is deployed. */ }
   return <main className="case-page jcm-page">
     <div className="case-wrap">
       {/* eslint-disable-next-line @next/next/no-html-link-for-pages -- Native navigation avoids the pinned vinext Link runtime error. */}
       <nav className="case-nav" aria-label="Case study navigation"><a className="case-back" href="/chat?query=projects">← Back to projects</a><a className="case-wordmark" href="/" aria-label="Hongxiang Wang portfolio home">HXW<span> / SELECTED WORK</span></a></nav>
 
       <header className="case-hero jcm-hero">
-        <div className="case-kicker"><span className="case-project-name">JCHATMIND</span><span>FULL-STACK AI</span><span className="case-status">Working local demo</span></div>
-        <h1>Answers, <span>with the evidence.</span></h1>
-        <p className="case-lead">A support conversation that retrieves knowledge,<br className="jcm-desktop-break" /> uses tools, and shows where its answers come from.</p>
-        <div className="case-hero-bottom"><p>A <strong>Java backend</strong> connects a conversational interface to document retrieval and agent tools. Follow one business scenario from a customer’s first question to a grounded reply draft.</p><a className="case-primary" href="#demo">Explore the conversation <span aria-hidden="true">↘</span></a></div>
-        <dl className="case-facts"><div><dt>BACKEND</dt><dd>Java · Spring Boot · Spring AI<small>Agent workflows & tool orchestration</small></dd></div><div><dt>KNOWLEDGE & INTERFACE</dt><dd>RAG · PostgreSQL / pgvector<small>React · TypeScript · Document embeddings</small></dd></div><div><dt>THE WALKTHROUGH</dt><dd>5 questions · 8 app captures<small>3 highlighted source references</small></dd></div></dl>
+        <h1>JChatMind</h1>
+        <p className="case-lead">An AI support assistant that answers from your knowledge base.</p>
+        <div className="jcm-hero-actions">
+          <ul className="jcm-hero-stack" aria-label="Core technologies"><li>Java</li><li>Spring Boot</li><li>Spring AI</li></ul>
+          <a className="jcm-demo-link" href={liveDemoUrl ? "#live-demo" : "#demo"}>{liveDemoUrl ? "Try it live" : "Explore the demo"} <span aria-hidden="true">↘</span></a>
+        </div>
       </header>
+
+      {liveDemoUrl && <LiveDemo url={liveDemoUrl} />}
 
       <section className="jcm-section" id="demo" aria-labelledby="jcm-demo-title">
         <div className="case-section-heading"><div><p className="projects-eyebrow">01 / THE BUSINESS SCENARIO</p><h2 id="jcm-demo-title">Meet the OrbitDesk support copilot.</h2></div><p>Recorded conversation · Sample SaaS policies<br />5 questions · Original app screenshots</p></div>

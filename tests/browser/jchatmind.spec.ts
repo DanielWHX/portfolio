@@ -10,7 +10,8 @@ for (const viewport of [{ width: 1440, height: 1000 }, { width: 390, height: 844
     await expect(card).toBeVisible();
     await card.getByRole("link", { name: "Explore JChatMind case study" }).click();
     await expect(page).toHaveURL(/\/projects\/jchatmind$/);
-    await expect(page.getByRole("heading", { level: 1 })).toHaveText("Answers, with the evidence.");
+    await expect(page.getByRole("heading", { level: 1 })).toHaveText("JChatMind");
+    expect((await page.locator(".jcm-hero").boundingBox())!.height).toBeLessThan(300);
     await expect(page.getByRole("button", { name: "Previous screenshot in this stage" })).toBeDisabled();
     const stages = page.getByRole("navigation", { name: "OrbitDesk demonstration stages" });
     for (const [name, source] of [["Recommend", "01-pricing"], ["Follow up", "01-pricing"], ["Use a tool", "02-trial"], ["Check limits", "03-boundaries"], ["Draft a reply", "03-boundaries"]]) {
