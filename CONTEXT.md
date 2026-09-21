@@ -11,7 +11,8 @@
 
 The homepage's pink character and Fun Facts remain part of the current visual direction. The personal photograph belongs inside the Profile Card.
 
-- **Projects Card**: selected work in chat. Lyntra is the featured case study; other entries are descriptive placeholders with no pretend destinations. Restored sessions rebuild the current card.
+- **Projects Card**: selected work in chat. Lyntra is the first featured case study; JChatMind is the second working case-study link. Remaining entries are descriptive placeholders with no pretend destinations. Restored sessions rebuild the current card.
 - **Lyntra Case Study**: the English /projects/lyntra page, with a captioned local demo, contributions, core workflow, and simplified logical architecture. It distinguishes working rescheduling and task previews from unfinished background replanning and preview acceptance.
+- **JChatMind Case Study**: the English /projects/jchatmind page. Five OrbitDesk stages connect eight unchanged application screenshots to three highlighted source-document views. OrbitDesk is a fictional SaaS scenario. Source quotations, recorded tool results, and derived calculations remain distinct; notes preserve known answer wording limitations. Only approved visual assets and the sample handbook are published, not raw local API exports.
 
 - **Skills Card**: the English skills overview, grouped exactly as the resume: Languages / Frameworks / Tools. Python and Java backend engineering are the primary focus; Flask and Spring Boot are highlighted with Lyntra and PCITC evidence. The broader toolkit does not imply equal expertise or proficiency ratings. Lists and positioning are shared with the agent from `lib/portfolio/skills-profile.ts`; restored cards always use current data.

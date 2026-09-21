@@ -43,7 +43,7 @@ Open [http://localhost:3000](http://localhost:3000).
 The agent can discuss Hongxiang's background and interests, as well as general
 conversation, technology, fitness, and SaaS ideas. Personal claims stay grounded
 in the shared profile. All five quick questions are available on the homepage and above the chat input.
-Me and Contact can return cards; Projects, Skills, and Fun Facts currently use text answers.
+Me, Contact, Projects, and Skills can return cards; Fun Facts uses text answers.
 Ask for contact details in English or Chinese to receive a Contact Card.
 
 ## Verification
@@ -115,6 +115,22 @@ specific workout record, business ownership, or other unshared biography.
 ## Acknowledgements
 
 The fluid simulation is adapted from [React Bits Splash Cursor](https://www.reactbits.dev/animations/splash-cursor). See [THIRD_PARTY_NOTICES.md](./THIRD_PARTY_NOTICES.md) for its license notice.
+
+## JChatMind case study
+
+The second project links to `/projects/jchatmind`. The English walkthrough uses
+eight original local-app screenshots and three highlighted handbook references
+to show five stages: recommendation, follow-up pricing, date-tool use, documented
+uncertainty, and a customer reply draft. Desktop and phone visitors can change
+stages, browse each stage's captures, and open full-size screenshots or readable
+annotated source pages. The gallery is static evidence; browsing it does not call
+JChatMind or an LLM and does not depend on localhost services.
+
+Assets live in `public/projects/jchatmind/`; the original sample handbook is
+included. Local API snapshots and credentials are not deployed. The page labels
+OrbitDesk as a fictional SaaS example and retains the original answer limitations
+in scope notes. Shared agent facts live in `lib/portfolio/projects.ts` under
+`jchatmindCaseStudy`.
 
 ## Chat motion
 

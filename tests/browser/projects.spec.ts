@@ -8,7 +8,8 @@ test("Projects opens a real case study and returns without losing or duplicating
   const card = page.getByRole("article", { name: "Hongxiang's projects" });
   await expect(card).toBeVisible();
   await expect(card.getByRole("heading", { level: 3 }).first()).toContainText("Lyntra");
-  await expect(card.getByText("Case study coming soon", { exact: true })).toHaveCount(4);
+  await expect(card.getByRole("link", { name: "Explore JChatMind case study" })).toHaveAttribute("href", "/projects/jchatmind");
+  await expect(card.getByText("Case study coming soon", { exact: true })).toHaveCount(3);
   await page.getByRole("link", { name: "Explore Lyntra case study" }).click();
   await expect(page.getByRole("heading", { level: 1 })).toHaveText("A calendar that adapts.");
   const video = page.locator("video");
