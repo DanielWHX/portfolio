@@ -6,6 +6,7 @@ import {
 } from "@/lib/agent/resume-agent";
 import { getResumeOverviewCard } from "@/lib/portfolio/resume-profile";
 import { isProjectsOverviewRequest } from "@/lib/portfolio/projects";
+import { isSkillsOverviewRequest, skillsFocus } from "@/lib/portfolio/skills-profile";
 import { contactProfile } from "@/lib/portfolio/contact-profile";
 
 function json(body: object, status = 200) {
@@ -37,6 +38,10 @@ export async function POST(request: Request) {
     return json({ message: "Explore my selected work, starting with Lyntra.", module: { type: "projects" } });
   }
 
+  if (isSkillsOverviewRequest(messages[messages.length - 1].content)) {
+    return json({ message: skillsFocus.summary, module: { type: "skills" } });
+  }
+
   const apiKey = process.env.OPENAI_API_KEY?.trim();
   if (!apiKey) {
     return json(
@@ -47,6 +52,10 @@ export async function POST(request: Request) {
 
   try {
     const answer = await answerFromResume({ messages, apiKey });
+
+    if (answer.presentation === "skills_card") {
+      return json({ message: answer.message, module: { type: "skills" } });
+    }
 
     if (answer.presentation === "projects_card") {
       return json({ message: answer.message, module: { type: "projects" } });

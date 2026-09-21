@@ -1,3 +1,4 @@
+import { resumeSkills, skillsFocus } from "./skills-profile";
 import { portfolioProjects, lyntraCaseStudy } from "./projects";
 import { contactProfile } from "./contact-profile";
 
@@ -66,40 +67,8 @@ export const resumeProfile = {
         "Containerized O-RAN edge-computing research using Docker, Kubernetes, REST APIs, AI-assisted decision support, and CI/CD-oriented data synchronization.",
     },
   ],
-  skills: {
-    languages: [
-      "Python",
-      "Java",
-      "JavaScript",
-      "TypeScript",
-      "C++",
-      "C#",
-      "SQL",
-      "HTML/CSS",
-    ],
-    frameworks: [
-      "Spring Boot",
-      "MyBatis",
-      "Node.js",
-      "FastAPI",
-      "Flask",
-      "Next.js",
-      "React",
-      "Tailwind",
-    ],
-    tools: [
-      "Docker",
-      "Kubernetes",
-      "Maven",
-      "Nginx",
-      "Redis",
-      "MySQL",
-      "MongoDB",
-      "Azure",
-      "Linux",
-      "Git",
-    ],
-  },
+  skills: resumeSkills,
+  skillsFocus,
 } as const;
 
 export type ResumeOverviewCard = {

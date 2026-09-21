@@ -4,7 +4,7 @@ import { getResumeOverviewCard, type ResumeOverviewCard } from "./resume-profile
 export type ConversationMessage = {
   role: "user" | "assistant";
   content: string;
-  module?: { type: "profile"; profile: ResumeOverviewCard } | { type: "contact"; contact: ContactCardData } | { type: "projects" };
+  module?: { type: "profile"; profile: ResumeOverviewCard } | { type: "contact"; contact: ContactCardData } | { type: "projects" } | { type: "skills" };
   restored?: boolean;
 };
 
@@ -23,13 +23,14 @@ export function readChatSession(): { messages: ConversationMessage[]; draft: str
     for (const [index, item] of saved.messages.entries()) {
       if (!item || item.role !== (index % 2 ? "assistant" : "user") ||
         typeof item.content !== "string" || !item.content.trim() || item.content.length > 1000 ||
-        (item.card !== undefined && (item.role !== "assistant" || !["profile", "contact", "projects"].includes(item.card)))) return empty;
+        (item.card !== undefined && (item.role !== "assistant" || !["profile", "contact", "projects", "skills"].includes(item.card)))) return empty;
       messages.push({
         role: item.role,
         content: item.content,
         restored: true,
         // Rebuild cards from current approved data rather than stored copies.
         ...(item.card === "profile" ? { module: { type: "profile", profile: getResumeOverviewCard(item.content) } } :
+          item.card === "skills" ? { module: { type: "skills" } } :
           item.card === "projects" ? { module: { type: "projects" } } :
           item.card === "contact" ? { module: { type: "contact", contact: contactProfile } } : {}),
       });

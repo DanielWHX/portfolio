@@ -157,6 +157,7 @@ test(
     t.after(() => restoreApiKey(previousKey));
 
     const cases = [
+      { question: "Could you give me an overview of your technical strengths?", message: "My focus is Python and Java backend engineering.", presentation: "skills_card" },
       { question: "Could I see some of your selected work?", message: "Here is my selected work.", presentation: "projects_card" },
       {
         question: "Who are you?",
@@ -189,7 +190,7 @@ test(
         presentation: "contact_card",
       },
       {
-        question: "What are your skills?",
+        question: "How have you applied Java at PCITC?",
         message: "My skills include TypeScript, Java, Python, React, Spring Boot, and Docker.",
         presentation: "text",
       },
@@ -277,6 +278,8 @@ test(
             skills: ["TypeScript", "Java", "Python", "React", "Spring Boot", "Docker"],
           },
         });
+      } else if (testCase.presentation === "skills_card") {
+        assert.deepEqual(payload, { message: testCase.message, module: { type: "skills" } });
       } else if (testCase.presentation === "projects_card") {
         assert.deepEqual(payload, { message: testCase.message, module: { type: "projects" } });
       } else if (testCase.presentation === "contact_card") {
@@ -306,6 +309,10 @@ test(
     assert.equal(JSON.parse(toolResult.output).contact.email, "hxjob1017@gmail.com");
     assert.equal(JSON.parse(toolResult.output).projects[0].id, "lyntra");
     assert.match(JSON.parse(toolResult.output).lyntraCaseStudy.architecture, /Flask/);
+    assert.deepEqual(JSON.parse(toolResult.output).skillsFocus.primaryLanguages, ["Python", "Java"]);
+    assert.equal(JSON.parse(toolResult.output).skills.languages.length, 8);
+    assert.equal(JSON.parse(toolResult.output).skills.frameworks.length, 8);
+    assert.equal(JSON.parse(toolResult.output).skills.tools.length, 10);
     assert.equal(requests[1].text.format.type, "json_schema");
     assert.equal(requests[1].text.format.strict, true);
     assert.deepEqual(requests[1].text.format.schema.properties.presentation.enum, [
@@ -313,6 +320,7 @@ test(
       "profile_card",
       "contact_card",
       "projects_card",
+      "skills_card",
     ]);
   },
 );
@@ -393,7 +401,7 @@ test(
       method: "POST",
       headers: { "content-type": "application/json" },
       body: JSON.stringify({
-        messages: [{ role: "user", content: "What are your skills?" }],
+        messages: [{ role: "user", content: "How have you used Java?" }],
       }),
     });
 
@@ -513,4 +521,26 @@ test("Lyntra case study renders a demo and both English diagrams", async () => {
   assert.match(html, /src="\/projects\/lyntra\/workflow.svg"/);
   assert.match(html, /src="\/projects\/lyntra\/architecture.svg"/);
   assert.match(html, /remain in development/);
+});
+
+test("Skills overview returns a code-owned card without requiring a model", async () => {
+  const previousKey = process.env.OPENAI_API_KEY;
+  delete process.env.OPENAI_API_KEY;
+  try {
+    for (const question of ["What are your strongest skills?", "skills", "你的技能？"]) {
+      const response = await request("/api/chat", {
+        method: "POST", headers: { "content-type": "application/json" },
+        body: JSON.stringify({ messages: [{ role: "user", content: question }] }),
+      });
+      assert.equal(response.status, 200);
+      const body = await response.json();
+      assert.deepEqual(body.module, { type: "skills" });
+      assert.match(body.message, /Python and Java/);
+    }
+    const specific = await request("/api/chat", {
+      method: "POST", headers: { "content-type": "application/json" },
+      body: JSON.stringify({ messages: [{ role: "user", content: "How does Python handle concurrency?" }] }),
+    });
+    assert.equal(specific.status, 503, "specific technical questions still use the agent");
+  } finally { restoreApiKey(previousKey); }
 });
