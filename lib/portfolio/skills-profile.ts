@@ -7,12 +7,24 @@ export const resumeSkills = {
   tools: ["Docker", "Kubernetes", "Maven", "Nginx", "Redis", "MySQL", "MongoDB", "Azure", "Linux", "Git"],
 } as const;
 
+// Capability groups for the card; retain the original resume lists above.
+// AI and retrieval tags come from the Lyntra and JChatMind case studies.
+export const skillGroups = [
+  { id: "backend", title: "Backend & Systems", skills: ["Python", "Java", "Spring Boot", "Flask", "FastAPI", "MyBatis", "Node.js", "REST APIs", "C++", "C#"] },
+  { id: "ai", title: "AI & Agent Workflows", skills: ["Spring AI", "RAG", "LLM Integration", "Tool Calling", "Ollama"] },
+  { id: "frontend", title: "Frontend Development", skills: ["TypeScript", "JavaScript", "React", "Next.js", "Tailwind", "HTML/CSS"] },
+  { id: "data", title: "Data & Storage", skills: ["SQL", "PostgreSQL", "pgvector", "MySQL", "Redis", "MongoDB"] },
+  { id: "tools", title: "Tools & Cloud", skills: ["Docker", "Git", "Linux", "Maven", "Nginx", "Azure", "Kubernetes"] },
+  { id: "collaboration", title: "Soft Skills", skills: ["Problem-Solving", "Collaboration", "Requirements Analysis", "Adaptability"] },
+] as const;
+
 export const skillsFocus = {
   primaryLanguages: ["Python", "Java"],
   headline: "Python & Java backend engineering",
   summary: "My primary focus is backend engineering with Python and Java: building APIs, connecting data, and integrating AI workflows. I also work across the stack with TypeScript and React.",
   highlighted: ["Python", "Java", "Spring Boot", "Flask"],
   capabilities: ["Backend APIs", "Data workflows", "AI integration"],
+  groups: skillGroups,
   experience: [
     {
       project: "Lyntra",

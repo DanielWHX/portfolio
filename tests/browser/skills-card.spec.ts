@@ -1,23 +1,27 @@
 import { expect, test } from "@playwright/test";
 
 for (const width of [1280, 390, 320]) {
-  test(`Skills presents the backend focus and resume categories at ${width}px`, async ({ page }) => {
+  test(`Skills presents compact capability groups at ${width}px`, async ({ page }) => {
     await page.setViewportSize({ width, height: 900 });
     await page.goto("/");
     await page.getByRole("link", { name: "Skills", exact: true }).click();
     const card = page.getByRole("article", { name: "Hongxiang's skills" });
     await expect(card).toBeVisible();
-    await expect(card.getByRole("heading", { level: 2 })).toHaveText("Python & Java.Backend engineering.");
-    await expect(card.getByRole("heading", { level: 3 })).toHaveText(["Languages", "Frameworks", "Tools", "Applied in real work"]);
-    const languages = card.getByRole("list", { name: "Languages" });
-    await expect(languages.getByRole("listitem")).toHaveText(["Python", "Java", "JavaScript", "TypeScript", "C++", "C#", "SQL", "HTML/CSS"]);
-    await expect(card.getByRole("list", { name: "Frameworks" }).getByRole("listitem")).toHaveCount(8);
-    await expect(card.getByRole("list", { name: "Tools" }).getByRole("listitem")).toHaveCount(10);
-    await expect(card.getByRole("heading", { name: "Lyntra", exact: true })).toBeAttached();
-    await expect(card.getByRole("heading", { name: "PCITC", exact: true })).toBeAttached();
+    await expect(card.getByRole("heading", { level: 2 })).toHaveText("Skills & Expertise.");
+    await expect(card.getByText("Python & Java backend.", { exact: true })).toBeVisible();
+    await expect(card.getByRole("heading", { level: 3 })).toHaveText(["Backend & Systems", "AI & Agent Workflows", "Frontend Development", "Data & Storage", "Tools & Cloud", "Soft Skills"]);
+    const backend = card.getByRole("list", { name: "Backend & Systems" });
+    await expect(backend.getByRole("listitem").nth(0)).toHaveText("Python");
+    await expect(backend.getByRole("listitem").nth(1)).toHaveText("Java");
+    await expect(card.getByRole("list", { name: "AI & Agent Workflows" }).getByRole("listitem")).toHaveText(["Spring AI", "RAG", "LLM Integration", "Tool Calling", "Ollama"]);
+    await expect(card.getByText("Applied in real work")).toHaveCount(0);
+    await expect(card.getByRole("link")).toHaveCount(0);
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
-    await card.getByRole("heading", { name: "Applied in real work" }).scrollIntoViewIfNeeded();
+    await card.getByRole("heading", { name: "Soft Skills", exact: true }).scrollIntoViewIfNeeded();
     expect(await card.evaluate(el => el.scrollWidth <= el.clientWidth)).toBe(true);
+    for (const tag of await card.getByRole("listitem").all()) {
+      expect(await tag.evaluate(el => el.scrollWidth <= el.clientWidth)).toBe(true);
+    }
   });
 }
 
