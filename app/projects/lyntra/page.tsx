@@ -18,6 +18,10 @@ export default function LyntraCaseStudy() {
       <nav className="case-nav" aria-label="Case study navigation"><a className="case-back" href="/chat?query=projects">← Back to projects</a><a className="case-wordmark" href="/" aria-label="Hongxiang Wang portfolio home">Hongxiang Wang</a></nav>
       <header className="case-hero">
         <h1>Lyntra</h1>
+        <nav className="case-official-links" aria-label="Lyntra official website">
+          <a href="https://www.lyntra.net/students/" target="_blank" rel="noopener noreferrer">Official website ↗</a>
+          <a href="https://www.lyntra.net/about-us/who-we-are" target="_blank" rel="noopener noreferrer">Meet the team ↗</a>
+        </nav>
         <p className="case-lead">AI scheduling that resolves calendar conflicts and breaks goals into tasks.</p>
         <p className="case-role">My role: Adaptive Scheduling, AI Agent integration & Task Breakdown · Lyntra internship</p>
         <ul className="case-stack" aria-label="Core technologies"><li>Python</li><li>Flask</li><li>PostgreSQL</li><li>React Native</li></ul>
