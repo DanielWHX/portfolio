@@ -114,3 +114,8 @@
   .jcm-details { padding:19px 17px; }
 }
 @media(prefers-reduced-motion:reduce) { .jcm-stages button { transition:none; } }
+.jcm-reference-card .jcm-reference-excerpt { min-height:135px; padding:20px; background:#f8fafc; }
+.jcm-reference-excerpt>span { font:10px/1.5 ui-monospace,monospace; color:#8b99aa; }
+.jcm-reference-excerpt blockquote { margin:15px 0 0; font-size:14px; line-height:1.8; color:#52687e; }
+.jcm-reference-excerpt mark { background:#fff0a6; color:inherit; }
+.jcm-details>.chat-replay { margin-top:20px; }

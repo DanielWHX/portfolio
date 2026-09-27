@@ -1,0 +1,91 @@
+/* Scoped replica of JChatMind's sidebar, Ant Design bubbles and tool results. */
+.chat-replay { min-width:0; overflow:hidden; border:1px solid #dce5ef; border-radius:14px; background:white; }
+.replay-toolbar { display:flex; align-items:center; justify-content:space-between; gap:10px; min-height:43px; padding:10px 15px; border-bottom:1px solid #e9edf2; color:#788ba1; font-size:10px; }
+.replay-toolbar>span { display:flex; align-items:center; gap:7px; }
+.replay-toolbar i { width:6px; height:6px; border-radius:50%; background:#85ac9b; }
+.replay-toolbar button { border:0; background:none; padding:5px; color:#4c7098; font-size:11px; cursor:pointer; white-space:nowrap; }
+.replay-app { display:flex; height:640px; min-height:0; position:relative; color:#252525; background:#fff; font:14px/1.58 -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif; text-align:left; }
+.replay-app * { box-sizing:border-box; }
+.replay-app button,.replay-app textarea { font-family:inherit; }
+.replay-app button { cursor:pointer; }
+.replay-app button:focus-visible,.replay-scroll:focus-visible,.replay-tool-result summary:focus-visible,.replay-toolbar button:focus-visible { outline:2px solid #477fff; outline-offset:-2px; }
+.replay-app svg { width:17px; height:17px; flex-shrink:0; }
+.replay-sidebar { display:flex; flex-direction:column; width:184px; flex-shrink:0; background:#f8fafc; padding:0 12px; }
+.replay-brand { display:flex; align-items:center; gap:9px; height:57px; border-bottom:1px solid #e5e7eb; font-size:17px; font-weight:600; color:#111827; padding:0 7px; }
+.replay-brand svg { width:22px; height:22px; }
+.replay-tabs { display:flex; justify-content:space-between; gap:4px; border-bottom:1px solid #edf0f4; }
+.replay-tabs button { white-space:nowrap; padding:13px 0; background:none; border:0; border-bottom:2px solid transparent; font-size:11px; color:#252525; }
+.replay-tabs button[aria-pressed=true] { color:#1677ff; border-bottom-color:#1677ff; }
+.replay-new { color:#4d6bff; border:0; background:#f0f4ff; border-radius:6px; margin:22px 0; padding:7px 4px; font-size:14px; }
+.replay-new:hover { background:#e4ecff; }
+.replay-session-list { min-width:0; overflow-x:hidden; border-top:1px solid #edf0f4; padding:25px 0 0; display:grid; align-content:start; gap:7px; overflow-y:auto; }
+.replay-session-list button { min-width:0; display:flex; align-items:center; gap:9px; border:1px solid transparent; text-align:left; width:100%; padding:12px 8px; min-height:57px; border-radius:8px; background:#fff; color:#111827; font-size:12px; }
+.replay-session-list button>span:last-child { min-width:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.replay-session-list button:hover { background:#f0f3f8; }
+.replay-session-list button[aria-current=step] { border-color:#dbe5fa; }
+.replay-chat-icon { display:flex; align-items:center; justify-content:center; width:29px; height:29px; flex-shrink:0; border-radius:8px; background:linear-gradient(135deg,#bedcff,#e6d0ff); color:#172033; }
+.replay-sidebar-note { color:#94a0b1; font-size:9px; margin-top:auto; padding:22px 2px 13px; }
+.replay-main { display:flex; flex-direction:column; min-width:0; flex:1; }
+.replay-scroll { flex:1; min-height:0; overflow-y:auto; overflow-x:hidden; scrollbar-gutter:stable; overscroll-behavior:contain; padding:20px 22px; }
+.replay-message { background:#f2f2f2; padding:12px 16px; border-radius:12px; width:fit-content; max-width:94%; margin:0 0 16px; overflow-wrap:anywhere; white-space:pre-line; }
+.replay-user { margin-left:auto; max-width:97%; }
+.replay-calls { display:flex; gap:8px; flex-wrap:wrap; color:#747c8a; font-size:11px; margin-bottom:6px; }
+.replay-calls>span { display:inline-flex; gap:5px; align-items:center; }
+.replay-calls svg { width:12px; height:12px; }
+.replay-calls code { color:#4d6bfe; font-size:11px; }
+.replay-calls:only-child { margin:0; }
+.replay-markdown { white-space:normal; }
+.replay-markdown p { margin:0 0 14px; color:inherit; font-size:inherit; line-height:inherit; }
+.replay-markdown>*:last-child { margin-bottom:0; }
+.replay-markdown ul { padding-left:25px; margin:0 0 14px; list-style:disc; }
+.replay-markdown li { margin:4px 0; }
+.replay-markdown strong { font-weight:650; }
+.replay-markdown hr { margin:22px 0; border:0; border-top:1px solid #999; }
+.replay-markdown .replay-message-heading { margin-bottom:0; font-weight:400; }
+.replay-tool-result { margin:18px 0 22px; color:#7c8798; font-size:12px; max-width:96%; }
+.replay-tool-result summary { display:flex; align-items:center; gap:6px; list-style:none; cursor:pointer; min-height:25px; }
+.replay-tool-result summary::-webkit-details-marker { display:none; }
+.replay-tool-result summary:before { content:'›'; display:inline-block; font-size:19px; line-height:15px; width:10px; flex-shrink:0; }
+.replay-tool-result[open]>summary:before { transform:rotate(90deg); }
+.replay-tool-name { font:12px/1.5 ui-monospace,SFMono-Regular,Menlo,monospace; color:#00a63e; }
+.replay-check { width:12px; height:12px; border:1px solid #8c98a8; border-radius:50%; display:inline-flex; justify-content:center; align-items:center; font-size:9px; flex-shrink:0; }
+.replay-tool-preview { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; min-width:0; }
+.replay-tool-result pre { background:#f8fafc; border:1px solid #e5e7eb; border-radius:3px; padding:9px; margin:6px 0 0 19px; white-space:pre-wrap; overflow-wrap:anywhere; max-height:240px; overflow:auto; color:#576273; font:12px/1.5 ui-monospace,SFMono-Regular,Menlo,monospace; }
+.replay-composer { padding:13px; border-top:1px solid #f0f0f0; background:#fff; }
+.replay-composer>div { display:flex; align-items:center; border:1px solid #e8e8e8; box-shadow:0 2px 3px #00000008; border-radius:13px; padding:10px 12px; gap:10px; }
+.replay-composer textarea { min-width:0; flex:1; resize:none; border:0; background:transparent; color:#5e6776; outline:none; font-size:13px; line-height:1.6; }
+.replay-composer textarea::placeholder { color:#bdbdbd; }
+.replay-composer button { background:#1677ff; color:#fff; border:0; border-radius:50%; width:30px; height:30px; padding:6px; display:grid; place-items:center; flex-shrink:0; }
+.replay-composer button:disabled { background:#a9c7ff; cursor:default; }
+.replay-empty { margin:100px auto; text-align:center; color:#6b7280; }
+.replay-empty svg { width:35px; height:35px; }
+.replay-empty h3 { font-size:18px; margin:15px 0; }
+.replay-empty p { font-size:13px; }
+.replay-config h3 { font-size:19px; margin:0 0 20px; }
+.replay-config h4 { margin:25px 0 12px; }
+.replay-config dl { display:grid; grid-template-columns:100px 1fr; gap:12px; font-size:13px; }
+.replay-config dd { margin:0; }
+.replay-config pre { white-space:pre-wrap; font-family:inherit; font-size:13px; line-height:1.75; }
+.replay-config summary { cursor:pointer; margin-bottom:20px; color:#1677ff; }
+.replay-config .replay-message-heading { font-weight:650; margin:20px 0 10px; }
+.replay-correction { border-top:1px solid #e8ecf1; padding-top:14px; margin:20px 0; }
+.replay-correction>summary { cursor:pointer; color:#6e7c90; font-size:11px; margin-bottom:14px; }
+.replay-dialog { width:min(1480px,96vw); max-width:none; height:94dvh; max-height:none; padding:0; border:1px solid #dce5ef; border-radius:12px; color:inherit; background:#fff; }
+.replay-dialog::backdrop { background:#172c4666; backdrop-filter:blur(4px); }
+.replay-dialog .replay-app { height:calc(94dvh - 47px); }
+.replay-dialog .replay-sidebar { width:250px; padding:0 16px; }
+.replay-dialog .replay-tabs button { font-size:14px; }
+.replay-dialog .replay-scroll { padding:20px 50px; }
+.replay-dialog .replay-session-list button { font-size:14px; }
+.replay-mobile-menu { display:none; }
+@media(max-width:600px) {
+  .replay-app { height:600px; padding-top:40px; font-size:14px; }
+  .replay-mobile-menu { display:block; position:absolute; left:0; top:0; width:100%; height:40px; text-align:left; border:0; border-bottom:1px solid #edf0f4; background:#f8fafc; color:#172033; padding:0 14px; font-size:13px; }
+  .replay-sidebar,.replay-dialog .replay-sidebar { display:none; }
+  .replay-menu-open .replay-sidebar { display:flex; position:absolute; top:40px; bottom:0; left:0; width:240px; z-index:2; box-shadow:5px 0 15px #00000012; }
+  .replay-scroll,.replay-dialog .replay-scroll { padding:16px 12px; }
+  .replay-message { max-width:98%; padding:11px 13px; }
+  .replay-toolbar { padding:8px 10px; font-size:9px; }
+  .replay-tool-result { max-width:100%; }
+  .replay-composer { padding:10px; }
+}
