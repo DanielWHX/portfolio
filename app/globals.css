@@ -50,6 +50,8 @@ a {
 }
 
 .single-page {
+  display: flex;
+  flex-direction: column;
   position: relative;
   isolation: isolate;
   min-height: 100svh;
@@ -74,12 +76,13 @@ a {
 }
 
 .hero {
+  order: 1;
   position: relative;
   z-index: 2;
   width: min(900px, calc(100% - 40px));
-  min-height: 100svh;
+  min-height: calc(100svh - clamp(110px, 12vw, 190px));
   margin: 0 auto;
-  padding: clamp(52px, 7.7vh, 96px) 0 34px;
+  padding: clamp(76px, 11vh, 130px) 0 28px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -103,8 +106,8 @@ h1 {
 
 .portrait {
   width: auto;
-  max-width: min(330px, 70vw);
-  height: clamp(178px, 24vh, 244px);
+  max-width: min(390px, 75vw);
+  height: clamp(210px, 28vh, 290px);
   margin-top: clamp(38px, 6.2vh, 70px);
   display: block;
   object-fit: contain;
@@ -249,14 +252,17 @@ h1 {
 }
 
 .name-watermark {
-  position: absolute;
-  right: 50%;
-  bottom: clamp(18px, 3.2vh, 40px);
+  position: relative;
+  order: 2;
+  flex-shrink: 0;
+  height: clamp(115px, 12vw, 190px);
+  text-align: center;
   z-index: 1;
   color: transparent;
-  font-size: clamp(190px, 24vw, 440px);
+  /* Long-name wordmark: proportional size keeps both edges inside the viewport. */
+  font-size: min(16vw, 272px);
   font-weight: 780;
-  letter-spacing: 0.015em;
+  letter-spacing: -0.045em;
   line-height: 0.82;
   white-space: nowrap;
   background: linear-gradient(
@@ -267,19 +273,19 @@ h1 {
   );
   -webkit-background-clip: text;
   background-clip: text;
-  transform: translateX(50%) scaleX(1.26);
-  transform-origin: center bottom;
+  transform: scaleY(0.72);
+  transform-origin: center top;
   pointer-events: none;
   user-select: none;
 }
 
 @media (max-height: 790px) and (min-width: 701px) {
   .hero {
-    padding-top: 34px;
+    padding-top: 60px;
   }
 
   .portrait {
-    height: 158px;
+    height: 190px;
     margin-top: 24px;
   }
 
@@ -295,8 +301,8 @@ h1 {
 @media (max-width: 700px) {
   .hero {
     width: min(100% - 28px, 520px);
-    min-height: 100svh;
-    padding-top: 38px;
+    min-height: calc(100svh - 110px);
+    padding-top: 58px;
   }
 
   h1 {
@@ -305,7 +311,7 @@ h1 {
   }
 
   .portrait {
-    height: 170px;
+    height: 200px;
     margin-top: 34px;
   }
 
@@ -336,10 +342,6 @@ h1 {
     min-height: 78px;
   }
 
-  .name-watermark {
-    bottom: 18px;
-    font-size: 38vw;
-  }
 }
 
 .chat-page {
