@@ -19,7 +19,7 @@ export default function Home() {
       />
 
       <div className="name-watermark" aria-hidden="true">
-        HXW
+        Hongxiang
       </div>
 
       <section className="hero" aria-labelledby="hero-title">
