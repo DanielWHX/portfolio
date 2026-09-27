@@ -47,7 +47,7 @@ test("renders the Hongxiang Wang landing page with all five quick questions enab
   assert.match(html, /<title>Hongxiang Wang \| Full-Stack Engineer<\/title>/i);
   assert.match(html, /<main class="single-page">/i);
   assert.match(html, /<canvas[^>]*id="fluid"/i);
-  assert.match(html, />HXW</);
+  assert.match(html, />Hongxiang</);
   assert.match(html, /Hey, I(?:&#x27;|')m Hongxiang/);
   assert.match(html, /<h1[^>]*>Full-Stack Engineer<\/h1>/i);
   assert.match(
