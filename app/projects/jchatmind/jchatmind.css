@@ -1,16 +1,15 @@
 .jcm-page { overflow-wrap:break-word; }
 .jcm-live{padding-top:28px;scroll-margin-top:20px}.jcm-live-heading{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:14px}.jcm-live-heading h2{font-size:22px;letter-spacing:-.035em;margin:0}.jcm-live-heading a{font-size:12px;color:#587291}.jcm-live iframe{display:block;width:100%;height:660px;border:1px solid #dce5f1;border-radius:18px;background:#fff}.jcm-live-loading{font-size:12px;color:#64788f;margin:0 0 10px}
-.jcm-page .jcm-hero { padding:38px 0 28px; border-bottom:1px solid #dee7f1; }
+.jcm-page .jcm-hero { padding:28px 0 30px; }
 .jcm-page .jcm-hero h1 { font-size:clamp(36px,4vw,48px); max-width:980px; margin:0 0 12px; letter-spacing:-.045em; }
 .jcm-page .jcm-hero .case-lead { font-size:clamp(17px,1.8vw,20px); }
+.jcm-hero-actions .case-stack { margin:0; }
 .jcm-hero-actions { display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:16px 24px; margin-top:22px; }
-.jcm-hero-stack { display:flex; flex-wrap:wrap; gap:7px; margin:0; padding:0; list-style:none; }
-.jcm-hero-stack li { padding:5px 9px; border-radius:5px; background:#edf3fa; color:#587291; font-size:11px; line-height:1.5; }
 .jcm-demo-link { display:inline-flex; align-items:center; gap:10px; color:#365d8b; font-size:13px; font-weight:650; padding:7px 0; }
 .jcm-demo-link:hover { text-decoration:underline; text-underline-offset:4px; }
 .jcm-demo-link:focus-visible { outline:3px solid #739dda; outline-offset:5px; border-radius:3px; }
-.jcm-hero + .jcm-section { padding-top:38px; }
-.jcm-section { padding-top:64px; scroll-margin-top:24px; }
+.jcm-hero + .jcm-section { padding-top:32px; }
+.jcm-section { padding-top:40px; scroll-margin-top:24px; }
 .jcm-section-intro { font-size:15px; line-height:1.75; color:#64788f; max-width:800px; margin:-9px 0 26px; }
 .jcm-eyebrow { font-size:10px; line-height:1.5; letter-spacing:.13em; font-weight:750; color:#6b829e; margin:0 0 12px; }
 .jcm-stages { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:7px; margin-bottom:18px; }
@@ -20,9 +19,9 @@
 .jcm-stages button[aria-pressed=true] { color:#fff; background:#294565; border-color:#294565; }
 .jcm-stages button[aria-pressed=true]>span { color:#bdd1e9; }
 .jcm-stages button:hover:not([aria-pressed=true]) { background:#edf3fa; border-color:#bfd1e7; }
-.jcm-stage { display:grid; grid-template-columns:minmax(0,1fr) 274px; gap:22px; align-items:start; }
+.jcm-stage { display:grid; grid-template-columns:minmax(0,1fr) 240px; gap:22px; align-items:start; }
 .jcm-capture-column { min-width:0; }
-.jcm-capture { margin:0; background:#fff; border:1px solid #d6e2ef; border-radius:15px; overflow:hidden; box-shadow:0 16px 45px #27496a0a; }
+.jcm-capture { margin:0; background:#fff; border:1px solid #d6e2ef; border-radius:15px; overflow:hidden;  }
 .jcm-capture-bar { display:flex; align-items:center; justify-content:space-between; gap:14px; padding:13px 17px; font-size:10px; color:#7a8ca3; border-bottom:1px solid #e4ebf4; }
 .jcm-capture-bar>span { display:flex; align-items:center; gap:7px; text-transform:uppercase; font-size:9px; letter-spacing:.07em; }
 .jcm-capture-bar i { width:6px; height:6px; background:#81a999; border-radius:50%; }
@@ -37,7 +36,7 @@
 .jcm-capture-controls small { display:block; margin-top:3px; color:#8999ad; font-size:9px; }
 .jcm-capture-hint { margin:13px 0 0; font-size:11px; color:#8191a5; line-height:1.6; }
 .jcm-stage-notes { padding:3px 0; min-width:0; }
-.jcm-stage-heading h3 { font-size:24px; font-weight:650; line-height:1.2; letter-spacing:-.04em; color:#2d4562; margin:0 0 14px; }
+.jcm-stage-heading h3 { font-size:20px; font-weight:650; line-height:1.2; letter-spacing:-.04em; color:#2d4562; margin:0 0 14px; }
 .jcm-stage-heading>p:last-child { font-size:13px; color:#728399; line-height:1.75; margin:0; }
 .jcm-result { padding:17px 0; margin:17px 0; border-block:1px solid #dfe7f0; }
 .jcm-result strong { display:block; font-size:19px; color:#34597d; line-height:1.4; letter-spacing:-.025em; font-weight:650; }
@@ -60,14 +59,8 @@
 .jcm-reference-card>div>a { font-size:11px; color:#4c709f; font-weight:600; }
 .jcm-source-footer { display:flex; flex-wrap:wrap; justify-content:space-between; gap:10px 24px; font-size:11px; color:#8293a8; margin:19px 0 0; line-height:1.7; }
 .jcm-source-footer a { color:#53769f; }
-.jcm-engineering-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:30px; }
-.jcm-engineering-grid article { border-top:1px solid #dce6f2; padding-top:20px; min-width:0; }
-.jcm-engineering-number { font-size:11px; font-weight:650; color:#8fa7c4; }
-.jcm-engineering-grid h3 { font-size:18px; line-height:1.3; letter-spacing:-.025em; margin:12px 0; font-weight:650; }
-.jcm-engineering-grid p { color:#72859b; font-size:13px; line-height:1.8; margin:0 0 20px; }
-.jcm-tech-label { display:inline-block; color:#52779c; font-size:10px; padding:5px 8px; border:1px solid #dfe9f5; background:#f0f5fb; border-radius:4px; }
 .jcm-details-section { margin-top:52px; }
-.jcm-details { background:#fff; border:1px solid #dfe7f0; border-radius:13px; padding:20px 24px; margin-top:13px; }
+.jcm-details { border-bottom:1px solid #e5ebf3; padding:20px 0; }
 .jcm-details summary { font-size:14px; font-weight:650; cursor:pointer; color:#45617f; line-height:1.6; }
 .jcm-details summary span { font-size:11px; font-weight:400; color:#8a98a9; margin-left:12px; }
 .jcm-details summary:focus-visible { outline:3px solid #739dda; outline-offset:5px; border-radius:3px; }
@@ -82,7 +75,6 @@
 .jcm-complete-gallery img { width:100%; height:auto; display:block; }
 .jcm-complete-gallery figcaption { border-top:1px solid #e7edf5; color:#71859d; font-size:11px; line-height:1.6; padding:12px 14px; }
 .jcm-complete-gallery figcaption span { color:#9caec3; margin-right:9px; font-size:10px; }
-.jcm-page .jcm-footer { margin-top:55px; }
 @media(max-width:960px) {
   .jcm-stage { grid-template-columns:minmax(0,1fr); gap:23px; }
   .jcm-stage-notes { display:grid; grid-template-columns:1fr 1fr; gap:0 30px; }
@@ -100,8 +92,6 @@
   .jcm-reference-card img { aspect-ratio:auto; }
   .jcm-reference-card>div { padding:18px; }
   .jcm-reference-card h3 { font-size:15px; }
-  .jcm-engineering-grid { gap:22px; grid-template-columns:1fr; }
-  .jcm-engineering-grid p { margin-bottom:12px; max-width:560px; }
   .jcm-complete-gallery { grid-template-columns:1fr; }
   .jcm-details-section { margin-top:38px; }
   .jcm-details summary span { display:block; margin:5px 0 0; }

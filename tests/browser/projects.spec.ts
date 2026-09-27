@@ -11,14 +11,15 @@ test("Projects opens a real case study and returns without losing or duplicating
   await expect(card.getByRole("link", { name: "Explore JChatMind case study" })).toHaveAttribute("href", "/projects/jchatmind");
   await expect(card.getByText("Case study coming soon", { exact: true })).toHaveCount(3);
   await page.getByRole("link", { name: "Explore Lyntra case study" }).click();
-  await expect(page.getByRole("heading", { level: 1 })).toHaveText("A calendar that adapts.");
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText("Lyntra");
   const video = page.locator("video");
   await expect.poll(() => video.evaluate((el: HTMLVideoElement) => el.readyState)).toBeGreaterThan(0);
   await page.getByRole("button", { name: /Resolve a conflict/ }).click();
   await expect.poll(() => video.evaluate((el: HTMLVideoElement) => el.currentTime)).toBeGreaterThanOrEqual(24.9);
   await expect.poll(() => video.evaluate((el: HTMLVideoElement) => el.paused)).toBe(false);
   await video.evaluate((el: HTMLVideoElement) => el.pause());
-  for (const src of ["workflow.svg", "architecture.svg"]) {
+  for (const [src, title] of [["workflow.svg", "Scheduling workflow"], ["architecture.svg", "Architecture"]]) {
+    await page.locator("summary").filter({ hasText: title }).click();
     const img = page.locator(`img[src$="${src}"]`);
     await img.scrollIntoViewIfNeeded();
     await expect.poll(() => img.evaluate((el: HTMLImageElement) => el.naturalWidth)).toBeGreaterThan(0);

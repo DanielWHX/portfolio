@@ -18,57 +18,57 @@ const conversationCaptures = [
 const stages = [
   {
     label: "Recommend",
-    title: "Choose a plan from the handbook.",
-    description: "An eight-person team needs CSV exports and Slack alerts. The agent retrieves the plan rules before recommending Team.",
+    title: "Recommend a plan",
+    description: "CSV exports + Slack alerts → Team plan for eight people.",
     result: "8 × $18 = $144 / month",
     resultLabel: "Verified calculation · before taxes",
     reference: "01-pricing",
     referenceLabel: "Pricing & plan features",
-    evidence: "The handbook supplies the per-user rate and included features. The customer-specific total is calculated from those facts.",
+    evidence: "Rate from the handbook; total calculated for the customer.",
     captures: [0, 1],
   },
   {
     label: "Follow up",
-    title: "Continue with a larger team.",
-    description: "The customer changes the team size to twelve. The conversation keeps the selected plan and calculates the next full month’s cost.",
+    title: "Update the price",
+    description: "The team grows to twelve. The agent keeps context and recalculates.",
     result: "12 × $18 = $216 / month",
     resultLabel: "Verified calculation · $72 increase",
     reference: "01-pricing",
     referenceLabel: "Per-user pricing & billing rule",
-    evidence: "The final amount is supported. The original response uses an awkward intermediate equation; it remains visible in the capture.",
+    evidence: "Final total verified. The original intermediate equation is awkwardly worded.",
     captures: [1, 2],
   },
   {
     label: "Use a tool",
-    title: "Combine a live tool with policy.",
-    description: "The agent calls getDate, then applies the handbook’s fourteen-day trial rule to the date returned during this conversation.",
+    title: "Calculate trial expiry",
+    description: "getDate supplies the start date; the handbook supplies the 14-day rule.",
     result: "Trial expiry: 2026-10-05",
     resultLabel: "Recorded date: 2026-09-21 · +14 days",
     reference: "02-trial",
     referenceLabel: "Trial policy & date-tool evidence",
-    evidence: "The starting date comes from the recorded tool result. The handbook provides the rule; the expiry date is a derived answer.",
+    evidence: "Recorded tool date, not today’s date.",
     captures: [3, 4],
   },
   {
     label: "Check limits",
-    title: "Recognize what is not specified.",
-    description: "A question about SAML SSO reaches a documented boundary. The agent recommends confirmation with the product team.",
+    title: "Handle an unknown",
+    description: "SAML SSO is not documented. The agent asks for product-team confirmation.",
     result: "SSO needs confirmation",
     resultLabel: "Unspecified does not mean unsupported",
     reference: "03-boundaries",
     referenceLabel: "Unknown features & escalation",
-    evidence: "This example follows an explicit uncertainty rule in the handbook. It is evidence for this scenario, not a universal accuracy claim.",
+    evidence: "Follows the handbook’s rule for unspecified features.",
     captures: [4, 5],
   },
   {
     label: "Draft a reply",
-    title: "Turn the findings into a reply.",
-    description: "A customer-facing draft brings together twelve-person pricing, the trial expiry, and the open SSO question in one response.",
+    title: "Draft the response",
+    description: "Combine pricing, trial expiry, and the open SSO question.",
     result: "Draft prepared. Not sent.",
     resultLabel: "No account or billing changes",
     reference: "03-boundaries",
     referenceLabel: "Customer drafts & action boundaries",
-    evidence: "The reply synthesizes the preceding evidence. Drafting is the demonstrated action; no email is sent and no trial is created.",
+    evidence: "A draft only; no email sent or trial created.",
     captures: [5, 6, 7],
   },
 ] as const;
@@ -110,7 +110,7 @@ export default function OrbitDeskDemo() {
             <button type="button" disabled={captureIndex === stage.captures.length - 1} onClick={() => setCaptureIndex(captureIndex + 1)} aria-label="Next screenshot in this stage">Next →</button>
           </figcaption>
         </figure>
-        <p className="jcm-capture-hint">Select a stage, then browse its screenshots. Open any image at full size to read every detail.</p>
+        <p className="jcm-capture-hint">Select a step. Open screenshots to read the details.</p>
       </div>
 
       <aside className="jcm-stage-notes" aria-label="What this stage demonstrates">
