@@ -22,7 +22,7 @@ for (const width of [1280, 390]) {
     await page.getByRole("link", { name: "Me", exact: true }).click();
     await expect(page.getByRole("article", { name: "Hongxiang Wang profile" })).toBeVisible();
     const shortcuts = page.getByRole("navigation", { name: "Quick questions" });
-    await expect(shortcuts.getByRole("button")).toHaveText(["☺Me", "▣Projects", "◇Skills", "✦Fun Facts", "☎Contact"]);
+    await expect(shortcuts.getByRole("button")).toHaveText(["Me", "Projects", "Skills", "Fun Facts", "Contact"]);
     for (const label of ["Projects", "Skills", "Fun Facts", "Contact", "Me"]) {
       const button = shortcuts.getByRole("button", { name: label, exact: true });
       await expect(button).toBeInViewport();

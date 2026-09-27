@@ -6,6 +6,7 @@ import ProfileCard from "./ProfileCard";
 import ContactCard from "./ContactCard";
 import ProjectsCard from "./ProjectsCard";
 import SkillsCard from "./SkillsCard";
+import QuickQuestionIcon from "./QuickQuestionIcon";
 import { isProjectsOverviewRequest } from "@/lib/portfolio/projects";
 import AnimatedText from "./AnimatedText";
 import { quickQuestions } from "@/lib/portfolio/quick-questions";
@@ -191,10 +192,10 @@ export default function ChatClient({ initialQuery }: { initialQuery: string }) {
       ) : null}
 
       <nav className="chat-quick-questions" aria-label="Quick questions">
-        {quickQuestions.map(({ label, icon, tone, query }) => (
+        {quickQuestions.map(({ label, tone, query }) => (
           <button key={label} type="button" className={`chat-quick-question tone-${tone}`}
             disabled={!sessionReady || loading || limitReached} onClick={() => void sendMessage(query)}>
-            <span className="chat-quick-icon" aria-hidden="true">{icon}</span>
+            <span className="chat-quick-icon"><QuickQuestionIcon label={label} /></span>
             <span>{label}</span>
           </button>
         ))}
@@ -219,13 +220,13 @@ export default function ChatClient({ initialQuery }: { initialQuery: string }) {
           disabled={!sessionReady || loading || limitReached || !draft.trim()}
           aria-label="Send question"
         >
-          <span aria-hidden="true">→</span>
+          <span aria-hidden="true">↑</span>
         </button>
       </form>
 
       <div className="chat-footer">
         <p className="chat-disclosure">
-          Hongxiang&apos;s AI portfolio · Shared background, interests, and conversation.
+          Hongxiang&apos;s AI portfolio
         </p>
         <button type="button" className="chat-reset" disabled={!sessionReady || loading || (!messages.length && !draft)} onClick={startNewChat}>
           New chat

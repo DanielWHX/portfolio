@@ -1,17 +1,61 @@
+"use client";
+
+import { useEffect, useRef, useState } from "react";
 import { portfolioProjects } from "@/lib/portfolio/projects";
 
+const covers: Record<string, { category: string; image?: string; href?: string }> = {
+  lyntra: { category: "AI Scheduling", image: "/projects/lyntra/calendar.jpg", href: "/projects/lyntra" },
+  jchatmind: { category: "AI Assistant", image: "/projects/jchatmind/chat/04-date-tool-and-trial.jpg", href: "/projects/jchatmind" },
+  brainstem: { category: "Capstone" },
+  pcitc: { category: "Backend Engineering" },
+  edge: { category: "Research" },
+};
+
 export default function ProjectsCard() {
-  return <article className="projects-card" aria-label="Hongxiang's projects">
-    <header className="projects-heading"><p className="projects-eyebrow">SELECTED WORK</p><h2>Ideas, built into software.</h2><p>A closer look at the systems I help design and build.</p></header>
-    <a className="project-feature" href="/projects/lyntra" aria-label="Explore Lyntra case study">
-      <div className="project-cover"><img src="/projects/lyntra/calendar.jpg" alt="Lyntra calendar and AI scheduling demonstration" width="1920" height="1080"/><span className="project-cover-label">01 / FEATURED</span><span className="project-cover-play" aria-hidden="true">↗</span></div>
-      <div className="project-feature-content"><p className="projects-eyebrow">AI SCHEDULING · INTERNSHIP</p><h3>Lyntra <span aria-hidden="true">↗</span></h3><p>{portfolioProjects[0].summary}</p><div className="project-tags"><span>Adaptive Scheduling</span><span>AI Agent</span><span>Task Breakdown</span></div><span className="project-explore">Explore the case study <span aria-hidden="true">→</span></span></div>
-    </a>
-    <a className="project-secondary" href="/projects/jchatmind" aria-label="Explore JChatMind case study">
-      <div className="project-secondary-cover"><img src="/projects/jchatmind/chat/04-date-tool-and-trial.jpg" alt="JChatMind retrieves a trial policy, calls the date tool, and calculates an expiry date" width="1280" height="655" loading="lazy"/><span>02 / FULL-STACK AI</span></div>
-      <div className="project-secondary-content"><p className="projects-eyebrow">JAVA BACKEND · KNOWLEDGE-GROUNDED AI</p><h3>JChatMind <span aria-hidden="true">↗</span></h3><p>{portfolioProjects[1].summary}</p><div className="project-tags"><span>Spring Boot</span><span>Spring AI</span><span>RAG & Tool Use</span></div><span className="project-explore">Explore the case study <span aria-hidden="true">→</span></span></div>
-    </a>
-    <div className="project-upcoming-heading"><h3>More from my work</h3><span>Details in progress</span></div>
-    <div className="project-placeholders">{portfolioProjects.slice(2).map((project, index) => <section className="project-placeholder" key={project.id}><span className="project-number">0{index + 3}</span><div><p className="project-category">{project.category}</p><h4>{project.name}</h4><p>{project.summary}</p><span className="project-coming">{project.status}</span></div></section>)}</div>
-  </article>;
+  const track = useRef<HTMLUListElement>(null);
+  const [edges, setEdges] = useState({ start: true, end: false });
+
+  function updateEdges() {
+    const el = track.current;
+    if (el) setEdges({ start: el.scrollLeft < 2, end: el.scrollLeft + el.clientWidth >= el.scrollWidth - 2 });
+  }
+
+  useEffect(() => {
+    const el = track.current;
+    if (!el) return;
+    const observer = new ResizeObserver(updateEdges);
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
+  function move(direction: number) {
+    const el = track.current;
+    if (!el) return;
+    const card = el.querySelector("li");
+    const step = (card?.getBoundingClientRect().width ?? el.clientWidth) + parseFloat(getComputedStyle(el).columnGap);
+    el.scrollBy({ left: direction * step, behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth" });
+  }
+
+  return (
+    <article className="projects-card" aria-label="Hongxiang's projects">
+      <header className="projects-heading"><h2>Project</h2></header>
+      <ul className="project-track" ref={track} onScroll={updateEdges} aria-label="Projects">
+        {portfolioProjects.map(project => {
+          const cover = covers[project.id];
+          const content = <>
+            <div className="project-tile-heading"><p>{cover.category}</p><h3>{project.name}</h3></div>
+            {cover.image ? <img className="project-tile-image" src={cover.image} alt={`${project.name} app preview`} loading="lazy"/> : <div className="project-tile-art" aria-hidden="true"><span/><span/><span/></div>}
+            {!cover.href && <span className="project-coming">Case study coming soon</span>}
+          </>;
+          return <li key={project.id}>
+            {cover.href ? <a className={`project-tile project-tile-${project.id}`} href={cover.href} aria-label={`Explore ${project.name} case study`}>{content}</a> : <div className={`project-tile project-tile-${project.id}`}>{content}</div>}
+          </li>;
+        })}
+      </ul>
+      <div className="project-pagination" aria-label="Project navigation">
+        <button type="button" aria-label="Previous projects" disabled={edges.start} onClick={() => move(-1)}>←</button>
+        <button type="button" aria-label="Next projects" disabled={edges.end} onClick={() => move(1)}>→</button>
+      </div>
+    </article>
+  );
 }

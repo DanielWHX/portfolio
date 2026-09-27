@@ -18,10 +18,7 @@ export default async function ChatPage({ searchParams }: ChatPageProps) {
             <span aria-hidden="true">←</span>
           </a>
           <span className="chat-avatar" aria-hidden="true" />
-          <div>
-            <h1 id="chat-title">Ask about me</h1>
-            <p>Hongxiang&apos;s portfolio agent</p>
-          </div>
+          <h1 id="chat-title" className="sr-only">Ask about me</h1>
         </header>
 
         <ChatClient initialQuery={initialQuery} />
