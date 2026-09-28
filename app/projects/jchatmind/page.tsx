@@ -20,7 +20,7 @@ export default function JChatMindCaseStudy() {
   let liveDemoUrl: string | undefined;
   try {
     const url = new URL(process.env.JCHATMIND_DEMO_URL ?? "");
-    if (url.protocol === "https:" && !url.username && !url.password && url.hostname !== "localhost") liveDemoUrl = url.href;
+    if ((url.protocol === "https:" || (process.env.NODE_ENV === "development" && url.protocol === "http:" && url.hostname === "127.0.0.1")) && !url.username && !url.password && url.hostname !== "localhost") liveDemoUrl = url.href;
   } catch { /* Keep the verified walkthrough until the original backend is deployed. */ }
   return <main className="case-page jcm-page">
     <div className="case-wrap">
@@ -32,11 +32,10 @@ export default function JChatMindCaseStudy() {
         <p className="case-lead">An AI support assistant that answers from your knowledge base.</p>
         <div className="jcm-hero-actions">
           <ul className="case-stack" aria-label="Core technologies"><li>Java</li><li>Spring Boot</li><li>Spring AI</li><li>pgvector</li></ul>
-          <a className="jcm-demo-link" href={liveDemoUrl ? "#live-demo" : "#demo"}>{liveDemoUrl ? "Try it live" : "Explore the demo"} <span aria-hidden="true">↘</span></a>
+          <LiveDemo url={liveDemoUrl} />
         </div>
       </header>
 
-      {liveDemoUrl && <LiveDemo url={liveDemoUrl} />}
 
       <section className="jcm-section" id="demo" aria-labelledby="jcm-demo-title">
         <div className="case-section-heading"><h2 id="jcm-demo-title">Demo</h2><p>OrbitDesk · Fictional SaaS scenario · Interactive replay</p></div>

@@ -75,3 +75,17 @@ for (const viewport of [{ width: 1440, height: 1000 }, { width: 390, height: 844
     expect(requests.length).toBe(beforeReturn);
   });
 }
+
+test("guided entry expands in place and keeps replay available when live service is not configured", async ({ page }) => {
+  await page.goto("/projects/jchatmind");
+  const entry = page.getByRole("button", { name: /Explore the demo/ });
+  await expect(entry).toHaveAttribute("aria-expanded", "false");
+  await expect(page.locator("iframe")).toHaveCount(0);
+  await entry.click();
+  await expect(entry).toHaveAttribute("aria-expanded", "true");
+  await expect(page.getByText("The live experience is being prepared.")).toBeVisible();
+  await page.getByRole("link", { name: "View the interactive replay" }).click();
+  await expect(page.getByRole("navigation", { name: "OrbitDesk demonstration stages" })).toBeVisible();
+  await entry.click();
+  await expect(page.getByRole("region", { name: "Try JChatMind live" })).toHaveCount(0);
+});
