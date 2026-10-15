@@ -1,4 +1,5 @@
 import SplashCursor from "./SplashCursor";
+import QuickQuestionIcon from "./chat/QuickQuestionIcon";
 
 import { quickQuestions } from "@/lib/portfolio/quick-questions";
 
@@ -58,7 +59,7 @@ export default function Home() {
           {quickQuestions.map((option) => {
             const content = (
               <>
-                <span aria-hidden="true">{option.icon}</span>
+                <span className="home-quick-icon"><QuickQuestionIcon label={option.label} /></span>
                 <strong>{option.label}</strong>
               </>
             );
