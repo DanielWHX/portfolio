@@ -31,8 +31,9 @@ export const jchatmindCaseStudy = {
 } as const;
 
 export const portfolioProjects = [
-  { id: "lyntra", name: "Lyntra", category: "AI scheduling · Internship", summary: "Turning natural-language requests into conflict-aware calendar changes and actionable task plans.", role: "Led Adaptive Scheduling design, AI Agent integration, and Task Breakdown.", stack: ["React Native", "TypeScript", "Flask", "PostgreSQL"], status: "Featured case study" },
+  { id: "portfolio", name: "Portfolio", category: "AI Portfolio", summary: "An interactive portfolio with an AI assistant, project walkthroughs, and a shared professional profile.", stack: ["React", "TypeScript", "Cloudflare Workers"], status: "Live website" },
   { id: "jchatmind", name: "JChatMind", category: "Java backend · Full-stack AI", summary: "Knowledge-grounded answers, multi-turn context, and tool use—shown through a customer-support workflow with traceable source evidence.", stack: ["Java", "Spring Boot", "Spring AI", "React", "PostgreSQL"], status: "Interactive case study" },
+  { id: "lyntra", name: "Lyntra", category: "AI scheduling · Internship", summary: "Turning natural-language requests into conflict-aware calendar changes and actionable task plans.", role: "Led Adaptive Scheduling design, AI Agent integration, and Task Breakdown.", stack: ["React Native", "TypeScript", "Flask", "PostgreSQL"], status: "Featured case study" },
   { id: "brainstem", name: "Interactive Brainstem", category: "Ohio State · Capstone", summary: "A frontend learning experience for exploring brainstem anatomy.", status: "Case study coming soon" },
   { id: "pcitc", name: "Enterprise Inventory Workflows", category: "PCITC · Backend internship", summary: "Requirements analysis and CRUD contributions to enterprise inventory workflows.", status: "Case study coming soon" },
   { id: "edge", name: "O-RAN Research Environment", category: "Ohio State · Research", summary: "Docker and Kubernetes environment setup for an edge-computing research project.", status: "Case study coming soon" },

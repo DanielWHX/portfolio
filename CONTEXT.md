@@ -11,7 +11,7 @@
 
 The homepage's pink character and Fun Facts remain part of the current visual direction. The personal photograph belongs inside the Profile Card.
 
-- **Projects Card**: selected work in chat. Lyntra is the first featured case study; JChatMind is the second working case-study link. Remaining entries are descriptive placeholders with no pretend destinations. Restored sessions rebuild the current card.
+- **Projects Card**: selected work in chat. Portfolio is first and links directly to the homepage in the same tab; JChatMind is second and Lyntra is third, both linking to their case studies. Remaining entries are descriptive placeholders with no pretend destinations. Restored sessions rebuild the current card.
 - **Lyntra Case Study**: the English /projects/lyntra page, with a captioned local demo, contributions, core workflow, and simplified logical architecture. It distinguishes working rescheduling and task previews from unfinished background replanning and preview acceptance.
 - **JChatMind Case Study**: the English /projects/jchatmind page. Five OrbitDesk stages show a native, scrollable reconstruction of JChatMind using curated messages and tool results from the September 27 recording. Each stage contains only its corresponding turn; tool outputs expand, sidebar views show recorded agent/knowledge data, and New chat replays the fixed question without a model request. The follow-up preserves its original equation and exposes the later clarification separately. Full conversation and highlighted handbook sources remain available. Session/message IDs are excluded from the published transcript; only this fictional demo's approved content is included.
 

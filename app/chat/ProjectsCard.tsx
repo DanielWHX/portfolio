@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { portfolioProjects } from "@/lib/portfolio/projects";
 
 const covers: Record<string, { category: string; image?: string; href?: string }> = {
+  portfolio: { category: "AI Portfolio", image: "/hongxiang-avatar.png", href: "/" },
   lyntra: { category: "AI Scheduling", image: "/projects/lyntra/calendar.jpg", href: "/projects/lyntra" },
   jchatmind: { category: "AI Assistant", image: "/projects/jchatmind/chat/04-date-tool-and-trial.jpg", href: "/projects/jchatmind" },
   brainstem: { category: "Capstone" },
@@ -48,7 +49,7 @@ export default function ProjectsCard() {
             {!cover.href && <span className="project-coming">Case study coming soon</span>}
           </>;
           return <li key={project.id}>
-            {cover.href ? <a className={`project-tile project-tile-${project.id}`} href={cover.href} aria-label={`Explore ${project.name} case study`}>{content}</a> : <div className={`project-tile project-tile-${project.id}`}>{content}</div>}
+            {cover.href ? <a className={`project-tile project-tile-${project.id}`} href={cover.href} aria-label={project.id === "portfolio" ? "Visit Portfolio homepage" : `Explore ${project.name} case study`}>{content}</a> : <div className={`project-tile project-tile-${project.id}`}>{content}</div>}
           </li>;
         })}
       </ul>
