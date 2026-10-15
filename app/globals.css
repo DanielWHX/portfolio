@@ -927,7 +927,6 @@ a.project-tile:focus-visible, .project-track:focus-visible { outline: 3px solid 
 .project-tile-heading h3 { font-size: clamp(21px,2.2vw,28px); line-height: 1.13; letter-spacing: -.04em; font-weight: 650; margin: 0; overflow-wrap: anywhere; }
 .project-tile-image { position: absolute; width: 158%; max-width: none; height: 68%; top: 39%; left: 10%; object-fit: cover; object-position: left top; border: 1px solid #ffffff40; border-radius: 12px 0 0 0; box-shadow: 0 12px 40px #0003; transform: rotate(-6deg); }
 .project-tile-portfolio { background: linear-gradient(155deg,#f4f8ff 0%,#e0ecff 55%,#b9d2f7 100%); color: #183559; }
-.project-tile-portfolio .project-tile-image { width: 90%; height: 69%; top: 28%; left: 5%; object-fit: contain; object-position: center; border: 0; border-radius: 0; box-shadow: none; transform: none; }
 .project-tile-jchatmind { background: linear-gradient(155deg,#e1edff 0%,#b5d1f7 52%,#6d95ce 100%); color: #183559; }
 .project-tile-jchatmind .project-tile-image { object-position: center top; left: 9%; }
 .project-tile-brainstem { background: linear-gradient(145deg,#192d54,#536e9b); }

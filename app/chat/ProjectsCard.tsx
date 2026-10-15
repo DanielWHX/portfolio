@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { portfolioProjects } from "@/lib/portfolio/projects";
 
 const covers: Record<string, { category: string; image?: string; href?: string }> = {
-  portfolio: { category: "AI Portfolio", image: "/hongxiang-avatar.png", href: "/" },
+  portfolio: { category: "AI Portfolio", image: "/projects/portfolio/homepage.jpg", href: "/" },
   lyntra: { category: "AI Scheduling", image: "/projects/lyntra/calendar.jpg", href: "/projects/lyntra" },
   jchatmind: { category: "AI Assistant", image: "/projects/jchatmind/chat/04-date-tool-and-trial.jpg", href: "/projects/jchatmind" },
   brainstem: { category: "Capstone" },
