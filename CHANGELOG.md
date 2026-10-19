@@ -8,7 +8,14 @@
 - 主回答 cache 保持立即恢复；追问异步更新，不重复生成主回答，不占用问答次数。切换栏目与 New chat 取消过时请求；Contact 和达到上限时隐藏。
 - 修正本地 API 配置说明：Cloudflare dev 使用根目录 `.dev.vars`；自动化测试为 mock，不能作为真实 API 已连通的证据。
 - 本次开发验证：Build、TypeScript、22 项 API 检查及 45 项浏览器回归通过；ESLint 无错误，仅有 3 条既有图片建议。桌面与手机截图已检查。
-- 现有本地服务未配置 `OPENAI_API_KEY`，真实请求返回 503；本功能的真实模型生成效果仍待配置 Key 后验收。
+- 开发时本地服务未配置 `OPENAI_API_KEY`，真实请求返回 503；本次生产环境已复用服务器凭据完成真实模型验收。
+
+### AI 追问上线验收
+- [PR #17](https://github.com/DanielWHX/portfolio/pull/17) 分支的运行代码 `25959dd` 已部署到 [主站](https://hongxiangwang1017.com/chat)，生产镜像 `b1864f148677` 健康运行，保留 1GiB 内存限制；PR 尚未合并到 `main`。
+- 切换前，内部候选容器通过真实 Projects 追问、带 exclude 的换组及普通问答；四条候选问题不重复。切换后公网 Skills 追问返回 200、两条有效问题，本次约 2.3 秒；首页和聊天页均为 HTTPS 200。
+- 公网浏览器已验证两条建议、New ideas 换组、点击建议继续真实问答，以及 Contact 隐藏建议；线上 CSS 确认使用 400ms 入场动画。
+- 独立标签页的首次 Projects、New ideas、再次 Projects 合计新增 1 次 `/api/chat` 和 3 次 `/api/followups`，证明主回答继续复用 cache。
+- 旧生产镜像和部署配置保存在服务器 `deploy-backups/portfolio-20261019-25959dd`，可通过固定 rollback tag 恢复；真实 API 证据和请求计数留在该目录，凭据未进入 Git。
 
 ### 上线验收
 - [PR #16](https://github.com/DanielWHX/portfolio/pull/16) 已合并，功能提交 `d4be690` 已部署到 [主站](https://hongxiangwang1017.com/)；生产容器健康，旧镜像与部署配置已备份。
