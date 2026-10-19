@@ -16,6 +16,7 @@
 - 公网浏览器已验证两条建议、New ideas 换组、点击建议继续真实问答，以及 Contact 隐藏建议；线上 CSS 确认使用 400ms 入场动画。
 - 独立标签页的首次 Projects、New ideas、再次 Projects 合计新增 1 次 `/api/chat` 和 3 次 `/api/followups`，证明主回答继续复用 cache。
 - 旧生产镜像和部署配置保存在服务器 `deploy-backups/portfolio-20261019-25959dd`，可通过固定 rollback tag 恢复；真实 API 证据和请求计数留在该目录，凭据未进入 Git。
+- 收尾待办：OrcaTerm 会话再次过期并要求微信 MFA，内部测试容器 `portfolio-candidate-25959dd` 暂保留在 `127.0.0.1:3002`；再次验证后停止并移除该容器即可，不影响已验收的正式网站。
 
 ### 上线验收
 - [PR #16](https://github.com/DanielWHX/portfolio/pull/16) 已合并，功能提交 `d4be690` 已部署到 [主站](https://hongxiangwang1017.com/)；生产容器健康，旧镜像与部署配置已备份。
