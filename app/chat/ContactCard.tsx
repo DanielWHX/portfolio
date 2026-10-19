@@ -1,11 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import AnimatedText from "./AnimatedText";
-
 import type { ContactCardData } from "@/lib/portfolio/contact-profile";
 
-export default function ContactCard({ contact, message }: { contact: ContactCardData; message: string }) {
+export default function ContactCard({ contact }: { contact: ContactCardData }) {
   const [copyFeedback, setCopyFeedback] = useState<{ label: string; status: "copied" | "error" } | null>(null);
 
   async function copyContact(label: string, value: string) {
@@ -28,9 +26,7 @@ export default function ContactCard({ contact, message }: { contact: ContactCard
 
   return (
     <article className="contact-card" aria-label="Contact Hongxiang">
-      <p className="contact-card-kicker">GET IN TOUCH</p>
       <h2>Let&apos;s connect <span aria-hidden="true">👋</span></h2>
-      <p className="contact-card-intro"><AnimatedText text={message} /></p>
 
       <ul className="contact-card-methods" aria-label="Contact methods">
         {methods.map(({ label, value, icon, tone }) => {

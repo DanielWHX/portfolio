@@ -7,9 +7,8 @@ import ContactCard from "./ContactCard";
 import ProjectsCard from "./ProjectsCard";
 import SkillsCard from "./SkillsCard";
 import QuickQuestionIcon from "./QuickQuestionIcon";
-import { isProjectsOverviewRequest } from "@/lib/portfolio/projects";
 import AnimatedText from "./AnimatedText";
-import { quickQuestions } from "@/lib/portfolio/quick-questions";
+import { getQuickQuestion, quickQuestions } from "@/lib/portfolio/quick-questions";
 
 import { clearChatSession, readChatSession, saveChatSession, type ConversationMessage as Message } from "@/lib/portfolio/chat-session";
 
@@ -38,7 +37,23 @@ export default function ChatClient({ initialQuery }: { initialQuery: string }) {
       const content = value.trim().slice(0, 1000);
       const turns = messages.filter((message) => message.role === "user").length;
 
-      if (!content || requestInFlight.current || turns >= MAX_USER_TURNS) return;
+      if (!content || requestInFlight.current) return;
+      const preset = getQuickQuestion(content);
+      const cachedIndex = preset ? messages.findIndex((message) => message.role === "assistant" && message.preset === preset.label) : -1;
+      if (cachedIndex >= 0) {
+        followReply.current = false;
+        setError("");
+        setMessages(messages.map((message, index) => index === cachedIndex ? { ...message, restored: true } : message));
+        window.requestAnimationFrame(() => {
+          const container = messagesRef.current;
+          const answer = container?.querySelector<HTMLElement>(`[data-message-index="${cachedIndex}"]`);
+          if (container && answer) {
+            container.scrollTo({ top: answer.getBoundingClientRect().top - container.getBoundingClientRect().top + container.scrollTop - 4, behavior: "instant" });
+          }
+        });
+        return;
+      }
+      if (turns >= MAX_USER_TURNS) return;
       saveChatSession(messages, content);
       requestInFlight.current = true;
       followReply.current = true;
@@ -80,6 +95,7 @@ export default function ChatClient({ initialQuery }: { initialQuery: string }) {
             role: "assistant",
             content: payload.message,
             module: payload.module,
+            ...(preset ? { preset: preset.label } : {}),
           },
         ]);
       } catch (caught) {
@@ -119,12 +135,9 @@ export default function ChatClient({ initialQuery }: { initialQuery: string }) {
     initialQuerySent.current = true;
     if (!initialQuery) return;
     window.history.replaceState({}, "", "/chat");
-    // The homepage Me entry resumes an existing session without asking Me again.
-    if (initialQuery === "Who are you?" && (messages.length || draft)) return;
-    if (isProjectsOverviewRequest(initialQuery) && messages.at(-1)?.module?.type === "projects") return;
     // eslint-disable-next-line react-hooks/set-state-in-effect -- Start the URL-requested conversation once, after session hydration.
     void sendMessage(initialQuery);
-  }, [sessionReady, initialQuery, sendMessage, messages, draft]);
+  }, [sessionReady, initialQuery, sendMessage]);
 
   useEffect(() => {
     const container = messagesRef.current;
@@ -173,7 +186,7 @@ export default function ChatClient({ initialQuery }: { initialQuery: string }) {
             ) : message.role === "assistant" && message.module?.type === "projects" ? (
               <ProjectsCard />
             ) : message.role === "assistant" && message.module?.type === "contact" ? (
-              <ContactCard contact={message.module.contact} message={message.content} />
+              <ContactCard contact={message.module.contact} />
             ) : (
               <div className={`chat-message chat-message-${message.role}`}>
                 {message.role === "assistant" ? <AnimatedText text={message.content} /> : message.content}
@@ -194,7 +207,7 @@ export default function ChatClient({ initialQuery }: { initialQuery: string }) {
       <nav className="chat-quick-questions" aria-label="Quick questions">
         {quickQuestions.map(({ label, tone, query }) => (
           <button key={label} type="button" className={`chat-quick-question tone-${tone}`}
-            disabled={!sessionReady || loading || limitReached} onClick={() => void sendMessage(query)}>
+            disabled={!sessionReady || loading || (limitReached && !messages.some((message) => message.preset === label))} onClick={() => void sendMessage(query)}>
             <span className="chat-quick-icon"><QuickQuestionIcon label={label} /></span>
             <span>{label}</span>
           </button>

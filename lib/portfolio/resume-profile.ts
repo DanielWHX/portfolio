@@ -87,7 +87,7 @@ export type ResumeOverviewCard = {
 const resumeOverviewCard: Omit<ResumeOverviewCard, "summary"> = {
   schools: resumeProfile.education,
   interests: resumeProfile.interests,
-  portrait: "/hongxiang-profile.png",
+  portrait: "/hongxiang-profile.jpg",
   name: resumeProfile.name,
   headline: resumeProfile.headline,
   education: [

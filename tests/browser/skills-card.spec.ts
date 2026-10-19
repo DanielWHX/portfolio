@@ -1,5 +1,11 @@
 import { expect, test } from "@playwright/test";
 
+test.beforeEach(async ({ page }) => {
+  await page.route("**/api/chat", route => route.fulfill({
+    json: { message: "My strongest skills are Python and Java backend engineering.", module: { type: "skills" } },
+  }));
+});
+
 for (const width of [1280, 390, 320]) {
   test(`Skills presents compact capability groups at ${width}px`, async ({ page }) => {
     await page.setViewportSize({ width, height: 900 });
@@ -32,7 +38,7 @@ test("Skills survives a home round trip and reload, preserving follow-up context
   await expect(card).toBeVisible();
   await page.getByRole("textbox", { name: "Ask about Hongxiang" }).fill("Where have you used Java?");
   await page.getByRole("link", { name: "Back to portfolio" }).click();
-  await page.getByRole("link", { name: "Me", exact: true }).click();
+  await page.getByRole("link", { name: "Skills", exact: true }).click();
   await expect(card).toHaveCount(1);
   await page.reload();
   await expect(card).toHaveCount(1);

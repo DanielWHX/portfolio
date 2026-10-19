@@ -1,13 +1,22 @@
 import { expect, test } from "@playwright/test";
 
-test("Projects opens a real case study and returns without losing or duplicating the card", async ({ page }) => {
+test.beforeEach(async ({ page }) => {
+  await page.route("**/api/chat", route => route.fulfill({
+    json: { message: "Here is my selected work.", module: { type: "projects" } },
+  }));
+});
+
+test("Projects keeps Portfolio first and survives case-study and home round trips", async ({ page }) => {
   let requests = 0;
   page.on("request", request => { if (request.url().endsWith("/api/chat")) requests++; });
   await page.goto("/");
   await page.getByRole("link", { name: "Projects", exact: true }).click();
   const card = page.getByRole("article", { name: "Hongxiang's projects" });
   await expect(card).toBeVisible();
-  await expect(card.getByRole("heading", { level: 3 }).first()).toContainText("Lyntra");
+  await expect(card.getByRole("heading", { level: 3 }).first()).toHaveText("Portfolio");
+  const portfolioHome = card.getByRole("link", { name: "Visit Portfolio homepage", exact: true });
+  await expect(portfolioHome).toHaveAttribute("href", "/");
+  await expect(portfolioHome).not.toHaveAttribute("target", "_blank");
   await expect(card.getByRole("link", { name: "Explore JChatMind case study" })).toHaveAttribute("href", "/projects/jchatmind");
   await expect(card.getByText("Case study coming soon", { exact: true })).toHaveCount(3);
   await page.getByRole("link", { name: "Explore Lyntra case study" }).click();
@@ -29,8 +38,11 @@ test("Projects opens a real case study and returns without losing or duplicating
   expect(requests).toBe(1);
   await page.reload();
   await expect(card).toHaveCount(1);
-  await page.getByRole("link", { name: "Back to portfolio" }).click();
+  await portfolioHome.click();
   await expect(page.getByRole("heading", { name: "Full-Stack Engineer" })).toBeVisible();
+  await page.getByRole("link", { name: "Projects", exact: true }).click();
+  await expect(card).toHaveCount(1);
+  expect(requests).toBe(1);
 });
 
 test("a direct case-study visitor can find Projects, with a readable mobile layout", async ({ page }) => {
@@ -50,8 +62,9 @@ for (const width of [1440, 390, 320]) {
     await page.goto("/chat?query=Projects");
     const card = page.getByRole("article", { name: "Hongxiang's projects" });
     await expect(card.getByRole("heading", { level: 2 })).toHaveText("Project");
-    await expect(card.getByRole("listitem")).toHaveCount(5);
-    await expect(card.getByRole("link")).toHaveCount(2);
+    await expect(card.getByRole("listitem")).toHaveCount(6);
+    await expect(card.getByRole("link")).toHaveCount(3);
+    await expect(card.getByText("Case study coming soon", { exact: true })).toHaveCount(3);
     const first = card.getByRole("listitem").first();
     const box = await first.boundingBox();
     expect(box!.height).toBeGreaterThan(box!.width);
@@ -62,7 +75,8 @@ for (const width of [1440, 390, 320]) {
     await page.keyboard.press("Enter");
     await expect(previous).toBeEnabled();
     const track = card.getByRole("list", { name: "Projects", exact: true });
-    for (let i = 0; i < (width > 600 ? 1 : 3); i++) {
+    for (let i = 0; i < 5; i++) {
+      if (await track.evaluate(el => el.scrollLeft + el.clientWidth >= el.scrollWidth - 2)) break;
       const target = await track.evaluate(el => Math.min(el.scrollWidth - el.clientWidth, el.scrollLeft + el.children[0].getBoundingClientRect().width + parseFloat(getComputedStyle(el).columnGap)));
       await next.click();
       await expect.poll(() => track.evaluate(el => el.scrollLeft)).toBeGreaterThanOrEqual(target - 2);

@@ -29,7 +29,7 @@ for (const width of [1280, 390]) {
       await button.click();
       await expect(button).toBeEnabled();
     }
-    expect(requests).toHaveLength(6);
+    expect(requests).toHaveLength(5);
     expect(requests[2]).toHaveLength(5);
     expect(requests[2][1]).toEqual({ role: "assistant", content: answer });
     await expect(page.getByRole("article", { name: "Contact Hongxiang" })).toHaveCount(1);
