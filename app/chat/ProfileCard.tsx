@@ -10,9 +10,9 @@ export default function ProfileCard({ profile }: { profile: ResumeOverviewCard }
         <div className="profile-card-portrait">
           <Image
             src={profile.portrait}
-            width={1132}
-            height={1390}
-            alt={`${profile.name}, wearing glasses and a navy T-shirt`}
+            width={2316}
+            height={3088}
+            alt={`${profile.name} portrait`}
             unoptimized
           />
         </div>

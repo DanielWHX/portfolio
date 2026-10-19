@@ -98,15 +98,14 @@ test("renders the minimal resume chat page", async () => {
   assert.match(html, /Hongxiang(?:&#x27;|')s AI portfolio/i);
 });
 
-test("ships the complete glass chat layout and current main-page styles", async () => {
+test("ships the open chat layout and consistent white cards", async () => {
   const css = await readFile(new URL("../app/globals.css", import.meta.url), "utf8");
 
-  assert.match(css, /\.chat-page\s*{[^}]*display:\s*grid/i);
-  assert.match(css, /\.chat-shell\s*{[^}]*backdrop-filter:\s*blur\(20px\)/i);
+  assert.match(css, /\.chat-page\s*{[^}]*overflow:\s*hidden/i);
   assert.match(css, /\.chat-messages\s*{[^}]*overflow-y:\s*auto/i);
   assert.match(css, /\.chat-form\s*{[^}]*border-radius:\s*999px/i);
   assert.match(css, /\.chat-message-user\s*{[^}]*align-self:\s*flex-end/i);
-  assert.match(css, /\.profile-card\s*{[^}]*backdrop-filter:\s*blur\(20px\)/i);
+  assert.match(css, /\.profile-card\s*{[^}]*box-shadow:\s*none/i);
   assert.match(css, /\.quick-option\s*{[^}]*display:\s*flex/i);
   assert.match(css, /\.portrait\s*{[^}]*object-fit:\s*contain/i);
   assert.doesNotMatch(css, /\.brand-mark\b/i);
@@ -159,6 +158,9 @@ test(
     const cases = [
       { question: "Could you give me an overview of your technical strengths?", message: "My focus is Python and Java backend engineering.", presentation: "skills_card" },
       { question: "Could I see some of your selected work?", message: "Here is my selected work.", presentation: "projects_card" },
+      { question: "Tell me about projects from your listed work and research experience.", message: "Here is my selected work.", presentation: "projects_card" },
+      { question: "What are your strongest skills?", message: "My focus is Python and Java backend engineering.", presentation: "skills_card" },
+      { question: "What do you enjoy outside of engineering?", message: "I enjoy fitness and SaaS companies.", presentation: "text" },
       {
         question: "Who are you?",
         message: "I'm Hongxiang Wang, a full-stack engineer.",
@@ -253,7 +255,7 @@ test(
 
       if (testCase.presentation === "profile_card") {
         const { schools, interests, portrait, ...legacyProfile } = payload.module.profile;
-        assert.equal(portrait, "/hongxiang-profile.png");
+        assert.equal(portrait, "/hongxiang-profile.jpg");
         assert.deepEqual(interests, ["Fitness", "SaaS companies"]);
         assert.equal(schools.length, 2);
         assert.equal(schools[0].programRanking.label, "CS #5");
@@ -307,7 +309,7 @@ test(
     const toolResult = requests[1].input.find(item => item.type === "function_call_output");
     assert.deepEqual(JSON.parse(toolResult.output).interests, ["Fitness", "SaaS companies"]);
     assert.equal(JSON.parse(toolResult.output).contact.email, "hxjob1017@gmail.com");
-    assert.equal(JSON.parse(toolResult.output).projects[0].id, "lyntra");
+    assert.deepEqual(JSON.parse(toolResult.output).projects.slice(0, 3).map(project => project.id), ["portfolio", "jchatmind", "lyntra"]);
     assert.match(JSON.parse(toolResult.output).lyntraCaseStudy.architecture, /Flask/);
     assert.deepEqual(JSON.parse(toolResult.output).skillsFocus.primaryLanguages, ["Python", "Java"]);
     assert.equal(JSON.parse(toolResult.output).skills.languages.length, 8);
@@ -500,13 +502,12 @@ test(
 );
 
 
-test("Projects is available without a model and validation still applies", async () => {
+test("Projects requires the agent and validation still applies", async () => {
   const previousKey = process.env.OPENAI_API_KEY;
   delete process.env.OPENAI_API_KEY;
   try {
     const response = await request("/api/chat", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({messages:[{role:"user",content:"projects"}]}) });
-    assert.equal(response.status, 200);
-    assert.equal((await response.json()).module.type, "projects");
+    assert.equal(response.status, 503);
     const invalid = await request("/api/chat", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({messages:[{role:"assistant",content:"projects"}]}) });
     assert.equal(invalid.status, 400);
   } finally { restoreApiKey(previousKey); }
@@ -516,14 +517,14 @@ test("Lyntra case study renders a demo and both English diagrams", async () => {
   const response = await request("/projects/lyntra");
   assert.equal(response.status, 200);
   const html = visibleMarkup(await response.text());
-  assert.match(html, /A calendar that/);
+  assert.match(html, /AI scheduling that resolves calendar conflicts/);
   assert.match(html, /src="\/projects\/lyntra\/demo.mp4"/);
   assert.match(html, /src="\/projects\/lyntra\/workflow.svg"/);
   assert.match(html, /src="\/projects\/lyntra\/architecture.svg"/);
-  assert.match(html, /remain in development/);
+  assert.match(html, /still in development/);
 });
 
-test("Skills overview returns a code-owned card without requiring a model", async () => {
+test("Skills overview and focused follow-ups both require the agent", async () => {
   const previousKey = process.env.OPENAI_API_KEY;
   delete process.env.OPENAI_API_KEY;
   try {
@@ -532,10 +533,7 @@ test("Skills overview returns a code-owned card without requiring a model", asyn
         method: "POST", headers: { "content-type": "application/json" },
         body: JSON.stringify({ messages: [{ role: "user", content: question }] }),
       });
-      assert.equal(response.status, 200);
-      const body = await response.json();
-      assert.deepEqual(body.module, { type: "skills" });
-      assert.match(body.message, /Python and Java/);
+      assert.equal(response.status, 503);
     }
     const specific = await request("/api/chat", {
       method: "POST", headers: { "content-type": "application/json" },

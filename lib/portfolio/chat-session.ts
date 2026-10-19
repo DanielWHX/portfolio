@@ -1,11 +1,13 @@
 import { contactProfile, type ContactCardData } from "./contact-profile";
 import { getResumeOverviewCard, type ResumeOverviewCard } from "./resume-profile";
+import { getQuickQuestion, type QuickQuestionLabel } from "./quick-questions";
 
 export type ConversationMessage = {
   role: "user" | "assistant";
   content: string;
   module?: { type: "profile"; profile: ResumeOverviewCard } | { type: "contact"; contact: ContactCardData } | { type: "projects" } | { type: "skills" };
   restored?: boolean;
+  preset?: QuickQuestionLabel;
 };
 
 const STORAGE_KEY = "portfolio.chat.v1";
@@ -23,11 +25,13 @@ export function readChatSession(): { messages: ConversationMessage[]; draft: str
     for (const [index, item] of saved.messages.entries()) {
       if (!item || item.role !== (index % 2 ? "assistant" : "user") ||
         typeof item.content !== "string" || !item.content.trim() || item.content.length > 1000 ||
-        (item.card !== undefined && (item.role !== "assistant" || !["profile", "contact", "projects", "skills"].includes(item.card)))) return empty;
+        (item.card !== undefined && (item.role !== "assistant" || !["profile", "contact", "projects", "skills"].includes(item.card))) ||
+        (item.preset !== undefined && (item.role !== "assistant" || getQuickQuestion(messages[index - 1]?.content ?? "")?.label !== item.preset))) return empty;
       messages.push({
         role: item.role,
         content: item.content,
         restored: true,
+        ...(item.preset ? { preset: item.preset } : {}),
         // Rebuild cards from current approved data rather than stored copies.
         ...(item.card === "profile" ? { module: { type: "profile", profile: getResumeOverviewCard(item.content) } } :
           item.card === "skills" ? { module: { type: "skills" } } :
@@ -47,7 +51,7 @@ export function saveChatSession(messages: ConversationMessage[], draft: string) 
   try {
     sessionStorage.setItem(STORAGE_KEY, JSON.stringify({
       version: 1,
-      messages: messages.map(({ role, content, module }) => ({ role, content, card: module?.type })),
+      messages: messages.map(({ role, content, module, preset }) => ({ role, content, card: module?.type, preset })),
       draft,
     }));
   } catch {

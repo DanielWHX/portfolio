@@ -2,7 +2,7 @@ import { expect, test } from "@playwright/test";
 import { contactProfile } from "../../lib/portfolio/contact-profile";
 
 for (const viewport of [{ width: 1280, height: 900 }, { width: 390, height: 844 }]) {
-  test(`Contact opens a usable card at ${viewport.width}px`, async ({ page }) => {
+  test(`Contact opens a usable card at ${viewport.width}px`, async ({ page }, testInfo) => {
     await page.setViewportSize(viewport);
     let copied = "";
     await page.exposeFunction("recordContactCopy", (text: string) => { copied = text; });
@@ -26,10 +26,18 @@ for (const viewport of [{ width: 1280, height: 900 }, { width: 390, height: 844 
     await page.getByRole("link", { name: "Contact", exact: true }).click();
     const card = page.getByRole("article", { name: "Contact Hongxiang" });
     await expect(card).toBeVisible();
+    await expect(card.getByRole("heading", { name: "Let's connect", exact: true })).toBeVisible();
+    await expect(card.getByText("GET IN TOUCH", { exact: true })).toHaveCount(0);
+    await expect(card.getByText("Here are my contact details.", { exact: true })).toHaveCount(0);
+    await expect(card).toHaveCSS("background-color", "rgb(255, 255, 255)");
+    await expect(card).toHaveCSS("border-top-color", "rgb(228, 237, 249)");
+    await expect(card).toHaveCSS("box-shadow", "none");
     await expect(page.getByRole("article", { name: "Hongxiang Wang profile" })).toHaveCount(0);
     expect(requests[0]).toEqual([{ role: "user", content: "How can I contact you?" }]);
     await expect(card.getByRole("link")).toHaveCount(0);
     await expect(card.getByRole("button")).toHaveCount(5);
+    await expect(card).toHaveCSS("opacity", "1");
+    await page.screenshot({ path: testInfo.outputPath("contact.png") });
     const cardUrl = page.url();
     for (const [label, value] of [
       ["Email", "hxjob1017@gmail.com"],

@@ -3,6 +3,9 @@ import { expect, test } from "@playwright/test";
 for (const viewport of [{ width: 1440, height: 1000 }, { width: 390, height: 844 }]) {
   test(`JChatMind interactive recorded replay at ${viewport.width}px`, async ({ page, context }) => {
     await page.setViewportSize(viewport);
+    await page.route("**/api/chat", route => route.fulfill({
+      json: { message: "Here is my selected work.", module: { type: "projects" } },
+    }));
     const requests: string[] = [];
     page.on("request", request => { if (/\/api\//.test(request.url())) requests.push(request.url()); });
     await page.goto("/chat?query=projects");

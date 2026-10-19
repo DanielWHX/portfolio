@@ -5,8 +5,6 @@ import {
   parseChatMessages,
 } from "@/lib/agent/resume-agent";
 import { getResumeOverviewCard } from "@/lib/portfolio/resume-profile";
-import { isProjectsOverviewRequest } from "@/lib/portfolio/projects";
-import { isSkillsOverviewRequest, skillsFocus } from "@/lib/portfolio/skills-profile";
 import { contactProfile } from "@/lib/portfolio/contact-profile";
 
 function json(body: object, status = 200) {
@@ -32,14 +30,6 @@ export async function POST(request: Request) {
     const message =
       error instanceof ChatValidationError ? error.message : "Invalid chat request.";
     return json({ error: message }, 400);
-  }
-
-  if (isProjectsOverviewRequest(messages[messages.length - 1].content)) {
-    return json({ message: "Explore my selected work, starting with Lyntra.", module: { type: "projects" } });
-  }
-
-  if (isSkillsOverviewRequest(messages[messages.length - 1].content)) {
-    return json({ message: skillsFocus.summary, module: { type: "skills" } });
   }
 
   const apiKey = process.env.OPENAI_API_KEY?.trim();
