@@ -2,6 +2,14 @@
 
 ## 2026-10-19
 
+### AI 追问
+- 采用已选定的「轻浮上升」方案：两条追问置于五个 Quick questions 上方，保留浅蓝细边、轻量思考气泡尾与错开入场；支持手机和 reduced-motion。
+- Me、Projects、Skills、Fun Facts 的追问通过独立 `/api/followups` 实时生成，根据当前栏目、已确认资料及最近对话提问，并排除近期重复；New ideas 可换一组，点击问题继续普通对话。
+- 主回答 cache 保持立即恢复；追问异步更新，不重复生成主回答，不占用问答次数。切换栏目与 New chat 取消过时请求；Contact 和达到上限时隐藏。
+- 修正本地 API 配置说明：Cloudflare dev 使用根目录 `.dev.vars`；自动化测试为 mock，不能作为真实 API 已连通的证据。
+- 本次开发验证：Build、TypeScript、22 项 API 检查及 45 项浏览器回归通过；ESLint 无错误，仅有 3 条既有图片建议。桌面与手机截图已检查。
+- 现有本地服务未配置 `OPENAI_API_KEY`，真实请求返回 503；本功能的真实模型生成效果仍待配置 Key 后验收。
+
 ### 上线验收
 - [PR #16](https://github.com/DanielWHX/portfolio/pull/16) 已合并，功能提交 `d4be690` 已部署到 [主站](https://hongxiangwang1017.com/)；生产容器健康，旧镜像与部署配置已备份。
 - 公网五个预设首次真实 AI 请求全部返回 200；反复点击及刷新后复用缓存，验收期间请求总数保持为 5，未新增重复回答。

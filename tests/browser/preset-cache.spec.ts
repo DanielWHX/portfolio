@@ -77,7 +77,7 @@ test("an in-flight or failed preset is never cached and can be retried", async (
   await button.click();
   await expect.poll(() => Boolean(release)).toBe(true);
   await expect(button).toBeDisabled();
-  await button.evaluate(element => element.click());
+  await button.evaluate(element => (element as HTMLElement).click());
   expect(requests).toBe(1);
   release!();
   await expect(page.getByRole("alert")).toHaveText("Please retry.");

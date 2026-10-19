@@ -8,6 +8,8 @@ import ProjectsCard from "./ProjectsCard";
 import SkillsCard from "./SkillsCard";
 import QuickQuestionIcon from "./QuickQuestionIcon";
 import AnimatedText from "./AnimatedText";
+import FollowupQuestions from "./FollowupQuestions";
+import useFollowupQuestions from "./useFollowupQuestions";
 import { getQuickQuestion, quickQuestions } from "@/lib/portfolio/quick-questions";
 
 import { clearChatSession, readChatSession, saveChatSession, type ConversationMessage as Message } from "@/lib/portfolio/chat-session";
@@ -28,6 +30,9 @@ export default function ChatClient({ initialQuery }: { initialQuery: string }) {
   const messagesRef = useRef<HTMLDivElement>(null);
   const followReply = useRef(true);
   const requestInFlight = useRef(false);
+  const { questions: followupQuestions, generating: generatingFollowups, revision: followupRevision,
+    suspend: suspendFollowups, generate: generateFollowups,
+    refresh: refreshFollowups, clear: clearFollowups } = useFollowupQuestions();
 
   const userTurns = messages.filter((message) => message.role === "user").length;
   const limitReached = userTurns >= MAX_USER_TURNS;
@@ -39,11 +44,13 @@ export default function ChatClient({ initialQuery }: { initialQuery: string }) {
 
       if (!content || requestInFlight.current) return;
       const preset = getQuickQuestion(content);
+      const nextContext = preset ? (preset.label === "Contact" ? null : preset.label) : undefined;
       const cachedIndex = preset ? messages.findIndex((message) => message.role === "assistant" && message.preset === preset.label) : -1;
       if (cachedIndex >= 0) {
         followReply.current = false;
         setError("");
         setMessages(messages.map((message, index) => index === cachedIndex ? { ...message, restored: true } : message));
+        generateFollowups(nextContext, messages);
         window.requestAnimationFrame(() => {
           const container = messagesRef.current;
           const answer = container?.querySelector<HTMLElement>(`[data-message-index="${cachedIndex}"]`);
@@ -54,6 +61,7 @@ export default function ChatClient({ initialQuery }: { initialQuery: string }) {
         return;
       }
       if (turns >= MAX_USER_TURNS) return;
+      suspendFollowups(nextContext);
       saveChatSession(messages, content);
       requestInFlight.current = true;
       followReply.current = true;
@@ -89,7 +97,7 @@ export default function ChatClient({ initialQuery }: { initialQuery: string }) {
           throw new Error(payload.error || "The portfolio agent could not answer.");
         }
 
-        setMessages([
+        const completedMessages: Message[] = [
           ...nextMessages,
           {
             role: "assistant",
@@ -97,7 +105,9 @@ export default function ChatClient({ initialQuery }: { initialQuery: string }) {
             module: payload.module,
             ...(preset ? { preset: preset.label } : {}),
           },
-        ]);
+        ];
+        setMessages(completedMessages);
+        generateFollowups(nextContext, completedMessages);
       } catch (caught) {
         setMessages(messages);
         setDraft(content);
@@ -114,7 +124,7 @@ export default function ChatClient({ initialQuery }: { initialQuery: string }) {
         setLoading(false);
       }
     },
-    [messages],
+    [messages, generateFollowups, suspendFollowups],
   );
 
   useEffect(() => {
@@ -152,6 +162,7 @@ export default function ChatClient({ initialQuery }: { initialQuery: string }) {
   }, [messages]);
 
   function startNewChat() {
+    clearFollowups();
     clearChatSession();
     setMessages([]);
     setDraft("");
@@ -203,6 +214,14 @@ export default function ChatClient({ initialQuery }: { initialQuery: string }) {
           {error}
         </p>
       ) : null}
+
+      <FollowupQuestions questions={followupQuestions} revision={followupRevision} generating={generatingFollowups}
+        disabled={!sessionReady || loading || limitReached} onRefresh={refreshFollowups}
+        onSelect={question => {
+          void sendMessage(question).then(() => window.requestAnimationFrame(() => {
+            document.getElementById("chat-query")?.focus({ preventScroll: true });
+          }));
+        }} />
 
       <nav className="chat-quick-questions" aria-label="Quick questions">
         {quickQuestions.map(({ label, tone, query }) => (
