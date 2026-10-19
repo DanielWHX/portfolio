@@ -3,7 +3,7 @@
 ## 2026-10-19
 
 ### AI 追问
-- 采用已选定的「轻浮上升」方案：两条追问置于五个 Quick questions 上方，保留浅蓝细边、轻量思考气泡尾与错开入场；支持手机和 reduced-motion。
+- 采用已选定的「轻浮上升」方案：两条追问置于五个 Quick questions 上方，保留浅蓝细边、轻量思考气泡尾与错开入场；时长采用预览中调整的 400ms，支持手机和 reduced-motion。
 - Me、Projects、Skills、Fun Facts 的追问通过独立 `/api/followups` 实时生成，根据当前栏目、已确认资料及最近对话提问，并排除近期重复；New ideas 可换一组，点击问题继续普通对话。
 - 主回答 cache 保持立即恢复；追问异步更新，不重复生成主回答，不占用问答次数。切换栏目与 New chat 取消过时请求；Contact 和达到上限时隐藏。
 - 修正本地 API 配置说明：Cloudflare dev 使用根目录 `.dev.vars`；自动化测试为 mock，不能作为真实 API 已连通的证据。

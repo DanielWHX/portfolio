@@ -59,6 +59,7 @@ for (const width of [1280, 390]) {
     for (const question of firstQuestions) await expect(suggestions.getByRole("button", { name: question, exact: true })).toBeInViewport();
     const motionNames = () => suggestions.evaluate(element => [element, ...element.querySelectorAll("*")].map(node => getComputedStyle(node).animationName));
     expect(await motionNames()).toContain("followup-rise");
+    await expect(suggestions.getByRole("button", { name: firstQuestions[0], exact: true })).toHaveCSS("animation-duration", "0.4s");
     const suggestionBox = await suggestions.boundingBox();
     const presetBox = await presets.boundingBox();
     const inputBox = await page.getByRole("textbox", { name: "Ask about Hongxiang" }).boundingBox();
