@@ -2,6 +2,11 @@
 
 ## 2026-10-19
 
+### 上线验收
+- [PR #16](https://github.com/DanielWHX/portfolio/pull/16) 已合并，功能提交 `d4be690` 已部署到 [主站](https://hongxiangwang1017.com/)；生产容器健康，旧镜像与部署配置已备份。
+- 公网五个预设首次真实 AI 请求全部返回 200；反复点击及刷新后复用缓存，验收期间请求总数保持为 5，未新增重复回答。
+- 主站与聊天页 HTTPS、新头像及 HTTP/www 跳转已验证；公网 JPG 与提供的原照内容一致。
+
 ### 调整
 - 统一五个 Quick questions：首次通过 AI 回答，成功后在当前标签页会话中缓存；重复点击立即定位已有回答，不重复请求、动画或消耗问答次数。刷新保留，New chat 清空；失败可重试。
 - 移除 Projects、Skills 首次请求绕过 AI 的固定回复；从详情页返回 Projects 复用同一预设缓存。
@@ -11,7 +16,7 @@
 ### 文档
 - 记录独立域名 `hongxiangwang1017.com` 的上线验收：主站 HTTPS、HTTP/www 跳转与 Projects 交互已验证。
 - 记录证书自动续期演练通过，Nginx、Docker 和容器自动恢复配置已核对；尚未进行整机重启验收。
-- 明确真实 AI 问答仍因 `401 / invalid_api_key` 受阻，JChatMind 新服务器 Demo 尚未部署，避免把静态卡片正常误认为完整 AI 链路上线。
+- 首次域名验收曾记录真实 AI 的 `401 / invalid_api_key` 问题；凭据另行更新后，本次上线已验证真实问答恢复。JChatMind 新服务器 Demo 尚未部署。
 
 ## 2026-10-15
 
