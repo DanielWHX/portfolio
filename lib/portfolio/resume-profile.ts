@@ -1,6 +1,8 @@
 import { resumeSkills, skillsFocus } from "./skills-profile";
 import { portfolioProjects, lyntraCaseStudy, jchatmindCaseStudy } from "./projects";
 import { contactProfile } from "./contact-profile";
+import { fitnessProfile } from "./fitness-profile";
+import { personalProfile } from "./personal-profile";
 
 export const resumeProfile = {
   source: "Hongxiang_wang_resume_revised.pdf",
@@ -9,6 +11,8 @@ export const resumeProfile = {
   lyntraCaseStudy,
   jchatmindCaseStudy,
   interests: ["Fitness", "SaaS companies"],
+  fitness: fitnessProfile,
+  personal: personalProfile.public,
   name: "Hongxiang Wang",
   headline: "Full-Stack Engineer",
   education: [

@@ -173,7 +173,7 @@ test("generation failure leaves chat usable and reduced motion shows questions w
   const funFacts = page.getByRole("button", { name: "Fun Facts", exact: true });
   await funFacts.click();
   await expect.poll(() => attempts).toBe(1);
-  await expect(page.getByText("Fun Facts overview.", { exact: true })).toBeVisible();
+  await expect(page.getByRole("article", { name: "Fun Facts", exact: true })).toBeVisible();
   await expect(page.getByRole("alert")).toHaveCount(0);
   const input = page.getByRole("textbox", { name: "Ask about Hongxiang" });
   await input.fill("My draft survives a suggestion failure");

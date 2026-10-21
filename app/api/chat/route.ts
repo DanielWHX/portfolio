@@ -43,6 +43,10 @@ export async function POST(request: Request) {
   try {
     const answer = await answerFromResume({ messages, apiKey });
 
+    if (answer.presentation === "fun_facts_card") {
+      return json({ message: answer.message, module: { type: "fun_facts" } });
+    }
+
     if (answer.presentation === "skills_card") {
       return json({ message: answer.message, module: { type: "skills" } });
     }

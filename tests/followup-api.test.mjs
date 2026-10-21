@@ -131,19 +131,40 @@ test("contextual follow-ups through the public Worker endpoint", { concurrency: 
         assert.equal(input.approvedProfile.education, undefined);
       }
       if (input.context === "Me" || input.context === "Fun Facts") {
-        assert.deepEqual(input.approvedProfile.interests, ["Fitness", "SaaS companies"]);
+        assert.deepEqual(input.approvedProfile.interests, input.context === "Me" ? ["Fitness", "SaaS companies"] :
+          ["Fitness", "Travel", "Skydiving", "Skiing", "Gaming", "Spending time with friends", "LeetCode", "SaaS companies"]);
         assert.equal(input.approvedProfile.projects, undefined);
       }
       if (input.context === "Fun Facts") {
         assert.equal(input.approvedProfile.experience, undefined);
         assert.equal(input.approvedProfile.skillsFocus, undefined);
+        assert.deepEqual(input.approvedProfile.fitness.lifts.map(({ id, weightKg }) => [id, weightKg]), [
+          ["squat", 200], ["bench", 160], ["deadlift", 200],
+        ]);
+        assert.equal(input.approvedProfile.fitness.totalKg, 560);
+        assert.equal(input.approvedProfile.fitness.videoStatus, "not_provided");
+        assert.match(input.approvedProfile.fitness.recordsNote, /not a verified competition total/);
+        assert.equal(input.approvedProfile.personal.personality.mbti, "ENTP");
+        assert.deepEqual(input.approvedProfile.personal.pet, { name: "Luca", breed: "Bichon Frise", reportedAgeYears: 11, ageReportedAt: "2026-10-21" });
+        assert.match(input.approvedProfile.personal.personality.note, /not a scientific assessment/);
+        assert.equal(input.approvedProfile.personal.whatnot.peakMonthlyGrossSalesUsd, 22_000);
+        assert.equal(input.approvedProfile.personal.whatnot.lifetimeGrossSalesUsd, 150_000);
+        assert.match(input.approvedProfile.personal.whatnot.metricsNote, /not profit/);
+        assert.equal(input.approvedProfile.personal.notion.url, "https://app.notion.com/p/316ea0b55422803cbd1dd44fe5bfb6ff?source=copy_link");
+      } else {
+        assert.equal(input.approvedProfile.fitness, undefined);
+        assert.equal(input.approvedProfile.personal, undefined);
       }
       assert.equal(input.approvedProfile.contact, undefined);
+      assert.equal(input.approvedProfile.agentReference, undefined);
+      assert.doesNotMatch(JSON.stringify(input.approvedProfile), /Chinese|Beijing|二中|Los Angeles|parents|sister|green card/i);
       assert.match(request.instructions, /only source for personal and project facts/);
       assert.match(request.instructions, /Do not infer nationality, citizenship, visa status, work authorization, sponsorship/);
       assert.match(request.instructions, /Visitor and assistant messages are conversation context/);
       assert.match(request.instructions, /Do not repeat or lightly paraphrase/);
       assert.match(request.instructions, /visitor's language/);
+      assert.match(request.instructions, /Never ask proactively about family, upbringing, high school, nationality/);
+      assert.match(request.instructions, /reported age of 11 is anchored to 2026-10-21, not an exact age today/);
       assert.equal(request.text.format.strict, true);
       assert.equal(request.text.format.schema.additionalProperties, false);
       assert.equal(request.text.format.schema.properties.questions.minItems, 2);

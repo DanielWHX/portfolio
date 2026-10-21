@@ -160,7 +160,19 @@ test(
       { question: "Could I see some of your selected work?", message: "Here is my selected work.", presentation: "projects_card" },
       { question: "Tell me about projects from your listed work and research experience.", message: "Here is my selected work.", presentation: "projects_card" },
       { question: "What are your strongest skills?", message: "My focus is Python and Java backend engineering.", presentation: "skills_card" },
-      { question: "What do you enjoy outside of engineering?", message: "I enjoy fitness and SaaS companies.", presentation: "text" },
+      { question: "What do you enjoy outside of engineering?", message: "I'm curious about different perspectives. Away from code, I enjoy strength training, travel and time with friends.", presentation: "fun_facts_card" },
+      { question: "你有什么爱好？", message: "我喜欢从不同角度看问题，也爱旅行、健身和跟朋友相处。大学时还跟朋友合作做过 Whatnot 直播。", presentation: "fun_facts_card" },
+      { question: "How much do you deadlift?", message: "My self-reported deadlift is 200 kg.", presentation: "text" },
+      { question: "What is your training routine?", message: "I haven't shared my training routine.", presentation: "text" },
+      { question: "What is your MBTI?", message: "I describe myself as ENTP, with curiosity and an interest in different perspectives.", presentation: "text" },
+      { question: "Do you have a dog?", message: "Yes, my dog Luca is a Bichon Frise. I reported him as 11 years old on October 21, 2026.", presentation: "text" },
+      { question: "What did you do on Whatnot?", message: "I collaborated with friends on livestream selling during college. Our reported peak monthly gross sales were USD 22,000 and lifetime gross sales were USD 150,000; those are sales, not profit or my personal income.", presentation: "text" },
+      { question: "你的国籍是什么？", message: "我是中国人。", presentation: "text", expectedReference: { nationalIdentity: "Chinese" } },
+      { question: "你在哪里长大？", message: "我在北京长大。", presentation: "text", expectedReference: { grewUpIn: "Beijing" } },
+      { question: "你读的是哪所高中？", message: "我提供的高中名称是二中，还没有补充学校全称。", presentation: "text", expectedReference: { highSchool: "二中", highSchoolNote: "Hongxiang supplied only 二中; the specific school's full name is unconfirmed." } },
+      { question: "你的父母在做什么？", message: "我的父母在北京做生意。", presentation: "text", expectedReference: { parents: { activity: "Run a business", location: "Beijing" } } },
+      { question: "你的姐姐在哪工作？", message: "我的姐姐在 Los Angeles 工作。", presentation: "text", expectedReference: { sister: { activity: "Works", location: "Los Angeles" } } },
+      { question: "Do you need sponsorship?", message: "I haven't shared my visa, work authorization or sponsorship requirements.", presentation: "text" },
       {
         question: "Who are you?",
         message: "I'm Hongxiang Wang, a full-stack engineer.",
@@ -252,6 +264,9 @@ test(
       assert.equal(response.status, 200);
       const payload = await response.json();
       assert.equal(payload.message, testCase.message);
+      const toolRequest = requests.at(-1).input.find(item => item.type === "function_call_output");
+      assert.deepEqual(JSON.parse(toolRequest.output).agentReference, testCase.expectedReference,
+        "background is supplied only for the current direct question, not every tool result");
 
       if (testCase.presentation === "profile_card") {
         const { schools, interests, portrait, ...legacyProfile } = payload.module.profile;
@@ -284,6 +299,8 @@ test(
         assert.deepEqual(payload, { message: testCase.message, module: { type: "skills" } });
       } else if (testCase.presentation === "projects_card") {
         assert.deepEqual(payload, { message: testCase.message, module: { type: "projects" } });
+      } else if (testCase.presentation === "fun_facts_card") {
+        assert.deepEqual(payload, { message: testCase.message, module: { type: "fun_facts" } });
       } else if (testCase.presentation === "contact_card") {
         assert.deepEqual(payload, {
           message: testCase.message,
@@ -315,6 +332,34 @@ test(
     assert.equal(JSON.parse(toolResult.output).skills.languages.length, 8);
     assert.equal(JSON.parse(toolResult.output).skills.frameworks.length, 8);
     assert.equal(JSON.parse(toolResult.output).skills.tools.length, 10);
+    const fitness = JSON.parse(toolResult.output).fitness;
+    assert.deepEqual(fitness.lifts, [
+      { id: "squat", label: "Squat", weightKg: 200 },
+      { id: "bench", label: "Bench press", weightKg: 160 },
+      { id: "deadlift", label: "Deadlift", weightKg: 200 },
+    ]);
+    assert.equal(fitness.totalKg, 560);
+    assert.match(fitness.recordsNote, /Self-reported/);
+    assert.match(fitness.recordsNote, /not a verified competition total/);
+    assert.equal(fitness.videoStatus, "not_provided");
+    assert.deepEqual(fitness.unsharedDetails, ["Body weight", "Training history", "Training frequency", "Competition results"]);
+    const personal = JSON.parse(toolResult.output).personal;
+    assert.equal(personal.personality.mbti, "ENTP");
+    assert.deepEqual(personal.pet, { name: "Luca", breed: "Bichon Frise", reportedAgeYears: 11, ageReportedAt: "2026-10-21" });
+    assert.match(personal.personality.note, /not a scientific assessment/);
+    assert.deepEqual(personal.interests, ["Fitness", "Travel", "Skydiving", "Skiing", "Gaming", "Spending time with friends", "LeetCode", "SaaS companies"]);
+    assert.equal(personal.notion.url, "https://app.notion.com/p/316ea0b55422803cbd1dd44fe5bfb6ff?source=copy_link");
+    assert.equal(personal.whatnot.peakMonthlyGrossSalesUsd, 22_000);
+    assert.equal(personal.whatnot.lifetimeGrossSalesUsd, 150_000);
+    assert.match(personal.whatnot.metricsNote, /gross sales.*not profit.*personal income/);
+    assert.deepEqual(personal.whatnot.unsharedDetails, ["Exact dates", "Ownership structure", "Account", "Profit", "Personal income"]);
+    assert.doesNotMatch(JSON.stringify(personal), /Chinese|Beijing|二中|Los Angeles|Politics|parents|sister|green card/i);
+    assert.match(requests[0].instructions, /message is the visible AI summary/);
+    assert.match(requests[0].instructions, /No agentReference details belong in this summary/);
+    assert.match(requests[0].instructions, /gross sales, not profit/);
+    assert.match(requests[0].instructions, /never expand it to a guessed school's full name/);
+    assert.match(requests[0].instructions, /do not infer a birth date or calculate an exact current age/);
+    assert.match(requests[0].instructions, /do not describe Luca as permanently 11/);
     assert.equal(requests[1].text.format.type, "json_schema");
     assert.equal(requests[1].text.format.strict, true);
     assert.deepEqual(requests[1].text.format.schema.properties.presentation.enum, [
@@ -323,6 +368,7 @@ test(
       "contact_card",
       "projects_card",
       "skills_card",
+      "fun_facts_card",
     ]);
   },
 );

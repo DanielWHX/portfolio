@@ -1,13 +1,15 @@
 import { contactProfile, type ContactCardData } from "./contact-profile";
 import { getResumeOverviewCard, type ResumeOverviewCard } from "./resume-profile";
 import { getQuickQuestion, type QuickQuestionLabel } from "./quick-questions";
+import { FUN_FACTS_REVISION } from "./fun-facts";
 
 export type ConversationMessage = {
   role: "user" | "assistant";
   content: string;
-  module?: { type: "profile"; profile: ResumeOverviewCard } | { type: "contact"; contact: ContactCardData } | { type: "projects" } | { type: "skills" };
+  module?: { type: "profile"; profile: ResumeOverviewCard } | { type: "contact"; contact: ContactCardData } | { type: "projects" } | { type: "skills" } | { type: "fun_facts" };
   restored?: boolean;
   preset?: QuickQuestionLabel;
+  factsRevision?: string;
 };
 
 const STORAGE_KEY = "portfolio.chat.v1";
@@ -25,18 +27,25 @@ export function readChatSession(): { messages: ConversationMessage[]; draft: str
     for (const [index, item] of saved.messages.entries()) {
       if (!item || item.role !== (index % 2 ? "assistant" : "user") ||
         typeof item.content !== "string" || !item.content.trim() || item.content.length > 1000 ||
-        (item.card !== undefined && (item.role !== "assistant" || !["profile", "contact", "projects", "skills"].includes(item.card))) ||
-        (item.preset !== undefined && (item.role !== "assistant" || getQuickQuestion(messages[index - 1]?.content ?? "")?.label !== item.preset))) return empty;
+        (item.card !== undefined && (item.role !== "assistant" || !["profile", "contact", "projects", "skills", "fun_facts"].includes(item.card))) ||
+        (item.preset !== undefined && (item.role !== "assistant" || getQuickQuestion(messages[index - 1]?.content ?? "")?.label !== item.preset)) ||
+        (item.factsRevision !== undefined && (item.role !== "assistant" || typeof item.factsRevision !== "string" || item.factsRevision.length > 80))) return empty;
+      // Older gym-only answers remain readable, but must not hide the expanded
+      // personal profile behind an outdated successful preset cache entry.
+      const staleFacts = (item.card === "fun_facts" || item.preset === "Fun Facts") && item.factsRevision !== FUN_FACTS_REVISION;
+      const card = staleFacts ? undefined : item.card;
       messages.push({
         role: item.role,
         content: item.content,
         restored: true,
-        ...(item.preset ? { preset: item.preset } : {}),
+        ...(item.preset && !staleFacts ? { preset: item.preset } : {}),
+        ...(item.factsRevision && !staleFacts ? { factsRevision: item.factsRevision } : {}),
         // Rebuild cards from current approved data rather than stored copies.
-        ...(item.card === "profile" ? { module: { type: "profile", profile: getResumeOverviewCard(item.content) } } :
-          item.card === "skills" ? { module: { type: "skills" } } :
-          item.card === "projects" ? { module: { type: "projects" } } :
-          item.card === "contact" ? { module: { type: "contact", contact: contactProfile } } : {}),
+        ...(card === "fun_facts" || (!staleFacts && card === undefined && item.preset === "Fun Facts") ? { module: { type: "fun_facts" } } :
+          card === "profile" ? { module: { type: "profile", profile: getResumeOverviewCard(item.content) } } :
+          card === "skills" ? { module: { type: "skills" } } :
+          card === "projects" ? { module: { type: "projects" } } :
+          card === "contact" ? { module: { type: "contact", contact: contactProfile } } : {}),
       });
     }
     return { messages, draft: saved.draft };
@@ -51,7 +60,7 @@ export function saveChatSession(messages: ConversationMessage[], draft: string) 
   try {
     sessionStorage.setItem(STORAGE_KEY, JSON.stringify({
       version: 1,
-      messages: messages.map(({ role, content, module, preset }) => ({ role, content, card: module?.type, preset })),
+      messages: messages.map(({ role, content, module, preset, factsRevision }) => ({ role, content, card: module?.type, preset, factsRevision })),
       draft,
     }));
   } catch {
