@@ -6,11 +6,13 @@ import ProfileCard from "./ProfileCard";
 import ContactCard from "./ContactCard";
 import ProjectsCard from "./ProjectsCard";
 import SkillsCard from "./SkillsCard";
+import FunFactCard from "./FunFactCard";
 import QuickQuestionIcon from "./QuickQuestionIcon";
 import AnimatedText from "./AnimatedText";
 import FollowupQuestions from "./FollowupQuestions";
 import useFollowupQuestions from "./useFollowupQuestions";
 import { getQuickQuestion, quickQuestions } from "@/lib/portfolio/quick-questions";
+import { FUN_FACTS_REVISION } from "@/lib/portfolio/fun-facts";
 
 import { clearChatSession, readChatSession, saveChatSession, type ConversationMessage as Message } from "@/lib/portfolio/chat-session";
 
@@ -104,6 +106,7 @@ export default function ChatClient({ initialQuery }: { initialQuery: string }) {
             content: payload.message,
             module: payload.module,
             ...(preset ? { preset: preset.label } : {}),
+            ...(preset?.label === "Fun Facts" || payload.module?.type === "fun_facts" ? { factsRevision: FUN_FACTS_REVISION } : {}),
           },
         ];
         setMessages(completedMessages);
@@ -198,6 +201,8 @@ export default function ChatClient({ initialQuery }: { initialQuery: string }) {
               <ProjectsCard />
             ) : message.role === "assistant" && message.module?.type === "contact" ? (
               <ContactCard contact={message.module.contact} />
+            ) : message.role === "assistant" && (message.module?.type === "fun_facts" || message.preset === "Fun Facts") ? (
+              <FunFactCard summary={message.content} />
             ) : (
               <div className={`chat-message chat-message-${message.role}`}>
                 {message.role === "assistant" ? <AnimatedText text={message.content} /> : message.content}

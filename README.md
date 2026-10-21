@@ -44,7 +44,9 @@ Open [http://localhost:3000](http://localhost:3000).
 The agent can discuss Hongxiang's background and interests, as well as general
 conversation, technology, fitness, and SaaS ideas. Personal claims stay grounded
 in the shared profile. All five quick questions are available on the homepage and above the chat input.
-Me, Contact, Projects, and Skills can return cards; Fun Facts uses text answers.
+Me, Contact, Projects, and Skills can return cards. Fun Facts starts with an AI
+summary and compact TopGym, LeetCode notes, Whatnot and travel Footprints entries;
+TopGym expands on demand, while the last two destinations are coming soon.
 Ask for contact details in English or Chinese to receive a Contact Card.
 
 ## Verification

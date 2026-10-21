@@ -424,7 +424,7 @@ h1 {
 }
 
 .chat-turn { display: flex; flex-direction: column; flex-shrink: 0; min-width: 0; }
-.chat-turn-restored, .chat-turn-restored * { animation: none !important; }
+.chat-turn-restored, .chat-turn-restored > :not(.gym-card):not(.fun-facts-card), .chat-turn-restored > :not(.gym-card):not(.fun-facts-card) *, .chat-turn-restored .fun-facts-summary * { animation: none !important; }
 .chat-turn-user { align-items: flex-end; }
 .chat-turn-assistant { align-items: flex-start; }
 .chat-quick-questions {

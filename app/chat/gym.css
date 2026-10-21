@@ -1,0 +1,156 @@
+.gym-card { --gym-ink: #354448; --gym-pink: #d65a83; --gym-mint: #c4e4cc; width: 100%; min-width: 0; overflow: hidden; border: 1px solid #e1e8ed; border-radius: 22px; background: #fff; color: var(--gym-ink); }
+.gym-heading { padding: 25px 28px 23px; }
+.gym-total { margin: 0; text-align: left; }
+.gym-total > span { display: block; color: #7e9488; font: 10px/1.5 ui-monospace, SFMono-Regular, Menlo, monospace; letter-spacing: 1.8px; }
+.gym-total > strong { display: block; margin-top: 7px; font: 700 clamp(42px, 7vw, 52px)/1 ui-monospace, SFMono-Regular, Menlo, monospace; letter-spacing: -3px; color: #4c6b60; }
+.gym-total > strong small { font-size: 21px; font-weight: 400; letter-spacing: -1px; }
+.gym-records { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 9px; margin: 0 28px 20px; }
+.gym-record { position: relative; min-width: 0; display: grid; grid-template-columns: 1fr auto; gap: 5px; padding: 12px 13px; border: 1px solid #e6eae7; border-radius: 10px; background: #fafcfb; color: #526962; cursor: pointer; text-align: left; transition: background .15s, border-color .15s, transform .15s; }
+.gym-record-index { font: 9px/1.2 ui-monospace, SFMono-Regular, Menlo, monospace; opacity: .5; }
+.gym-record-name { grid-column: 1 / -1; font-size: 12px; }
+.gym-record > strong { grid-column: 2; grid-row: 1; font: 700 14px/1 ui-monospace, SFMono-Regular, Menlo, monospace; white-space: nowrap; }
+.gym-record > strong small { font-size: 9px; font-weight: 400; }
+.gym-record[aria-pressed=true] { color: #a84665; border-color: #eab8c7; background: #fff3f6; }
+.gym-record[aria-pressed=true]::after { content: ""; position: absolute; width: 5px; height: 5px; bottom: 13px; right: 13px; background: #d66c8e; box-shadow: 3px 0 #d66c8e, 0 3px #d66c8e, 3px 3px #d66c8e; }
+.gym-record:hover { transform: translateY(-2px); border-color: #d4b4bd; }
+.gym-card button:focus-visible, .gym-card a:focus-visible, .gym-page-nav a:focus-visible { outline: 3px solid #6b9e98; outline-offset: 4px; }
+.gym-room { position: relative; height: 290px; overflow: hidden; isolation: isolate; background: #fbf4e8; border-block: 1px solid #ede8db; }
+.gym-room::before { content: ""; position: absolute; inset: 0; opacity: .23; background-image: radial-gradient(#bcb29a .65px, transparent .65px); background-size: 6px 6px; pointer-events: none; }
+.gym-floor { position: absolute; z-index: -1; inset: 72% 0 0; border-top: 7px solid #dce4d5; box-shadow: 0 -2px #c7d2c0; background: repeating-linear-gradient(90deg, transparent 0 83px, #c4d2bd4d 83px 85px), repeating-linear-gradient(0deg, transparent 0 25px, #c4d2bd4d 25px 27px), #e8ecdd; transform-origin: top; }
+.gym-window { position: absolute; left: 9%; top: 32px; width: 78px; height: 74px; border: 6px solid #e4dac6; background: #d9edf0; box-shadow: 3px 3px #cdbfa541, inset 0 0 0 2px #b8d9dd; }
+.gym-window::after, .gym-window::before { content: ""; position: absolute; z-index: 1; background: #e4dac6; }
+.gym-window::after { left: 30px; top: 0; width: 5px; bottom: 0; }
+.gym-window::before { left: 0; right: 0; height: 5px; top: 30px; }
+.gym-window i { position: absolute; left: 7px; top: 15px; width: 22px; height: 7px; background: #fffaf1; box-shadow: 6px -5px #fffaf1, 14px 2px #fffaf1; }
+.gym-window i:nth-child(2) { left: 37px; top: 40px; width: 10px; }
+.gym-wall-sign { position: absolute; left: 50%; top: 20px; transform: translateX(-50%); padding: 7px 12px; border: 2px solid #d7ceba; background: #fffcf3; color: #9e9b81; text-align: center; font: 8px/1.6 ui-monospace, SFMono-Regular, Menlo, monospace; letter-spacing: 1.5px; box-shadow: 2px 2px #d7ceba40; }
+.gym-wall-sign b { font-size: 10px; color: #718573; }
+.gym-wall-clock { position: absolute; top: 35px; right: 12%; width: 35px; height: 35px; border: 4px solid #d1cfba; background: #fffdf6; clip-path: polygon(20% 0,80% 0,80% 10%,100% 10%,100% 90%,80% 90%,80% 100%,20% 100%,20% 90%,0 90%,0 10%,20% 10%); }
+.gym-wall-clock i { position: absolute; left: 12px; top: 4px; height: 11px; width: 3px; background: #8b9a83; }
+.gym-wall-clock span { position: absolute; left: 12px; top: 13px; width: 9px; height: 3px; background: #8b9a83; }
+.gym-rack { position: absolute; bottom: 62px; left: 6%; width: 94px; height: 61px; border-bottom: 5px solid #a0ae9c; }
+.gym-rack::before, .gym-rack::after { content: ""; position: absolute; height: 58px; width: 5px; background: #acb8a6; bottom: 0; left: 11px; }
+.gym-rack::after { left: auto; right: 11px; }
+.gym-rack i { position: absolute; left: 3px; top: 12px; width: 87px; height: 4px; background: #a0ae9c; }
+.gym-rack i:nth-child(2) { top: 32px; }
+.gym-rack i:nth-child(3) { top: 48px; }
+.gym-rack span { position: absolute; left: 13px; top: 3px; width: 13px; height: 16px; background: #b9c9c7; box-shadow: 4px 0 #8ca6a1, 22px 0 #dcc6b2, 26px 0 #b8a291, 44px 0 #d1b2ba, 48px 0 #ac8d97; }
+.gym-rack span:nth-of-type(2) { top: 23px; }
+.gym-rack span:nth-of-type(3) { top: 39px; }
+.gym-plant { position: absolute; left: 25%; bottom: 79px; width: 24px; height: 32px; }
+.gym-plant b { position: absolute; bottom: 0; width: 24px; height: 17px; background: #d8b89d; border-bottom: 4px solid #c9a487; }
+.gym-plant i { position: absolute; bottom: 10px; left: 10px; width: 5px; height: 32px; background: #91ab8d; }
+.gym-plant span { position: absolute; left: 0; top: 8px; width: 11px; height: 10px; background: #a6bb99; box-shadow: 14px -7px #a6bb99; }
+.gym-tv { position: absolute; right: 6%; bottom: 81px; width: 93px; height: 79px; padding: 6px 7px 12px; background: #b6c4b4; box-shadow: 3px 3px #8b9b8b; }
+.gym-tv > div { position: absolute; inset: 6px 7px 12px; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 4px; background: #eaf0d9; box-shadow: inset 2px 2px #91a18c; color: #6b8067; }
+.gym-tv b { font: 8px/1 ui-monospace, SFMono-Regular, Menlo, monospace; letter-spacing: 1px; }
+.gym-tv small { font: 6px/1 ui-monospace, SFMono-Regular, Menlo, monospace; }
+.gym-tv > span { position: absolute; bottom: -14px; height: 12px; width: 8px; left: 41px; background: #a1b29d; box-shadow: -14px 11px #a1b29d, -7px 11px #a1b29d, 0 11px #a1b29d, 7px 11px #a1b29d, 14px 11px #a1b29d; }
+.gym-tv > i { position: absolute; right: 7px; bottom: 4px; height: 3px; width: 3px; background: #f4f4d8; }
+.gym-play-triangle { width: 10px; height: 10px; background: #a9be95; clip-path: polygon(0 0,100% 50%,0 100%); }
+.gym-mat { position: absolute; left: 50%; bottom: 34px; width: 44%; height: 33px; transform: translateX(-50%); background: #c5d5c5; box-shadow: 4px 4px #b6c9b9; }
+.gym-character-shadow { position: absolute; left: 50%; bottom: 43px; width: 120px; height: 13px; transform: translateX(-50%); border-radius: 50%; background: #5c786a22; }
+.gym-lifter { position: absolute; left: 50%; bottom: 47px; height: 175px; width: 220px; transform: translateX(-50%); transform-origin: bottom center; }
+.gym-sprite { position: absolute; inset: 0; display: block; width: 100%; height: 100%; object-fit: contain; image-rendering: pixelated; user-select: none; -webkit-user-drag: none; pointer-events: none; }
+.gym-sprite-idle { opacity: 0; animation: gym-breathe 3s steps(2, end) infinite; }
+.gym-sprite-action { opacity: 1; animation: gym-breathe 3s steps(2, end) infinite; }
+.gym-sprite-finish { opacity: 0; }
+.gym-card[data-phase=charging] .gym-sprite-action, .gym-card[data-phase=lifting] .gym-sprite-action { animation: none; }
+.gym-card[data-phase=lifting] .gym-sprite-finish { animation: gym-finish-frame .65s steps(1, end) both; }
+.gym-card[data-phase=lifting] .gym-sprite-action { animation: gym-start-frame .65s steps(1, end) both; }
+.gym-card[data-phase=success] .gym-sprite-finish { opacity: 1; }
+.gym-card[data-phase=success] .gym-sprite-action, .gym-card[data-activity=rest] .gym-sprite-action { opacity: 0; }
+.gym-card[data-activity=rest] .gym-sprite-idle { opacity: 1; }
+.gym-card[data-phase=charging] .gym-lifter { transform: translateX(-50%) translateY(calc(var(--power) * 5px)); }
+.gym-card[data-phase=lifting] .gym-lifter { animation: gym-lift .65s steps(5, end) both; }
+.gym-card[data-activity=bench][data-phase=lifting] .gym-lifter { animation: none; }
+.gym-card[data-phase=miss] .gym-lifter { animation: gym-wobble .3s steps(3, end); }
+.gym-card[data-activity=bench] .gym-lifter { width: 260px; height: 180px; }
+.gym-card[data-activity=rest] .gym-lifter { height: 140px; bottom: 45px; transform: translateX(-50%) rotate(-7deg); }
+.gym-rest-bubble { display: none; position: absolute; right: 3px; top: -12px; color: #8a9d91; font: 700 18px/1 ui-monospace, SFMono-Regular, Menlo, monospace; }
+.gym-rest-bubble span { position: absolute; top: -13px; left: 16px; font-size: 13px; }
+.gym-rest-bubble small { position: absolute; top: -23px; left: 30px; font-size: 9px; }
+.gym-card[data-activity=rest] .gym-rest-bubble { display: block; animation: gym-snooze 2s steps(3, end) infinite; }
+.gym-sparkles { pointer-events: none; position: absolute; left: 50%; top: 54%; }
+.gym-sparkles > span { position: absolute; display: none; color: #e1ad54; width: 15px; height: 15px; }
+.gym-sparkles > span:nth-child(even) { color: #91bca1; }
+.gym-sparkles svg, .gym-rep-stars svg { display: block; width: 100%; height: 100%; }
+.gym-card[data-phase=success] .gym-sparkles > span { display: block; animation: gym-stars .85s steps(7, end) both; --x: calc((var(--i) - 2) * 39px); --y: calc(-80px + var(--i) * 9px); animation-delay: calc(var(--i) * 35ms); }
+.gym-room-label { position: absolute; left: 16px; bottom: 13px; display: flex; align-items: center; gap: 6px; color: #7c927f; font: 8px/1 ui-monospace, SFMono-Regular, Menlo, monospace; letter-spacing: .7px; }
+.gym-live-dot { width: 4px; height: 4px; background: #8ba287; }
+.gym-room-coordinate { position: absolute; right: 15px; bottom: 13px; color: #9aa892; font: 7px/1 ui-monospace, SFMono-Regular, Menlo, monospace; letter-spacing: .7px; }
+.gym-console { padding: 20px 28px 18px; }
+.gym-set-row { display: flex; align-items: center; justify-content: space-between; }
+.gym-console-label { color: #87958e; font: 9px/1.5 ui-monospace, SFMono-Regular, Menlo, monospace; letter-spacing: 1.2px; }
+.gym-rep-stars { display: flex; gap: 7px; color: #b6cdc0; }
+.gym-rep-stars > span { display: block; width: 19px; height: 19px; }
+.gym-rep-stars > span.is-filled { color: #d9a546; filter: drop-shadow(0 1px 1px #c0a36926); }
+.gym-feedback { margin: 9px 0 17px; min-height: 20px; font-size: 12px; line-height: 1.6; color: #687d74; }
+.gym-meter { position: relative; height: 22px; background: #f0f1ec; border: 1px solid #e4e7dd; border-radius: 5px; }
+.gym-meter-zone { position: absolute; inset: -1px 10% -1px 65%; background: #cae8cf; border: 1px solid #a6cdb0; }
+.gym-meter-zone > span { display: block; text-align: center; color: #72977c; font: 7px/20px ui-monospace, SFMono-Regular, Menlo, monospace; letter-spacing: .5px; }
+.gym-meter-tick { position: absolute; top: -4px; bottom: -4px; width: 4px; margin-left: -2px; background: #526c61; box-shadow: 2px 0 #ffffff99; }
+.gym-meter-cap { position: absolute; top: 6px; left: 7px; width: 2px; height: 8px; background: #d7ddd3; box-shadow: 14px 0 #d7ddd3, 28px 0 #d7ddd3; }
+.gym-actions { display: flex; gap: 10px; margin-top: 14px; }
+.gym-lift-button { display: inline-flex; justify-content: center; align-items: center; gap: 9px; flex: 1; padding: 12px 17px; min-height: 44px; border-radius: 8px; border: 1px solid #dba1b5; background: #e6a7bd; color: #543845; box-shadow: 0 3px #d197ac; font-size: 12px; font-weight: 600; cursor: pointer; touch-action: none; user-select: none; -webkit-user-select: none; }
+.gym-lift-button:hover { background: #edb5c9; }
+.gym-lift-button:active { transform: translateY(2px); box-shadow: 0 1px #d197ac; }
+.gym-lift-button:disabled { opacity: .65; cursor: wait; }
+.gym-rest-button { display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 10px 13px; min-height: 44px; border: 1px solid #e3e8e2; border-radius: 8px; color: #78897d; background: #fafbf8; cursor: pointer; font-size: 11px; }
+.gym-rest-button > span { font-size: 13px; filter: grayscale(.6); }
+.gym-sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+.gym-rest-content { display: flex; align-items: center; justify-content: space-between; gap: 15px; min-height: 102px; }
+.gym-rest-content > p { margin: 0; font-size: 11px; line-height: 1.8; color: #809082; }
+.gym-rest-content > button { flex: 0 0 auto; }
+.gym-page { max-width: 720px; margin: 0 auto; padding: 28px 28px 38px; }
+.gym-page-nav { display: flex; justify-content: space-between; gap: 16px; margin-bottom: 27px; font-size: 12px; color: #7c8e87; }
+@keyframes gym-breathe { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
+@keyframes gym-lift { 0% { transform: translateX(-50%) translateY(4px) scaleY(.98); } 65% { transform: translateX(-50%) translateY(-12px) scaleY(1.05); } 100% { transform: translateX(-50%) translateY(-2px); } }
+@keyframes gym-finish-frame { 0% { opacity: 0; } 45%,100% { opacity: 1; } }
+@keyframes gym-start-frame { 0% { opacity: 1; } 45%,100% { opacity: 0; } }
+@keyframes gym-wobble { 0%,100% { transform: translateX(-50%); } 35% { transform: translateX(calc(-50% - 5px)); } 70% { transform: translateX(calc(-50% + 5px)); } }
+@keyframes gym-stars { from { opacity: 1; transform: translate(0,0) scale(.4); } to { opacity: 0; transform: translate(var(--x),var(--y)) scale(1.2); } }
+@keyframes gym-snooze { 0%,100% { opacity: .3; transform: translateY(0); } 50% { opacity: .9; transform: translateY(-6px); } }
+@media (max-width: 480px) {
+  .gym-heading { padding: 22px 18px 20px; }
+  .gym-total > strong { font-size: 44px; }
+  .gym-total > strong small { font-size: 18px; }
+  .gym-total > span { font-size: 9px; letter-spacing: 1.4px; }
+  .gym-records { margin: 0 18px 17px; gap: 7px; }
+  .gym-record { padding: 11px 9px; gap: 8px; }
+  .gym-record-index { font-size: 7px; }
+  .gym-record-name { font-size: 10px; }
+  .gym-record > strong { font-size: 12px; }
+  .gym-record > strong small { font-size: 7px; }
+  .gym-record[aria-pressed=true]::after { right: 9px; bottom: 12px; width: 3px; height: 3px; box-shadow: 2px 0 #d66c8e, 0 2px #d66c8e, 2px 2px #d66c8e; }
+  .gym-room { height: 255px; }
+  .gym-window { left: 6%; width: 51px; height: 62px; }
+  .gym-window::after { left: 20px; }
+  .gym-wall-sign { font-size: 6px; letter-spacing: .6px; padding: 6px; }
+  .gym-wall-sign b { font-size: 8px; }
+  .gym-wall-clock { right: 8%; width: 30px; height: 30px; }
+  .gym-wall-clock i { left: 9px; }
+  .gym-wall-clock span { left: 9px; }
+  .gym-rack { left: 5%; transform: scale(.65); transform-origin: bottom left; }
+  .gym-plant { display: none; }
+  .gym-tv { right: 4%; bottom: 70px; transform: scale(.7); transform-origin: bottom right; }
+  .gym-lifter { height: 157px; width: 188px; bottom: 39px; }
+  .gym-card[data-activity=bench] .gym-lifter { width: 210px; height: 160px; }
+  .gym-mat { bottom: 27px; width: 49%; }
+  .gym-character-shadow { bottom: 37px; }
+  .gym-room-label { left: 12px; font-size: 7px; }
+  .gym-room-coordinate { display: none; }
+  .gym-console { padding: 17px 18px 16px; }
+  .gym-feedback { font-size: 11px; min-height: 34px; margin-bottom: 10px; }
+  .gym-console-label { font-size: 8px; }
+  .gym-lift-button { font-size: 11px; padding-inline: 11px; }
+  .gym-rest-button { padding-inline: 10px; font-size: 10px; }
+  .gym-rest-content { align-items: flex-start; flex-direction: column; gap: 14px; }
+  .gym-rest-content > button { width: 100%; }
+  .gym-page { padding: 22px 14px 30px; }
+  .gym-page-nav { font-size: 11px; margin-bottom: 22px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .gym-card *, .gym-card *::before, .gym-card *::after { animation: none !important; transition: none !important; }
+  .gym-card[data-phase=success] .gym-sparkles > span { opacity: 1; transform: translate(calc((var(--i) - 2) * 24px), -35px); }
+}
