@@ -7,6 +7,7 @@ Interactive portfolio for Hongxiang Wang, a full-stack software engineer.
 - Minimal single-screen introduction and question interface
 - Conversational portfolio voice powered by `gpt-5.6-luna`
 - Read-only `get_resume_profile` tool backed by approved resume facts and shared interests
+- Two context-aware AI follow-up suggestions above the chat shortcuts, with a light upward entrance and reduced-motion support
 - Personal Profile Card with a corrected portrait, university logos, and sourced rankings
 - Contact Card with copy buttons for email, phone, GitHub, LinkedIn, and WeChat
 - WebGL fluid cursor with colorful, fading ink trails
@@ -25,7 +26,7 @@ Interactive portfolio for Hongxiang Wang, a full-stack software engineer.
 
 Requires Node.js 22.13 or newer.
 
-Create `.env.local` with a newly generated runtime key (never commit it):
+Create `.dev.vars` in the project root with a runtime key (never commit it):
 
 ```bash
 OPENAI_API_KEY=your_new_key_here
@@ -85,6 +86,30 @@ Before release, also check the real model on the private deployed site:
 - Confirm the answer agrees with the approved resume and Thinking stops.
 
 Mocks verify the UI and API contract; this live check verifies real-model behavior.
+
+The Cloudflare development Worker reads `.dev.vars`; when that file exists,
+Wrangler skips `.env*` and host environment variables for its bindings. Restart
+`npm run dev` after changing the key. A 503 response saying the agent is not
+configured means the running local Worker has no key. Production server secrets
+are separate and are not copied automatically to local checkouts.
+
+## Suggested questions
+
+After a successful Me, Projects, Skills, or Fun Facts answer, two relevant
+questions appear above the five shortcuts. They use the approved profile and
+project facts plus the recent conversation. Clicking one sends a normal chat
+question; New ideas generates a fresh pair. The last 12 displayed suggestions
+and recently asked questions are excluded to reduce repetition. Unknown personal
+details such as nationality, visa status, and sponsorship are not suggested.
+
+Main answers retain the existing tab-local cache. Repeating a preset immediately
+focuses its cached answer while `/api/followups` generates new questions in the
+background. Each suggestion generation makes one additional bounded model call;
+it is not free just because the main answer is cached. Rapid switches cancel
+outdated requests, and failed generation never blocks the answer or input.
+Contact, New chat, and the 15-question limit hide suggestions. There is no static
+question-bank fallback and no claim that this Portfolio currently queries a
+live vector database.
 
 ## Conversational acceptance check
 
