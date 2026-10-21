@@ -6,20 +6,27 @@
 - Agent 增加 Luca：比熊，2026-10-21 记录时 11 岁；不推算生日或永久固定年龄，Profile Card 保持不变。
 - v0.2.0 汇总当天的像素健身房、TopGym 精简、Fun Facts 总结入口与个人资料更新；密钥、生成目录和本地测试产物不进入 Git。
 
+### 生产上线验收
+- [PR #17](https://github.com/DanielWHX/portfolio/pull/17) 与 [PR #18](https://github.com/DanielWHX/portfolio/pull/18) 已合并。v0.2.0 已上线至 [正式网站](https://hongxiangwang1017.com/chat)，功能来源 `36e6ab6cd94fe426d8f61f464187a8b258cd7264`；Linux 构建补齐 lockfile 缺项并沿用 Node 部署配置，本次一并提交两处构建修正。
+- 生产镜像 `3897eb27c2a3` 健康运行；保留 `127.0.0.1:3000`、1GiB 内存、`unless-stopped` 与原服务器凭据。首页、聊天页、`/gym` 和 7 张像素素材 HTTPS 200，HTTP/www 返回 301。
+- 公网真实 AI 验证 Fun Facts 总结及四入口、Luca 的比熊品种和带日期年龄记录；Me 仍只显示原有两个兴趣标签，未加入宠物或家庭资料。
+- 公网首次 Fun Facts、重复点击、刷新后再次点击合计仅 1 次 `/api/chat`；TopGym 完成三次举重并点亮三颗星，游戏操作新增 API 请求为 0。
+- 新旧两个测试容器均已清理；临时 SSH 公钥已从服务器撤销，原有登录配置保留。旧镜像、配置、构建补丁、回滚脚本及真实验收结果保存在服务器 `/home/ubuntu/deploy-backups/portfolio-20261021-v020`。详见 [部署记录](docs/deployment-v0.2.0.md)。
+
 ### Fun Facts 总结与入口
 - Fun Facts 先展示基于新公开资料生成的 AI 总结，再显示紧凑的 TopGym、LeetCode notes、Whatnot 和 Footprints 入口；TopGym 点击展开，Whatnot 与旅行足迹标记 Coming soon。
 - TopGym 移除旧名称、kicker、tagline、footer 与可见操作说明；THE BIG THREE / 560 kg 成为主标题，计数和完成效果改为标准五角星。
 - Agent 增加 ENTP 自述、好奇心、多角度思考、跨地区交流、旅行/跳伞/滑雪/游戏/朋友/LeetCode，以及大学 Whatnot 合作经历。22,000 美元最高月流水和150,000美元总流水严格区分利润、个人收入与持股。
 - 国籍、成长地、高中、家庭和内容偏好仅在直接相关提问时提供给 Agent，不加入 Profile Card、Fun Facts 总结或主动追问；前端产物检查未含这些背景值。高中保留原始「二中」，不猜学校全称。
 - 旧 Fun Facts 缓存保留可读历史，下一次点击时为扩展后的资料刷新一次；之后重复点击和刷新仍复用新总结。LeetCode 使用用户提供的 Notion 链接，未宣称已读取笔记内容。
-- 本次验证：Build、TypeScript、22 项 API 检查、57 项浏览器检查通过；ESLint 无错误、6 条原生图片建议。真实 AI Fun Facts 返回 200，生成多角度思考、兴趣、跨地区交流与 Whatnot 经历的总结；桌面和手机预览已检查。仅更新本地预览，服务器尚未部署。
+- 开发验证：Build、TypeScript、22 项 API 检查、57 项浏览器检查通过；ESLint 无错误、6 条原生图片建议。真实 AI Fun Facts 返回 200，生成多角度思考、兴趣、跨地区交流与 Whatnot 经历的总结；桌面和手机预览已检查。后续生产结果见本日「生产上线验收」。
 
 ### Kirby’s Gym 本地版本
 - Fun Facts 增加与现有白色细边卡片协调的 2D 像素健身房；深蹲、卧推、硬拉和休息可切换，蓄力进入薄荷绿色区间后松开，三次成功完成一组并显示星星。
 - 展示已确认的深蹲 200 kg、卧推 160 kg、硬拉 200 kg；560 kg 仅为三项数值相加。资料同时提供给 AI，不虚构训练经历、体重、比赛成绩或视频。
 - 保留首次 AI、后续 cache 规则，并兼容已保存的文字 Fun Facts；卡片恢复后仍可操作。游戏本身不调用模型，独立 `/gym` 无需 API Key 即可试玩。
 - 支持键盘、鼠标及手机长按；失焦、触摸取消和切换动作会取消未完成的举重。支持 reduced-motion。真实举重视频尚未提供，电视仅保留后续入口的视觉位置。
-- 本地开发验证：Build、TypeScript、22 项 API 检查及 54 项浏览器回归通过；ESLint 无错误，有 6 条原生图片建议。手机与桌面布局已检查。本次尚未部署到服务器。
+- 此阶段本地验证：Build、TypeScript、22 项 API 检查及 54 项浏览器回归通过；ESLint 无错误，有 6 条原生图片建议。手机与桌面布局已检查；后续调整和生产验收见本日上方记录。
 
 ## 2026-10-19
 
