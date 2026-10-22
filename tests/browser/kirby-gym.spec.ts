@@ -14,7 +14,7 @@ test("the public gym shows approved records and plays a three-rep set without AP
   page.on("request", request => { if (request.url().includes("/api/")) apiRequests.push(request.url()); });
   await page.clock.install();
   await page.goto("/gym");
-  const gym = page.getByRole("article", { name: "TopGym" });
+  const gym = page.getByRole("article", { name: "Big Three Record" });
   await expect(gym).toBeVisible();
   await expect(page.getByRole("button", { name: /Squat.*200/ })).toHaveAttribute("aria-pressed", "true");
   await expect(page.getByRole("button", { name: /Bench press.*160/ })).toBeVisible();
@@ -50,7 +50,7 @@ test("early and late release do not award a rep; cancelled and interrupted holds
   await page.mouse.move(box!.x + 15, box!.y + 15);
   await page.mouse.down();
   await page.clock.runFor(1400);
-  await page.getByRole("button", { name: "Release in the mint zone", exact: false }).dispatchEvent("pointercancel", { pointerId: 1, pointerType: "mouse", isPrimary: true });
+  await page.getByRole("button", { name: "Release in the target zone", exact: false }).dispatchEvent("pointercancel", { pointerId: 1, pointerType: "mouse", isPrimary: true });
   await page.mouse.up();
   await expect(page.getByRole("progressbar", { name: "Lift power" })).toHaveAttribute("aria-valuenow", "0");
   await expect(page.getByLabel("0 of 3 reps completed")).toBeVisible();
@@ -65,7 +65,7 @@ test("a mouse release cannot complete a keyboard-owned hold", async ({ page }) =
   await page.keyboard.down("Space");
   await page.clock.runFor(1400);
   await page.mouse.click(box!.x + 20, box!.y + 20);
-  await expect(page.getByRole("button", { name: "Release in the mint zone", exact: false })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Release in the target zone", exact: false })).toBeVisible();
   await page.keyboard.up("Space");
   await page.clock.runFor(700);
   await expect(page.getByLabel("1 of 3 reps completed")).toBeVisible();
@@ -124,17 +124,20 @@ test("Fun Facts opens an AI summary with compact destinations and restores its s
   await quickFacts.click();
   const hub = page.getByRole("article", { name: "Fun Facts", exact: true });
   await expect(hub.getByText(factsSummary)).toBeVisible();
-  await expect(page.getByRole("article", { name: "TopGym" })).toHaveCount(0);
+  await expect(page.getByRole("article", { name: "Big Three Record" })).toHaveCount(0);
   await expect(hub.getByRole("link", { name: "LeetCode notes" })).toHaveAttribute("href", "https://app.notion.com/p/316ea0b55422803cbd1dd44fe5bfb6ff?source=copy_link");
   await expect(hub.getByRole("button", { name: /Whatnot/ })).toBeDisabled();
   await expect(hub.getByRole("button", { name: /Footprints/ })).toBeDisabled();
-  await hub.getByRole("button", { name: "TopGym", exact: true }).click();
-  const gym = page.getByRole("article", { name: "TopGym" });
+  await hub.getByRole("button", { name: "Big Three Record", exact: true }).click();
+  const gym = page.getByRole("article", { name: "Big Three Record" });
   await expect(gym).toBeVisible();
   await gym.getByRole("button", { name: /Bench press.*160/ }).click();
-  await quickFacts.click();
   await expect(gym.getByRole("button", { name: /Bench press.*160/ })).toHaveAttribute("aria-pressed", "true");
   await expect(gym.locator(".gym-sprite-action")).toHaveCSS("animation-name", "gym-breathe");
+  await page.keyboard.press("Escape");
+  await quickFacts.click();
+  await hub.getByRole("button", { name: "Big Three Record", exact: true }).click();
+  await expect(gym.getByRole("button", { name: /Squat.*200/ })).toHaveAttribute("aria-pressed", "true");
   await page.reload();
   await expect(hub).toBeVisible();
   await expect(gym).toHaveCount(0);
@@ -162,25 +165,25 @@ for (const card of [undefined, "fun_facts"]) {
 }
 
 for (const width of [390, 1280]) {
-  test(`Fun Facts destinations fit at ${width}px and TopGym opens on demand`, async ({ page }) => {
+  test(`Fun Facts destinations fit at ${width}px and Big Three Record opens on demand`, async ({ page }) => {
     await page.setViewportSize({ width, height: 900 });
     await page.route("**/api/chat", route => route.fulfill({ json: { message: factsSummary, module: { type: "fun_facts" } } }));
     await page.goto("/chat?query=Fun%20Facts");
     const hub = page.getByRole("article", { name: "Fun Facts", exact: true });
     await expect(hub).toBeVisible();
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
-    const button = hub.getByRole("button", { name: "TopGym", exact: true });
+    const button = hub.getByRole("button", { name: "Big Three Record", exact: true });
     await expect(button).toHaveAttribute("aria-expanded", "false");
     await page.screenshot({ path: test.info().outputPath(`fun-facts-${width}.png`), fullPage: true, animations: "disabled" });
     await button.click();
     await expect(button).toHaveAttribute("aria-expanded", "true");
-    const gym = page.getByRole("article", { name: "TopGym" });
+    const gym = page.getByRole("article", { name: "Big Three Record" });
     await expect(gym.getByRole("heading", { name: /THE BIG THREE 560 kg/ })).toBeVisible();
     await expect(gym.getByText("Kirby’s Gym", { exact: false })).toHaveCount(0);
     await expect(gym.getByText("Strong typing. Heavy lifting.")).toHaveCount(0);
     await expect(gym.getByRole("link", { name: /Open the gym/ })).toHaveCount(0);
     await expect(gym.locator(".gym-sr-only")).toHaveCSS("width", "1px");
-    await button.click();
+    await page.getByRole("button", { name: "Close Big Three Record", exact: true }).click();
     await expect(gym).toHaveCount(0);
   });
 }

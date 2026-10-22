@@ -142,7 +142,7 @@ test("contextual follow-ups through the public Worker endpoint", { concurrency: 
           ["squat", 200], ["bench", 160], ["deadlift", 200],
         ]);
         assert.equal(input.approvedProfile.fitness.totalKg, 560);
-        assert.equal(input.approvedProfile.fitness.videoStatus, "not_provided");
+        assert.equal(input.approvedProfile.fitness.videoStatus, "provided");
         assert.match(input.approvedProfile.fitness.recordsNote, /not a verified competition total/);
         assert.equal(input.approvedProfile.personal.personality.mbti, "ENTP");
         assert.deepEqual(input.approvedProfile.personal.pet, { name: "Luca", breed: "Bichon Frise", reportedAgeYears: 11, ageReportedAt: "2026-10-21" });
