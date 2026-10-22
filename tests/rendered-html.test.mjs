@@ -341,7 +341,7 @@ test(
     assert.equal(fitness.totalKg, 560);
     assert.match(fitness.recordsNote, /Self-reported/);
     assert.match(fitness.recordsNote, /not a verified competition total/);
-    assert.equal(fitness.videoStatus, "not_provided");
+    assert.equal(fitness.videoStatus, "provided");
     assert.deepEqual(fitness.unsharedDetails, ["Body weight", "Training history", "Training frequency", "Competition results"]);
     const personal = JSON.parse(toolResult.output).personal;
     assert.equal(personal.personality.mbti, "ENTP");

@@ -9,7 +9,13 @@ export const fitnessProfile = {
   ],
   totalKg: 560,
   recordsNote: "Self-reported lifts. 560 kg is the sum of these three lifts, not a verified competition total.",
-  videoStatus: "not_provided",
+  videoStatus: "provided",
+  videos: {
+    squat: "/gym/videos/squat.mp4",
+    bench: "/gym/videos/bench.mp4",
+    deadlift: "/gym/videos/deadlift.mp4",
+  },
+  videosNote: "Hongxiang supplied three training clips. Their availability does not independently verify the self-reported record weights.",
   unsharedDetails: ["Body weight", "Training history", "Training frequency", "Competition results"],
 } as const;
 

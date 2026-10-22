@@ -3,7 +3,7 @@
 import { useId, useState } from "react";
 import { funFactLinks } from "@/lib/portfolio/fun-facts";
 import AnimatedText from "./AnimatedText";
-import TopGymCard from "./TopGymCard";
+import GymExperienceDialog from "./GymExperienceDialog";
 import "./fun-facts.css";
 
 function InterestIcon({ kind }: { kind: "gym" | "code" | "live" | "travel" }) {
@@ -15,22 +15,25 @@ function InterestIcon({ kind }: { kind: "gym" | "code" | "live" | "travel" }) {
   </svg>;
 }
 
-export default function FunFactCard({ summary }: { summary: string }) {
+export default function FunFactCard({ summary, onGymOpenChange }: { summary: string; onGymOpenChange?: (open: boolean) => void }) {
   const [gymOpen, setGymOpen] = useState(false);
   const gymId = useId();
+
+  function setOpen(open: boolean) {
+    setGymOpen(open);
+    onGymOpenChange?.(open);
+  }
 
   return <article className="fun-facts-card" aria-label="Fun Facts">
     <p className="fun-facts-summary"><AnimatedText text={summary} /></p>
     <div className="fun-facts-links" role="group" aria-label="Explore my interests">
-      <button type="button" className="fun-facts-link fun-facts-link-gym" aria-expanded={gymOpen} aria-controls={gymId} onClick={() => setGymOpen(open => !open)}>
-        <InterestIcon kind="gym" /><span>TopGym</span><span className="fun-facts-chevron" aria-hidden="true">⌄</span>
+      <button type="button" className="fun-facts-link fun-facts-link-gym" aria-expanded={gymOpen} aria-haspopup="dialog" aria-controls={gymOpen ? gymId : undefined} onClick={() => setOpen(true)}>
+        <InterestIcon kind="gym" /><span>Big Three Record</span><span className="fun-facts-chevron" aria-hidden="true">↗</span>
       </button>
       <a className="fun-facts-link fun-facts-link-code" href={funFactLinks.leetcode} target="_blank" rel="noreferrer"><InterestIcon kind="code" /><span>LeetCode notes</span><span className="fun-facts-external" aria-hidden="true">↗</span></a>
       <button type="button" className="fun-facts-link" disabled><InterestIcon kind="live" /><span>Whatnot</span><small>Coming soon</small></button>
       <button type="button" className="fun-facts-link" disabled><InterestIcon kind="travel" /><span>Footprints</span><small>Coming soon</small></button>
     </div>
-    <div id={gymId} className="fun-facts-gym" hidden={!gymOpen}>
-      {gymOpen ? <TopGymCard /> : null}
-    </div>
+    {gymOpen ? <GymExperienceDialog id={gymId} onClose={() => setOpen(false)} /> : null}
   </article>;
 }

@@ -26,6 +26,7 @@ export default function ChatClient({ initialQuery }: { initialQuery: string }) {
   const [draft, setDraft] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [gymOpen, setGymOpen] = useState(false);
   const initialQuerySent = useRef(false);
   const sessionInitialized = useRef(false);
   const [sessionReady, setSessionReady] = useState(false);
@@ -38,6 +39,10 @@ export default function ChatClient({ initialQuery }: { initialQuery: string }) {
 
   const userTurns = messages.filter((message) => message.role === "user").length;
   const limitReached = userTurns >= MAX_USER_TURNS;
+  const handleGymOpenChange = useCallback((open: boolean) => {
+    setGymOpen(open);
+    if (open) suspendFollowups();
+  }, [suspendFollowups]);
 
   const sendMessage = useCallback(
     async (value: string) => {
@@ -202,7 +207,7 @@ export default function ChatClient({ initialQuery }: { initialQuery: string }) {
             ) : message.role === "assistant" && message.module?.type === "contact" ? (
               <ContactCard contact={message.module.contact} />
             ) : message.role === "assistant" && (message.module?.type === "fun_facts" || message.preset === "Fun Facts") ? (
-              <FunFactCard summary={message.content} />
+              <FunFactCard summary={message.content} onGymOpenChange={handleGymOpenChange} />
             ) : (
               <div className={`chat-message chat-message-${message.role}`}>
                 {message.role === "assistant" ? <AnimatedText text={message.content} /> : message.content}
@@ -220,13 +225,13 @@ export default function ChatClient({ initialQuery }: { initialQuery: string }) {
         </p>
       ) : null}
 
-      <FollowupQuestions questions={followupQuestions} revision={followupRevision} generating={generatingFollowups}
+      {!gymOpen ? <FollowupQuestions questions={followupQuestions} revision={followupRevision} generating={generatingFollowups}
         disabled={!sessionReady || loading || limitReached} onRefresh={refreshFollowups}
         onSelect={question => {
           void sendMessage(question).then(() => window.requestAnimationFrame(() => {
             document.getElementById("chat-query")?.focus({ preventScroll: true });
           }));
-        }} />
+        }} /> : null}
 
       <nav className="chat-quick-questions" aria-label="Quick questions">
         {quickQuestions.map(({ label, tone, query }) => (
