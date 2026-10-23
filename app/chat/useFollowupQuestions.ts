@@ -3,17 +3,21 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { normalizeFollowupQuestion, parseFollowupResponse, type FollowupContext } from "@/lib/portfolio/followup-questions";
 import type { ConversationMessage } from "@/lib/portfolio/chat-session";
+import type { ProjectId } from "@/lib/portfolio/interview-context";
 
 const REQUEST_TIMEOUT_MS = 18_000;
 const GENERATION_DELAY_MS = 200;
 
 export default function useFollowupQuestions() {
   const [questions, setQuestions] = useState<string[]>([]);
+  const [questionIds, setQuestionIds] = useState<(string | null)[]>([]);
   const [generating, setGenerating] = useState(false);
   const [revision, setRevision] = useState(0);
   const context = useRef<FollowupContext | null>(null);
   const conversation = useRef<ConversationMessage[]>([]);
   const recent = useRef<string[]>([]);
+  const recentIds = useRef<string[]>([]);
+  const project = useRef<ProjectId | undefined>(undefined);
   const sequence = useRef(0);
   const controller = useRef<AbortController | null>(null);
   const delay = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -32,14 +36,16 @@ export default function useFollowupQuestions() {
   const suspend = useCallback((nextContext?: FollowupContext | null) => {
     cancel();
     if (nextContext !== undefined) {
-      if (context.current !== nextContext || !nextContext) setQuestions([]);
+      if (context.current !== nextContext || !nextContext) { setQuestions([]); setQuestionIds([]); }
       context.current = nextContext;
     }
     setGenerating(false);
   }, [cancel]);
 
-  const generate = useCallback((nextContext: FollowupContext | null | undefined, messages: ConversationMessage[]) => {
+  const generate = useCallback((nextContext: FollowupContext | null | undefined, messages: ConversationMessage[], projectId?: ProjectId) => {
     suspend(nextContext);
+    if (project.current !== projectId) { setQuestions([]); setQuestionIds([]); }
+    project.current = projectId;
     conversation.current = messages;
     const selectedContext = context.current;
     if (!selectedContext || messages.filter(message => message.role === "user").length >= 15) {
@@ -51,6 +57,7 @@ export default function useFollowupQuestions() {
 
     const requestSequence = sequence.current;
     const excluded = recent.current.slice(-12);
+    const excludedIds = [...new Set([...recentIds.current, ...messages.filter(message => message.role === "user" && message.questionId).map(message => message.questionId!)])].slice(-40);
     setGenerating(true);
     delay.current = setTimeout(async () => {
       delay.current = null;
@@ -65,6 +72,8 @@ export default function useFollowupQuestions() {
             context: selectedContext,
             messages: messages.slice(-6).map(({ role, content }) => ({ role, content })),
             exclude: excluded,
+            ...(projectId ? { projectId } : {}),
+            ...(excludedIds.length ? { excludeQuestionIds: excludedIds } : {}),
           }),
           signal: requestController.signal,
         });
@@ -72,7 +81,9 @@ export default function useFollowupQuestions() {
         const result = parseFollowupResponse(await response.json(), { messages, exclude: excluded });
         if (sequence.current !== requestSequence || requestController.signal.aborted) return;
         setQuestions(result.questions);
+        setQuestionIds(result.questionIds ?? [null, null]);
         recent.current = [...recent.current, ...result.questions].slice(-12);
+        recentIds.current = [...new Set([...recentIds.current, ...(result.questionIds ?? []).filter((id): id is string => id !== null)])].slice(-40);
         setRevision(value => value + 1);
       } catch {
         // Suggestions are optional. A failed refresh must not interrupt the answer or draft.
@@ -87,14 +98,17 @@ export default function useFollowupQuestions() {
     }, GENERATION_DELAY_MS);
   }, [suspend]);
 
-  const refresh = useCallback(() => generate(context.current, conversation.current), [generate]);
+  const refresh = useCallback(() => generate(context.current, conversation.current, project.current), [generate]);
   const clear = useCallback(() => {
     suspend(null);
     conversation.current = [];
     recent.current = [];
+    recentIds.current = [];
+    project.current = undefined;
+    setQuestionIds([]);
   }, [suspend]);
 
   useEffect(() => cancel, [cancel]);
 
-  return { questions, generating, revision, suspend, generate, refresh, clear };
+  return { questions, questionIds, generating, revision, suspend, generate, refresh, clear };
 }

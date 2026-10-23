@@ -49,3 +49,19 @@ The rollback script retags `portfolio-vps-web:rollback-20261021-v020` (old image
 Both `portfolio-candidate-v020` and the previously deferred `portfolio-candidate-25959dd` were removed after acceptance. The one-use SSH public key was removed from `authorized_keys`; existing keys, passwords and firewall rules were preserved.
 
 For the next release, build an isolated immutable source directory, validate it on a local-only port, retain the old image/configuration, then update the Compose build context and switch the image. Updating GitHub alone does not deploy this server.
+
+## 2026-10-23 · JChatMind live-demo connection
+
+This was a runtime configuration update, not a new Portfolio source release. Production still runs `36e6ab6cd94fe426d8f61f464187a8b258cd7264` / v0.2.0, image `sha256:3897eb27c2a3cac5fa27d037a6f2a44abe4a25a936ca7c0242b38a27e33f936f`. The local Question Bank branch remains unpublished; its code and draft snapshot were not included.
+
+The existing private server environment file gained only the non-secret setting `JCHATMIND_DEMO_URL=https://demo.hongxiangwang1017.com/demo`. The existing web service was recreated without building a new image, using `/home/ubuntu/apps/portfolio/compose.vps.yaml`. The container is healthy and public `/chat` returns HTTP 200. Other production source and configuration differences were not changed by this update.
+
+The original JChatMind application at revision `ead9d44` was deployed separately on the same Tencent Lighthouse host, `43.173.88.200`. PostgreSQL/pgvector, Ollama, Spring Boot API and the guest web service are healthy; the web port is bound only to `127.0.0.1:8082` behind the existing host Nginx and HTTPS configuration. The Portfolio entry at `/projects/jchatmind` now receives the verified HTTPS `/demo` URL for its existing inline guest experience.
+
+Deployment acceptance established:
+
+- Five real RAG checks passed: eight-person Team plan at USD 144/month; twelve-person follow-up at USD 216/month; date-tool result `2026-10-23` plus 14 calendar days yielding `2026-11-06`; undocumented SAML SSO retained as unknown; customer reply remained an unsent draft.
+- Guest-session isolation and rejection of unauthenticated administrator access passed.
+- The API/HTTPS checks establish backend availability and behavior. Public Demo browser automation was explicitly rejected by automatic approval review, so browser visual acceptance and the embedded desktop/mobile experience remain unverified in this deployment. No alternative browser route was used to bypass that rejection.
+
+The recorded replay remains available independently of the live service. To disable the new connection, remove only `JCHATMIND_DEMO_URL` from the private server environment and recreate the same Portfolio web image without a build; the existing unavailable-state/replay experience will return. This fallback was documented, not exercised against production. JChatMind data volumes and credentials must be preserved.

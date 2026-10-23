@@ -1,4 +1,5 @@
 import type { QuickQuestionLabel } from "./quick-questions";
+import { isProjectId, isQuestionId, nearDuplicateQuestion, type ProjectId } from "./interview-context";
 
 export type FollowupContext = Exclude<QuickQuestionLabel, "Contact">;
 
@@ -6,9 +7,11 @@ export type FollowupRequest = {
   context: FollowupContext;
   messages: { role: "user" | "assistant"; content: string }[];
   exclude: string[];
+  projectId?: ProjectId;
+  excludeQuestionIds?: string[];
 };
 
-export type FollowupResponse = { questions: string[] };
+export type FollowupResponse = { questions: string[]; questionIds?: (string | null)[] };
 
 export const MAX_FOLLOWUP_CHARS = 160;
 export const MAX_FOLLOWUP_MESSAGES = 6;
@@ -32,7 +35,7 @@ export function parseFollowupRequest(payload: unknown): FollowupRequest {
   if (!isObject(payload) || !isFollowupContext(payload.context)) {
     throw new FollowupValidationError("A supported follow-up context is required.");
   }
-  if (Object.keys(payload).some((key) => !["context", "messages", "exclude"].includes(key))) {
+  if (Object.keys(payload).some((key) => !["context", "messages", "exclude", "projectId", "excludeQuestionIds"].includes(key))) {
     throw new FollowupValidationError("The follow-up request contains unsupported fields.");
   }
   if (!Array.isArray(payload.messages) || payload.messages.length > MAX_FOLLOWUP_MESSAGES) {
@@ -62,7 +65,14 @@ export function parseFollowupRequest(payload: unknown): FollowupRequest {
     }
     return question.trim();
   });
-  return { context: payload.context, messages, exclude };
+  if (payload.projectId !== undefined && !isProjectId(payload.projectId)) throw new FollowupValidationError("Unknown project.");
+  if (payload.excludeQuestionIds !== undefined && (!Array.isArray(payload.excludeQuestionIds) || payload.excludeQuestionIds.length > 40 || payload.excludeQuestionIds.some(id => !isQuestionId(id)))) {
+    throw new FollowupValidationError("Include at most 40 valid previous question IDs.");
+  }
+  return { context: payload.context, messages, exclude,
+    ...(isProjectId(payload.projectId) ? { projectId: payload.projectId } : {}),
+    ...(payload.excludeQuestionIds !== undefined ? { excludeQuestionIds: payload.excludeQuestionIds as string[] } : {}),
+  };
 }
 
 export function parseFollowupResponse(
@@ -71,7 +81,7 @@ export function parseFollowupResponse(
 ): FollowupResponse {
   if (
     !isObject(payload) ||
-    Object.keys(payload).some((key) => key !== "questions") ||
+    Object.keys(payload).some((key) => !["questions", "questionIds"].includes(key)) ||
     !Array.isArray(payload.questions) ||
     payload.questions.length !== 2
   ) {
@@ -90,11 +100,19 @@ export function parseFollowupResponse(
     ].map(normalizeFollowupQuestion),
   );
   for (const question of questions) {
+    if (!/[?？]$/.test(question)) throw new FollowupValidationError("Each suggestion must end as a question.");
     const normalized = normalizeFollowupQuestion(question);
     if (!normalized || disallowed.has(normalized)) {
       throw new FollowupValidationError("Follow-up questions must be distinct and not recently asked.");
     }
     disallowed.add(normalized);
   }
-  return { questions };
+  const previous = [...(request?.exclude ?? []), ...(request?.messages.filter(message => message.role === "user").map(message => message.content) ?? [])];
+  if (nearDuplicateQuestion(questions[0], questions[1]) || questions.some(question => previous.some(old => nearDuplicateQuestion(question, old)))) {
+    throw new FollowupValidationError("Follow-up angles must not repeat recent questions.");
+  }
+  if (payload.questionIds !== undefined && (!Array.isArray(payload.questionIds) || payload.questionIds.length !== 2 || payload.questionIds.some(id => id !== null && !isQuestionId(id)))) {
+    throw new FollowupValidationError("Question references must match the two suggestions.");
+  }
+  return { questions, ...(payload.questionIds !== undefined ? { questionIds: payload.questionIds as (string | null)[] } : {}) };
 }

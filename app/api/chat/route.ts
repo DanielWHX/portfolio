@@ -3,6 +3,7 @@ import {
   ChatValidationError,
   answerFromResume,
   parseChatMessages,
+  parseChatReference,
 } from "@/lib/agent/resume-agent";
 import { getResumeOverviewCard } from "@/lib/portfolio/resume-profile";
 import { contactProfile } from "@/lib/portfolio/contact-profile";
@@ -24,8 +25,10 @@ export async function POST(request: Request) {
   }
 
   let messages;
+  let reference;
   try {
     messages = parseChatMessages(payload);
+    reference = parseChatReference(payload, messages);
   } catch (error) {
     const message =
       error instanceof ChatValidationError ? error.message : "Invalid chat request.";
@@ -41,7 +44,7 @@ export async function POST(request: Request) {
   }
 
   try {
-    const answer = await answerFromResume({ messages, apiKey });
+    const answer = await answerFromResume({ messages, reference, apiKey });
 
     if (answer.presentation === "fun_facts_card") {
       return json({ message: answer.message, module: { type: "fun_facts" } });

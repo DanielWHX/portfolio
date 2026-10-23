@@ -113,6 +113,14 @@ Contact, New chat, and the 15-question limit hide suggestions. There is no stati
 question-bank fallback and no claim that this Portfolio currently queries a
 live vector database.
 
+## Interview Question Bank
+
+The 40 curated entries and factual boundaries are recorded in [docs/question-bank-review.md](docs/question-bank-review.md). The owner authorized release of the latest follow-up system on 2026-10-23; this records release authorization, not a claim that every entry was individually reviewed. The server-only snapshot is `lib/agent/interview-bank.snapshot.json`, revision `2026-10-23-question-bank-1`, status `release-authorized`. Do not copy the raw Notion page or preparation notes into this repo. Updates are released with the app, with no runtime Notion access.
+
+Projects follows the settled carousel selection; explicit project names in a question override that selection. One model call generates a bank-inspired question plus a conversational extension, carrying aligned `questionIds` alongside the existing `questions`. Clicking sends the optional reference to `/api/chat`; typed questions use project/Chinese-English keyword matching (at most four answers). No extra model classifier or vector database is involved. Fun Facts/Contact keep their original directions. Answers preserve personal/team, current/proposed and historical-fix boundaries.
+
+To exercise real local models after configuring the ignored runtime key, run `node scripts/evaluate-interview-bank.mjs http://127.0.0.1:3121`. This sends the curated portfolio facts and test questions to the configured model; mock tests alone do not establish factual response quality. The review document's generated examples and earlier passing checks are development evidence; this release requires its own build/API regression checks and deployment acceptance record.
+
 ## Conversational acceptance check
 
 With the version under review running and its runtime key configured:
@@ -146,12 +154,18 @@ The fluid simulation is adapted from [React Bits Splash Cursor](https://www.reac
 ## JChatMind case study
 
 The compact first screen contains the project name, one sentence, and the demo
-entry point. Set the server-side `JCHATMIND_DEMO_URL` to the verified HTTPS
-`/demo` URL of the original JChatMind deployment and redeploy to show the inline
-live chat above the recorded walkthrough. Until a backend is hosted, no live
-iframe or availability claim is shown. The original Spring Boot / pgvector /
-Ollama deployment is prepared in the sibling JChatMind repository, with private
-admin APIs and isolated guest sessions. Do not use a localhost URL here.
+entry point. The original Spring Boot / pgvector / Ollama application was
+deployed on Tencent Lighthouse on 2026-10-23. Production enables the existing
+inline guest experience with the server-side
+`JCHATMIND_DEMO_URL=https://demo.hongxiangwang1017.com/demo`. Public HTTPS/API,
+five real RAG questions and guest/admin isolation passed. Public browser
+automation was explicitly rejected by automatic approval review, so visual
+acceptance and the embedded desktop/mobile experience remain unverified in
+that deployment. See [the deployment record](docs/deployment-v0.2.0.md).
+The recorded walkthrough remains independently available; without a valid
+configured URL, the entry shows availability status and links to that replay.
+Admin APIs stay private and guest sessions are isolated. Do not use a localhost
+URL in production.
 
 The second project links to `/projects/jchatmind`. The English walkthrough uses
 eight original local-app screenshots and three highlighted handbook references
