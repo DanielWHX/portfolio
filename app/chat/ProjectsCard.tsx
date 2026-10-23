@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { portfolioProjects } from "@/lib/portfolio/projects";
+import { isProjectId, type ProjectId } from "@/lib/portfolio/interview-context";
 
 const covers: Record<string, { category: string; image?: string; href?: string }> = {
   portfolio: { category: "AI Portfolio", image: "/projects/portfolio/homepage.jpg", href: "/" },
@@ -12,8 +13,9 @@ const covers: Record<string, { category: string; image?: string; href?: string }
   edge: { category: "Research" },
 };
 
-export default function ProjectsCard() {
+export default function ProjectsCard({ active = false, onProjectChange }: { active?: boolean; onProjectChange?: (projectId: ProjectId) => void }) {
   const track = useRef<HTMLUListElement>(null);
+  const callback = useRef(onProjectChange);
   const [edges, setEdges] = useState({ start: true, end: false });
 
   function updateEdges() {
@@ -28,6 +30,32 @@ export default function ProjectsCard() {
     observer.observe(el);
     return () => observer.disconnect();
   }, []);
+
+  useEffect(() => { callback.current = onProjectChange; }, [onProjectChange]);
+
+  useEffect(() => {
+    const el = track.current;
+    if (!active || !el) return;
+    let timer: ReturnType<typeof setTimeout>;
+    let last: ProjectId | undefined;
+    function settled(event?: Event) {
+      clearTimeout(timer);
+      const focused = event?.type === "focusin" ? (event.target as HTMLElement).closest<HTMLElement>("[data-project-id]") : null;
+      timer = setTimeout(() => {
+        const viewport = el!.closest(".chat-messages")?.getBoundingClientRect();
+        const bounds = el!.getBoundingClientRect();
+        if (document.hidden || (viewport && (bounds.bottom <= viewport.top || bounds.top >= viewport.bottom))) return;
+        const cards = [...el!.querySelectorAll<HTMLElement>("[data-project-id]")];
+        const visible = focused ?? cards.sort((a, b) => Math.abs(a.getBoundingClientRect().left - bounds.left) - Math.abs(b.getBoundingClientRect().left - bounds.left))[0];
+        const id = visible?.dataset.projectId;
+        if (isProjectId(id) && last !== id) { last = id; callback.current?.(id); }
+      }, 160);
+    }
+    el.addEventListener("scroll", settled);
+    el.addEventListener("focusin", settled);
+    settled();
+    return () => { clearTimeout(timer); el.removeEventListener("scroll", settled); el.removeEventListener("focusin", settled); };
+  }, [active]);
 
   function move(direction: number) {
     const el = track.current;
@@ -48,7 +76,7 @@ export default function ProjectsCard() {
             {cover.image ? <img className="project-tile-image" src={cover.image} alt={`${project.name} app preview`} loading="lazy"/> : <div className="project-tile-art" aria-hidden="true"><span/><span/><span/></div>}
             {!cover.href && <span className="project-coming">Case study coming soon</span>}
           </>;
-          return <li key={project.id}>
+          return <li key={project.id} data-project-id={project.id}>
             {cover.href ? <a className={`project-tile project-tile-${project.id}`} href={cover.href} aria-label={project.id === "portfolio" ? "Visit Portfolio homepage" : `Explore ${project.name} case study`}>{content}</a> : <div className={`project-tile project-tile-${project.id}`}>{content}</div>}
           </li>;
         })}

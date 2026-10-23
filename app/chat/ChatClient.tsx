@@ -13,6 +13,7 @@ import FollowupQuestions from "./FollowupQuestions";
 import useFollowupQuestions from "./useFollowupQuestions";
 import { getQuickQuestion, quickQuestions } from "@/lib/portfolio/quick-questions";
 import { FUN_FACTS_REVISION } from "@/lib/portfolio/fun-facts";
+import { explicitProject, resolveProject, type InterviewReference, type ProjectId } from "@/lib/portfolio/interview-context";
 
 import { clearChatSession, readChatSession, saveChatSession, type ConversationMessage as Message } from "@/lib/portfolio/chat-session";
 
@@ -27,13 +28,16 @@ export default function ChatClient({ initialQuery }: { initialQuery: string }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [gymOpen, setGymOpen] = useState(false);
+  const [projectsActive, setProjectsActive] = useState(false);
+  const projectRef = useRef<ProjectId | undefined>(undefined);
+  const retryReference = useRef<{ content: string; reference: InterviewReference } | null>(null);
   const initialQuerySent = useRef(false);
   const sessionInitialized = useRef(false);
   const [sessionReady, setSessionReady] = useState(false);
   const messagesRef = useRef<HTMLDivElement>(null);
   const followReply = useRef(true);
   const requestInFlight = useRef(false);
-  const { questions: followupQuestions, generating: generatingFollowups, revision: followupRevision,
+  const { questions: followupQuestions, questionIds: followupQuestionIds, generating: generatingFollowups, revision: followupRevision,
     suspend: suspendFollowups, generate: generateFollowups,
     refresh: refreshFollowups, clear: clearFollowups } = useFollowupQuestions();
 
@@ -45,19 +49,29 @@ export default function ChatClient({ initialQuery }: { initialQuery: string }) {
   }, [suspendFollowups]);
 
   const sendMessage = useCallback(
-    async (value: string) => {
+    async (value: string, suppliedReference: InterviewReference = {}) => {
       const content = value.trim().slice(0, 1000);
       const turns = messages.filter((message) => message.role === "user").length;
 
       if (!content || requestInFlight.current) return;
       const preset = getQuickQuestion(content);
+      setProjectsActive(preset?.label === "Projects");
+      const reference = Object.keys(suppliedReference).length ? suppliedReference
+        : retryReference.current?.content === content ? retryReference.current.reference : {};
+      const selectedProject = explicitProject(content) ?? reference.projectId ?? projectRef.current;
+      projectRef.current = preset?.label === "Fun Facts" || preset?.label === "Contact" || preset?.label === "Me" ? undefined : selectedProject;
+      if (preset?.label === "Projects" && !projectRef.current) projectRef.current = "portfolio";
+      const requestReference: InterviewReference = {
+        ...(projectRef.current ? { projectId: projectRef.current } : {}),
+        ...(reference.questionId ? { questionId: reference.questionId } : {}),
+      };
       const nextContext = preset ? (preset.label === "Contact" ? null : preset.label) : undefined;
       const cachedIndex = preset ? messages.findIndex((message) => message.role === "assistant" && message.preset === preset.label) : -1;
       if (cachedIndex >= 0) {
         followReply.current = false;
         setError("");
         setMessages(messages.map((message, index) => index === cachedIndex ? { ...message, restored: true } : message));
-        generateFollowups(nextContext, messages);
+        generateFollowups(nextContext, messages, projectRef.current);
         window.requestAnimationFrame(() => {
           const container = messagesRef.current;
           const answer = container?.querySelector<HTMLElement>(`[data-message-index="${cachedIndex}"]`);
@@ -73,7 +87,7 @@ export default function ChatClient({ initialQuery }: { initialQuery: string }) {
       requestInFlight.current = true;
       followReply.current = true;
 
-      const nextMessages: Message[] = [...messages, { role: "user", content }];
+      const nextMessages: Message[] = [...messages, { role: "user", content, ...requestReference }];
       setMessages(nextMessages);
       setDraft("");
       setError("");
@@ -91,6 +105,7 @@ export default function ChatClient({ initialQuery }: { initialQuery: string }) {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             messages: nextMessages.map(({ role, content }) => ({ role, content })),
+            ...requestReference,
           }),
           signal: controller.signal,
         });
@@ -115,8 +130,10 @@ export default function ChatClient({ initialQuery }: { initialQuery: string }) {
           },
         ];
         setMessages(completedMessages);
-        generateFollowups(nextContext, completedMessages);
+        retryReference.current = null;
+        generateFollowups(nextContext, completedMessages, projectRef.current);
       } catch (caught) {
+        retryReference.current = { content, reference: requestReference };
         setMessages(messages);
         setDraft(content);
         setError(
@@ -139,6 +156,7 @@ export default function ChatClient({ initialQuery }: { initialQuery: string }) {
     if (sessionInitialized.current) return;
     sessionInitialized.current = true;
     const saved = readChatSession();
+    projectRef.current = saved.messages.filter(message => message.role === "user").at(-1)?.projectId ?? resolveProject(saved.messages);
     setMessages(saved.messages);
     setDraft(saved.draft);
     setSessionReady(true);
@@ -170,6 +188,9 @@ export default function ChatClient({ initialQuery }: { initialQuery: string }) {
   }, [messages]);
 
   function startNewChat() {
+    projectRef.current = undefined;
+    retryReference.current = null;
+    setProjectsActive(false);
     clearFollowups();
     clearChatSession();
     setMessages([]);
@@ -181,6 +202,12 @@ export default function ChatClient({ initialQuery }: { initialQuery: string }) {
     event.preventDefault();
     void sendMessage(draft);
   }
+
+  const handleProjectChange = useCallback((projectId: ProjectId) => {
+    if (!projectsActive || requestInFlight.current || projectRef.current === projectId) return;
+    projectRef.current = projectId;
+    generateFollowups("Projects", messages, projectId);
+  }, [projectsActive, messages, generateFollowups]);
 
   return (
     <div className="chat-body">
@@ -203,7 +230,7 @@ export default function ChatClient({ initialQuery }: { initialQuery: string }) {
             ) : message.role === "assistant" && message.module?.type === "skills" ? (
               <SkillsCard />
             ) : message.role === "assistant" && message.module?.type === "projects" ? (
-              <ProjectsCard />
+              <ProjectsCard active={projectsActive && !loading && !gymOpen} onProjectChange={handleProjectChange} />
             ) : message.role === "assistant" && message.module?.type === "contact" ? (
               <ContactCard contact={message.module.contact} />
             ) : message.role === "assistant" && (message.module?.type === "fun_facts" || message.preset === "Fun Facts") ? (
@@ -225,10 +252,10 @@ export default function ChatClient({ initialQuery }: { initialQuery: string }) {
         </p>
       ) : null}
 
-      {!gymOpen ? <FollowupQuestions questions={followupQuestions} revision={followupRevision} generating={generatingFollowups}
+      {!gymOpen ? <FollowupQuestions questions={followupQuestions} questionIds={followupQuestionIds} revision={followupRevision} generating={generatingFollowups}
         disabled={!sessionReady || loading || limitReached} onRefresh={refreshFollowups}
-        onSelect={question => {
-          void sendMessage(question).then(() => window.requestAnimationFrame(() => {
+        onSelect={(question, questionId) => {
+          void sendMessage(question, { ...(projectRef.current ? { projectId: projectRef.current } : {}), ...(questionId ? { questionId } : {}) }).then(() => window.requestAnimationFrame(() => {
             document.getElementById("chat-query")?.focus({ preventScroll: true });
           }));
         }} /> : null}
@@ -250,7 +277,7 @@ export default function ChatClient({ initialQuery }: { initialQuery: string }) {
         <input
           id="chat-query"
           value={draft}
-          onChange={(event) => setDraft(event.target.value)}
+          onChange={(event) => { setDraft(event.target.value); retryReference.current = null; }}
           placeholder={limitReached ? "Question limit reached" : "Ask about me..."}
           autoComplete="off"
           maxLength={1000}

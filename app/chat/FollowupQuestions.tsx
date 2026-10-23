@@ -1,12 +1,13 @@
 "use client";
 
-export default function FollowupQuestions({ questions, revision, generating, disabled, onRefresh, onSelect }: {
+export default function FollowupQuestions({ questions, questionIds = [], revision, generating, disabled, onRefresh, onSelect }: {
   questions: string[];
+  questionIds?: (string | null)[];
   revision: number;
   generating: boolean;
   disabled: boolean;
   onRefresh: () => void;
-  onSelect: (question: string) => void;
+  onSelect: (question: string, questionId?: string) => void;
 }) {
   if (questions.length !== 2) return null;
 
@@ -28,7 +29,7 @@ export default function FollowupQuestions({ questions, revision, generating, dis
       </div>
       <div className="chat-followups-questions" aria-live="polite" aria-busy={generating}>
         {questions.map((question, index) => (
-          <button key={`${revision}-${index}`} type="button" className="chat-followup" disabled={disabled} onClick={() => onSelect(question)}>
+          <button key={`${revision}-${index}`} type="button" className="chat-followup" disabled={disabled} onClick={() => onSelect(question, questionIds[index] ?? undefined)}>
             <span>{question}</span>
             <span className="chat-followup-arrow" aria-hidden="true">↗</span>
           </button>

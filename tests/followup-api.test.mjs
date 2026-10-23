@@ -105,13 +105,15 @@ test("contextual follow-ups through the public Worker endpoint", { concurrency: 
       assert.equal(new Headers(init.headers).get("authorization"), "Bearer followup-test-key");
       assert.ok(init.signal instanceof AbortSignal);
       requests.push(JSON.parse(init.body));
-      return modelResponse();
+      const candidate = JSON.parse(requests.at(-1).input[0].content).interviewBank?.candidates[0];
+      return modelResponse(validQuestions, candidate ? { questionIds: [candidate.id, null] } : {});
     });
     for (const context of ["Me", "Projects", "Skills", "Fun Facts"]) {
       const response = await dispatch(worker, { ...validRequest, context, exclude: ["What did you personally build?"] });
       assert.equal(response.status, 200);
       assert.equal(response.headers.get("cache-control"), "no-store");
-      assert.deepEqual(await response.json(), { questions: validQuestions });
+      const candidate = JSON.parse(requests.at(-1).input[0].content).interviewBank?.candidates[0];
+      assert.deepEqual(await response.json(), { questions: validQuestions, ...(candidate ? { questionIds: [candidate.id, null] } : {}) });
     }
     assert.equal(requests.length, 4, "one model call per suggestion request, with no forced tool round trip");
     for (const request of requests) {
@@ -176,7 +178,11 @@ test("contextual follow-ups through the public Worker endpoint", { concurrency: 
   await t.test("accepts empty history, a user-ending history, and the six-message/exclusion boundaries", async (t) => {
     process.env.OPENAI_API_KEY = "followup-test-key";
     let callCount = 0;
-    t.mock.method(globalThis, "fetch", async () => { callCount += 1; return modelResponse(); });
+    t.mock.method(globalThis, "fetch", async (_input, init) => {
+      callCount += 1;
+      const candidate = JSON.parse(JSON.parse(init.body).input[0].content).interviewBank?.candidates[0];
+      return modelResponse(validQuestions, candidate ? { questionIds: [candidate.id, null] } : {});
+    });
     for (const messages of [[], [{ role: "user", content: "Projects" }], Array.from({ length: 6 }, (_, i) => ({ role: i % 2 === 0 ? "user" : "assistant", content: `${i} ${"x".repeat(998)}` }))]) {
       const response = await dispatch(worker, { ...validRequest, messages, exclude: Array.from({ length: 12 }, (_, i) => `${i} ${"y".repeat(157)}`) });
       assert.equal(response.status, 200);
@@ -202,6 +208,7 @@ test("contextual follow-ups through the public Worker endpoint", { concurrency: 
       modelResponse([" HOW does JChatMind retrieve knowledge before answering！", validQuestions[1]]),
       modelResponse(["SHOW ME YOUR PROJECTS！", validQuestions[1]]),
       modelResponse(["???", validQuestions[1]]),
+      modelResponse(["How do you combine tool results?],", validQuestions[1]]),
       modelResponse(["Do you need sponsorship?", validQuestions[1]]),
       modelResponse(["你的国籍是什么？", validQuestions[1]]),
       modelResponse(["A question\nWith another line?", validQuestions[1]]),

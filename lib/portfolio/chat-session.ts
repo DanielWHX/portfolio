@@ -2,6 +2,7 @@ import { contactProfile, type ContactCardData } from "./contact-profile";
 import { getResumeOverviewCard, type ResumeOverviewCard } from "./resume-profile";
 import { getQuickQuestion, type QuickQuestionLabel } from "./quick-questions";
 import { FUN_FACTS_REVISION } from "./fun-facts";
+import { isProjectId, isQuestionId, type ProjectId } from "./interview-context";
 
 export type ConversationMessage = {
   role: "user" | "assistant";
@@ -10,6 +11,8 @@ export type ConversationMessage = {
   restored?: boolean;
   preset?: QuickQuestionLabel;
   factsRevision?: string;
+  projectId?: ProjectId;
+  questionId?: string;
 };
 
 const STORAGE_KEY = "portfolio.chat.v1";
@@ -29,7 +32,9 @@ export function readChatSession(): { messages: ConversationMessage[]; draft: str
         typeof item.content !== "string" || !item.content.trim() || item.content.length > 1000 ||
         (item.card !== undefined && (item.role !== "assistant" || !["profile", "contact", "projects", "skills", "fun_facts"].includes(item.card))) ||
         (item.preset !== undefined && (item.role !== "assistant" || getQuickQuestion(messages[index - 1]?.content ?? "")?.label !== item.preset)) ||
-        (item.factsRevision !== undefined && (item.role !== "assistant" || typeof item.factsRevision !== "string" || item.factsRevision.length > 80))) return empty;
+        (item.factsRevision !== undefined && (item.role !== "assistant" || typeof item.factsRevision !== "string" || item.factsRevision.length > 80)) ||
+        (item.projectId !== undefined && !isProjectId(item.projectId)) ||
+        (item.questionId !== undefined && (item.role !== "user" || !isQuestionId(item.questionId)))) return empty;
       // Older gym-only answers remain readable, but must not hide the expanded
       // personal profile behind an outdated successful preset cache entry.
       const staleFacts = (item.card === "fun_facts" || item.preset === "Fun Facts") && item.factsRevision !== FUN_FACTS_REVISION;
@@ -38,6 +43,8 @@ export function readChatSession(): { messages: ConversationMessage[]; draft: str
         role: item.role,
         content: item.content,
         restored: true,
+        ...(item.projectId ? { projectId: item.projectId } : {}),
+        ...(item.questionId ? { questionId: item.questionId } : {}),
         ...(item.preset && !staleFacts ? { preset: item.preset } : {}),
         ...(item.factsRevision && !staleFacts ? { factsRevision: item.factsRevision } : {}),
         // Rebuild cards from current approved data rather than stored copies.
@@ -60,7 +67,7 @@ export function saveChatSession(messages: ConversationMessage[], draft: string) 
   try {
     sessionStorage.setItem(STORAGE_KEY, JSON.stringify({
       version: 1,
-      messages: messages.map(({ role, content, module, preset, factsRevision }) => ({ role, content, card: module?.type, preset, factsRevision })),
+      messages: messages.map(({ role, content, module, preset, factsRevision, projectId, questionId }) => ({ role, content, card: module?.type, preset, factsRevision, projectId, questionId })),
       draft,
     }));
   } catch {
