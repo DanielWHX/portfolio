@@ -15,14 +15,22 @@ export const personalProfile = {
       note: "Self-described personality and MBTI, not a scientific assessment or proof of ability.",
     },
     interests: ["Fitness", "Travel", "Skydiving", "Skiing", "Gaming", "Spending time with friends", "LeetCode", "SaaS companies"],
+    gaming: {
+      game: "Apex Legends",
+      highestRank: "Diamond I",
+      rankReportedAt: "2026-10-24",
+      rankNote: "User-reported historical peak, not a statement of current rank.",
+      unsharedDetails: ["Current rank", "Season", "Platform", "Player handle"],
+    },
     pet: { name: "Luca", breed: "Bichon Frise", reportedAgeYears: 11, ageReportedAt: "2026-10-21" },
     notion: { label: "LeetCode notes", url: funFactLinks.leetcode },
     whatnot: {
+      url: funFactLinks.whatnot,
       activity: "Collaborated with friends on Whatnot livestream selling during college",
       peakMonthlyGrossSalesUsd: 22_000,
       lifetimeGrossSalesUsd: 150_000,
       metricsNote: "User-reported gross sales for the collaboration, not profit or Hongxiang's personal income.",
-      unsharedDetails: ["Exact dates", "Ownership structure", "Account", "Profit", "Personal income"],
+      unsharedDetails: ["Exact dates", "Ownership structure", "Account handle", "Profit", "Personal income"],
     },
   },
 } as const;

@@ -126,7 +126,10 @@ test("Fun Facts opens an AI summary with compact destinations and restores its s
   await expect(hub.getByText(factsSummary)).toBeVisible();
   await expect(page.getByRole("article", { name: "Big Three Record" })).toHaveCount(0);
   await expect(hub.getByRole("link", { name: "LeetCode notes" })).toHaveAttribute("href", "https://app.notion.com/p/316ea0b55422803cbd1dd44fe5bfb6ff?source=copy_link");
-  await expect(hub.getByRole("button", { name: /Whatnot/ })).toBeDisabled();
+  const whatnot = hub.getByRole("link", { name: "Whatnot", exact: true });
+  await expect(whatnot).toHaveAttribute("href", "https://www.whatnot.com/s/uwPr4llY");
+  await expect(whatnot).toHaveAttribute("target", "_blank");
+  await expect(whatnot).toHaveAttribute("rel", /\bnoreferrer\b/);
   await expect(hub.getByRole("button", { name: /Footprints/ })).toBeDisabled();
   await hub.getByRole("button", { name: "Big Three Record", exact: true }).click();
   const gym = page.getByRole("article", { name: "Big Three Record" });
@@ -163,6 +166,40 @@ for (const card of [undefined, "fun_facts"]) {
     expect(answers).toBe(1);
   });
 }
+
+test("a cached Luca-era summary stays readable and refreshes once for Whatnot and Apex", async ({ page }) => {
+  const oldSummary = "I enjoy lifting and spending time with my dog Luca.";
+  const newSummary = "I enjoy Apex Legends, where my historical peak was Diamond I, and collaborated on Whatnot livestream selling during college.";
+  await page.addInitScript(summary => {
+    if (!sessionStorage.getItem("portfolio.chat.v1")) sessionStorage.setItem("portfolio.chat.v1", JSON.stringify({ version: 1, draft: "", messages: [
+      { role: "user", content: "What do you enjoy outside of engineering?" },
+      { role: "assistant", content: summary, preset: "Fun Facts", card: "fun_facts", factsRevision: "2026-10-21-personal-hub-luca" },
+    ] }));
+  }, oldSummary);
+  let answers = 0;
+  await page.route("**/api/chat", route => { answers++; return route.fulfill({ json: { message: newSummary, module: { type: "fun_facts" } } }); });
+  await page.route("**/api/followups", route => route.fulfill({ json: { questions: ["What do you enjoy about Apex Legends?", "What did you learn through Whatnot?"] } }));
+  await page.goto("/chat");
+  await expect(page.getByText(oldSummary, { exact: true })).toBeVisible();
+  const hub = page.getByRole("article", { name: "Fun Facts", exact: true });
+  await expect(hub).toHaveCount(0);
+  expect(answers).toBe(0);
+
+  const quickFacts = page.getByRole("navigation", { name: "Quick questions" }).getByRole("button", { name: "Fun Facts", exact: true });
+  await quickFacts.click();
+  await expect(hub.getByText(newSummary, { exact: true })).toBeVisible();
+  await expect(page.getByText(oldSummary, { exact: true })).toBeVisible();
+  await expect(hub.getByRole("link", { name: "Whatnot", exact: true })).toHaveAttribute("href", "https://www.whatnot.com/s/uwPr4llY");
+  await expect(hub.getByRole("button", { name: /Footprints/ })).toBeDisabled();
+  await quickFacts.click();
+  expect(answers).toBe(1);
+
+  await page.reload();
+  await expect(hub.getByText(newSummary, { exact: true })).toBeVisible();
+  await expect(page.getByText(oldSummary, { exact: true })).toBeVisible();
+  await quickFacts.click();
+  expect(answers).toBe(1);
+});
 
 for (const width of [390, 1280]) {
   test(`Fun Facts destinations fit at ${width}px and Big Three Record opens on demand`, async ({ page }) => {

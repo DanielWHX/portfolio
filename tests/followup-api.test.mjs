@@ -151,7 +151,15 @@ test("contextual follow-ups through the public Worker endpoint", { concurrency: 
         assert.match(input.approvedProfile.personal.personality.note, /not a scientific assessment/);
         assert.equal(input.approvedProfile.personal.whatnot.peakMonthlyGrossSalesUsd, 22_000);
         assert.equal(input.approvedProfile.personal.whatnot.lifetimeGrossSalesUsd, 150_000);
+        assert.equal(input.approvedProfile.personal.whatnot.url, "https://www.whatnot.com/s/uwPr4llY");
         assert.match(input.approvedProfile.personal.whatnot.metricsNote, /not profit/);
+        assert.deepEqual(input.approvedProfile.personal.gaming, {
+          game: "Apex Legends",
+          highestRank: "Diamond I",
+          rankReportedAt: "2026-10-24",
+          rankNote: "User-reported historical peak, not a statement of current rank.",
+          unsharedDetails: ["Current rank", "Season", "Platform", "Player handle"],
+        });
         assert.equal(input.approvedProfile.personal.notion.url, "https://app.notion.com/p/316ea0b55422803cbd1dd44fe5bfb6ff?source=copy_link");
       } else {
         assert.equal(input.approvedProfile.fitness, undefined);

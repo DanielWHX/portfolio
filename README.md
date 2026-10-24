@@ -46,7 +46,7 @@ conversation, technology, fitness, and SaaS ideas. Personal claims stay grounded
 in the shared profile. All five quick questions are available on the homepage and above the chat input.
 Me, Contact, Projects, and Skills can return cards. Fun Facts starts with an AI
 summary and compact Big Three Record, LeetCode notes, Whatnot and travel Footprints entries;
-Big Three Record opens in a focused game dialog with real squat, bench and deadlift clips; the last two destinations are coming soon.
+Big Three Record opens in a focused game dialog with real squat, bench and deadlift clips; Whatnot opens the supplied account link, while Footprints remains coming soon.
 Ask for contact details in English or Chinese to receive a Contact Card.
 
 ## Verification

@@ -167,6 +167,8 @@ test(
       { question: "What is your MBTI?", message: "I describe myself as ENTP, with curiosity and an interest in different perspectives.", presentation: "text" },
       { question: "Do you have a dog?", message: "Yes, my dog Luca is a Bichon Frise. I reported him as 11 years old on October 21, 2026.", presentation: "text" },
       { question: "What did you do on Whatnot?", message: "I collaborated with friends on livestream selling during college. Our reported peak monthly gross sales were USD 22,000 and lifetime gross sales were USD 150,000; those are sales, not profit or my personal income.", presentation: "text" },
+      { question: "Can I see your Whatnot link?", message: "Here is the Whatnot link I shared: https://www.whatnot.com/s/uwPr4llY", presentation: "text" },
+      { question: "What do you play, and what was your highest rank?", message: "I enjoy Apex Legends. My self-reported historical peak is Diamond I; I haven't shared my current rank, season, platform or player handle.", presentation: "text" },
       { question: "你的国籍是什么？", message: "我是中国人。", presentation: "text", expectedReference: { nationalIdentity: "Chinese" } },
       { question: "你在哪里长大？", message: "我在北京长大。", presentation: "text", expectedReference: { grewUpIn: "Beijing" } },
       { question: "你读的是哪所高中？", message: "我提供的高中名称是二中，还没有补充学校全称。", presentation: "text", expectedReference: { highSchool: "二中", highSchoolNote: "Hongxiang supplied only 二中; the specific school's full name is unconfirmed." } },
@@ -351,8 +353,16 @@ test(
     assert.equal(personal.notion.url, "https://app.notion.com/p/316ea0b55422803cbd1dd44fe5bfb6ff?source=copy_link");
     assert.equal(personal.whatnot.peakMonthlyGrossSalesUsd, 22_000);
     assert.equal(personal.whatnot.lifetimeGrossSalesUsd, 150_000);
+    assert.equal(personal.whatnot.url, "https://www.whatnot.com/s/uwPr4llY");
     assert.match(personal.whatnot.metricsNote, /gross sales.*not profit.*personal income/);
-    assert.deepEqual(personal.whatnot.unsharedDetails, ["Exact dates", "Ownership structure", "Account", "Profit", "Personal income"]);
+    assert.deepEqual(personal.whatnot.unsharedDetails, ["Exact dates", "Ownership structure", "Account handle", "Profit", "Personal income"]);
+    assert.deepEqual(personal.gaming, {
+      game: "Apex Legends",
+      highestRank: "Diamond I",
+      rankReportedAt: "2026-10-24",
+      rankNote: "User-reported historical peak, not a statement of current rank.",
+      unsharedDetails: ["Current rank", "Season", "Platform", "Player handle"],
+    });
     assert.doesNotMatch(JSON.stringify(personal), /Chinese|Beijing|二中|Los Angeles|Politics|parents|sister|green card/i);
     assert.match(requests[0].instructions, /message is the visible AI summary/);
     assert.match(requests[0].instructions, /No agentReference details belong in this summary/);
