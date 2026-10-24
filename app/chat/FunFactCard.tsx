@@ -31,7 +31,7 @@ export default function FunFactCard({ summary, onGymOpenChange }: { summary: str
         <InterestIcon kind="gym" /><span>Big Three Record</span><span className="fun-facts-chevron" aria-hidden="true">↗</span>
       </button>
       <a className="fun-facts-link fun-facts-link-code" href={funFactLinks.leetcode} target="_blank" rel="noreferrer"><InterestIcon kind="code" /><span>LeetCode notes</span><span className="fun-facts-external" aria-hidden="true">↗</span></a>
-      <button type="button" className="fun-facts-link" disabled><InterestIcon kind="live" /><span>Whatnot</span><small>Coming soon</small></button>
+      <a className="fun-facts-link" href={funFactLinks.whatnot} target="_blank" rel="noreferrer"><InterestIcon kind="live" /><span>Whatnot</span><span className="fun-facts-external" aria-hidden="true">↗</span></a>
       <button type="button" className="fun-facts-link" disabled><InterestIcon kind="travel" /><span>Footprints</span><small>Coming soon</small></button>
     </div>
     {gymOpen ? <GymExperienceDialog id={gymId} onClose={() => setOpen(false)} /> : null}
