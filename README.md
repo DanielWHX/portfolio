@@ -2,12 +2,15 @@
 
 Interactive portfolio for Hongxiang Wang, a full-stack software engineer.
 
+Current source release: **v0.2.3 — Fun Facts & AI Bubble**.
+
 ## Features
 
 - Minimal single-screen introduction and question interface
 - Conversational portfolio voice powered by `gpt-5.6-luna`
 - Read-only `get_resume_profile` tool backed by approved resume facts and shared interests
-- Two context-aware AI follow-up suggestions above the chat shortcuts, with a light upward entrance and reduced-motion support
+- Two context-aware AI follow-up suggestions that fold into a clear glass star bubble, with magnetic hover, linked shortcut movement and reduced-motion support
+- Photo-led Fun Facts with a skydiving lightbox, a compact introduction and on-demand interest destinations
 - Personal Profile Card with a corrected portrait, university logos, and sourced rankings
 - Contact Card with copy buttons for email, phone, GitHub, LinkedIn, and WeChat
 - WebGL fluid cursor with colorful, fading ink trails
@@ -44,8 +47,8 @@ Open [http://localhost:3000](http://localhost:3000).
 The agent can discuss Hongxiang's background and interests, as well as general
 conversation, technology, fitness, and SaaS ideas. Personal claims stay grounded
 in the shared profile. All five quick questions are available on the homepage and above the chat input.
-Me, Contact, Projects, and Skills can return cards. Fun Facts starts with an AI
-summary and compact Big Three Record, LeetCode notes, Whatnot and travel Footprints entries;
+Me, Contact, Projects, and Skills can return cards. Fun Facts starts with a skydiving
+photo and a compact AI summary, followed by Big Three Record, LeetCode notes, Whatnot and travel Footprints entries;
 Big Three Record opens in a focused game dialog with real squat, bench and deadlift clips; Whatnot opens the supplied account link, while Footprints remains coming soon.
 Ask for contact details in English or Chinese to receive a Contact Card.
 
@@ -207,3 +210,11 @@ Saved records contain only message text and card type. Profile and Contact cards
 are rebuilt from the current approved data and do not replay old entrance or text
 animations. On phones, the portrait and identity share a row, with the introduction
 and interests at full width underneath so education appears earlier.
+
+### Local Fun Facts design preview
+
+With the development server running, `/preview/fun-facts` shows the real photo-led card with clearly labelled sample copy and no API request. It is unavailable in production. The normal `/chat` flow still uses the Resume Agent; the photo viewer and Big Three Record do not call the model.
+
+`/preview/followups` provides a development-only review of the real collapsible suggestion dock with sample questions. Toggle the chevron beside You could ask or the coloured star bubble; New ideas rotates local samples. It makes no API calls and returns 404 in production.
+
+The follow-up preview also includes a clear glass star bubble: hover with a mouse or pen to feel a small magnetic deformation and spring return. The light continues at rest; reduced motion disables the motion. Both original thought-bubble tail circles remain visible.

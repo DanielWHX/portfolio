@@ -30,6 +30,14 @@ async function request(path = "/", init = {}) {
   return dispatch(await loadWorker(), path, init);
 }
 
+test("development-only design previews are unavailable in production", async () => {
+  for (const path of ["/preview/fun-facts", "/preview/followups"]) {
+    const response = await request(path);
+    assert.equal(response.status, 404);
+    assert.doesNotMatch(await response.text(), /Sample introduction|Sample questions|No AI request/);
+  }
+});
+
 function visibleMarkup(html) {
   return html.replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, "");
 }

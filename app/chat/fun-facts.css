@@ -1,6 +1,17 @@
-.fun-facts-card { width: 100%; min-width: 0; color: #3e4c5b; }
-.fun-facts-summary { margin: 0; max-width: 70ch; font-size: 16px; line-height: 1.85; }
-.fun-facts-links { display: flex; flex-wrap: wrap; align-items: center; gap: 9px; margin-top: 22px; }
+.fun-facts-card { --facts-ease: cubic-bezier(.22,1,.36,1); width: 100%; min-width: 0; color: #3e4c5b; }
+.fun-facts-preview { width: min(100%, 820px); margin: 0 auto; padding: 30px 24px 48px; }
+.fun-facts-preview-note { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 6px 16px; margin-bottom: 24px; color: #8796a4; }
+.fun-facts-preview-note h1, .fun-facts-preview-note p { margin: 0; font-size: 11px; line-height: 1.6; font-weight: 400; }
+.fun-facts-figure { margin: 0 0 20px; animation: facts-arrive 640ms var(--facts-ease) both; }
+.fun-facts-photo { position: relative; display: block; width: 100%; padding: 6px; border: 1px solid #e8edf0; border-radius: 20px; background: #f4f6f7; cursor: zoom-in; overflow: hidden; }
+.fun-facts-photo-image { display: block; width: 100%; height: auto; aspect-ratio: 2365 / 1330; border-radius: 14px; transition: transform 700ms var(--facts-ease); }
+.fun-facts-photo-expand { position: absolute; right: 19px; bottom: 19px; display: grid; place-items: center; width: 34px; height: 34px; border: 1px solid #ffffff50; border-radius: 50%; background: #182b3a45; color: #fff; backdrop-filter: blur(8px); transition: background 200ms ease; }
+.fun-facts-photo-expand svg { width: 16px; height: 16px; }
+.fun-facts-photo:focus-visible { outline: 2px solid #7eabd0; outline-offset: 4px; }
+.fun-facts-figure figcaption { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; padding: 11px 2px 0; color: #8b98a3; font-size: 11px; letter-spacing: .01em; }
+.fun-facts-figure figcaption > span:first-child { color: #526b80; font-weight: 500; }
+.fun-facts-summary { margin: 0; max-width: 66ch; font-size: 15px; line-height: 1.8; animation: facts-arrive 520ms var(--facts-ease) 100ms both; }
+.fun-facts-links { display: flex; flex-wrap: wrap; align-items: center; gap: 9px; margin-top: 18px; animation: facts-arrive 520ms var(--facts-ease) 180ms both; }
 .fun-facts-link { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 40px; padding: 8px 13px; border: 1px solid #e4e8ed; border-radius: 11px; background: #fcfdfd; color: #5b6977; font-size: 12px; line-height: 1.4; font-weight: 500; text-decoration: none; white-space: nowrap; cursor: pointer; transition: background .15s, border-color .15s, transform .15s; }
 .fun-facts-link > svg { width: 17px; height: 17px; flex: 0 0 auto; }
 .fun-facts-link:hover { background: #f5f8f7; border-color: #cadad2; }
@@ -13,15 +24,42 @@
 .fun-facts-external { color: #b7a080; }
 .fun-facts-link:disabled { color: #97a2ae; background: #fbfcfd; border-color: #edf0f3; cursor: default; }
 .fun-facts-link small { margin-left: 2px; color: #a5adb6; font-size: 9px; font-weight: 400; }
-.fun-facts-gym:not([hidden]) { margin-top: 22px; animation: fun-facts-open .25s ease-out both; }
-@keyframes fun-facts-open { from { opacity: 0; transform: translateY(7px); } to { opacity: 1; transform: translateY(0); } }
+.chat-turn-restored .fun-facts-figure, .chat-turn-restored .fun-facts-summary, .chat-turn-restored .fun-facts-links { animation: none; }
+@keyframes facts-arrive { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
+
+/* Native top-layer dialog stays outside the chat mask and composer. */
+.fun-photo-dialog { position: fixed; inset: 0; width: 100vw; height: 100dvh; max-width: none; max-height: none; margin: 0; padding: 24px; border: 0; background: transparent; color: #fff; overflow: hidden; }
+.fun-photo-dialog[open] { display: grid; place-items: center; }
+.fun-photo-dialog::backdrop { background: #0e1a27dd; backdrop-filter: blur(10px); animation: facts-backdrop 320ms ease both; }
+.fun-photo-dialog[data-closing]::backdrop { animation: facts-backdrop-out 300ms ease both; }
+.fun-photo-viewer { width: min(1160px, 100%, calc((100dvh - 112px) * 1.778195)); pointer-events: none; }
+.fun-photo-frame { position: relative; width: 100%; transform-origin: top left; border-radius: 16px; background: #142535; pointer-events: auto; }
+.fun-photo-frame > img { display: block; width: 100%; height: auto; border-radius: inherit; }
+.fun-photo-close { position: absolute; top: 12px; right: 12px; display: grid; place-items: center; width: 44px; height: 44px; padding: 0; border: 1px solid #ffffff45; border-radius: 50%; background: #162a3bb3; color: #fff; font-size: 26px; line-height: 1; cursor: pointer; backdrop-filter: blur(12px); transition: background 180ms ease; }
+.fun-photo-close:hover { background: #0d1b2ae6; }
+.fun-photo-close:focus-visible { outline: 2px solid #fff; outline-offset: 4px; }
+.fun-photo-caption { margin: 15px 0 0; text-align: center; color: #d1dae2; font-size: 12px; letter-spacing: .02em; animation: facts-backdrop 420ms ease both; }
+.fun-photo-dialog[data-closing] .fun-photo-caption { opacity: 0; animation: none; transition: opacity 120ms ease; }
+@keyframes facts-backdrop { from { opacity: 0; } to { opacity: 1; } }
+@keyframes facts-backdrop-out { from { opacity: 1; } to { opacity: 0; } }
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .fun-facts-photo:hover .fun-facts-photo-image { transform: scale(1.018); }
+  .fun-facts-photo:hover .fun-facts-photo-expand { background: #182b3a8c; }
+}
 @media (max-width: 480px) {
+  .fun-facts-figure { margin-bottom: 16px; }
+  .fun-facts-photo { padding: 4px; border-radius: 16px; }
+  .fun-facts-photo-image { border-radius: 11px; }
+  .fun-facts-photo-expand { right: 13px; bottom: 13px; }
+  .fun-facts-figure figcaption { padding-top: 9px; font-size: 10px; }
   .fun-facts-summary { font-size: 14px; line-height: 1.8; }
   .fun-facts-links { gap: 8px; margin-top: 18px; }
   .fun-facts-link { min-height: 44px; padding: 9px 11px; font-size: 11px; gap: 6px; }
   .fun-facts-link small { font-size: 8px; }
+  .fun-photo-dialog { padding: 12px; }
+  .fun-photo-viewer { width: min(100%, calc((100dvh - 100px) * 1.778195)); }
+  .fun-photo-close { top: 8px; right: 8px; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .fun-facts-link, .fun-facts-chevron { transition: none; }
-  .fun-facts-gym:not([hidden]) { animation: none; }
+  .fun-facts-card *, .fun-photo-dialog *, .fun-photo-dialog::backdrop { animation: none; transition: none; }
 }

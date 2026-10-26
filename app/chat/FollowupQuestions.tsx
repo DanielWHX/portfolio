@@ -1,6 +1,6 @@
 "use client";
 
-export default function FollowupQuestions({ questions, questionIds = [], revision, generating, disabled, onRefresh, onSelect }: {
+export type FollowupQuestionsProps = {
   questions: string[];
   questionIds?: (string | null)[];
   revision: number;
@@ -8,18 +8,24 @@ export default function FollowupQuestions({ questions, questionIds = [], revisio
   disabled: boolean;
   onRefresh: () => void;
   onSelect: (question: string, questionId?: string) => void;
-}) {
+  onCollapse?: () => void;
+};
+
+export default function FollowupQuestions({ questions, questionIds = [], revision, generating, disabled, onRefresh, onSelect, onCollapse }: FollowupQuestionsProps) {
   if (questions.length !== 2) return null;
 
   return (
     <section className="chat-followups" aria-label="Suggested questions">
       <div className="chat-followups-heading">
-        <h2>
+        <div className="chat-followups-title"><h2>
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" aria-hidden="true">
             <path d="m12 3 2.3 6.7L21 12l-6.7 2.3L12 21l-2.3-6.7L3 12l6.7-2.3L12 3Z" />
           </svg>
           You could ask
         </h2>
+        {onCollapse ? <button type="button" className="chat-followups-collapse" aria-label="Collapse suggested questions" onClick={onCollapse}>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="m7 10 5 5 5-5" /></svg>
+        </button> : null}</div>
         <button type="button" className="chat-followups-refresh" aria-label="Generate new questions" disabled={disabled || generating} onClick={onRefresh}>
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
             <path d="M20 7v5h-5M19 12a7 7 0 1 0-2 5M20 12l-3-5" />

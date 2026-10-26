@@ -1,5 +1,26 @@
 # 修改日志
 
+## 2026-10-26 · v0.2.3
+
+### Fun Facts 更新
+
+- 以用户提供的跳伞照片开场，保留完整比例；AI 简介请求精简为两句、最多 300 字符，Big Three Record、LeetCode、Whatnot 和 Footprints 入口保留在下方。
+- 照片、简介、入口分层轻浮入场；简介取消逐字动画，恢复缓存不重复入场，旧简介下一次点击时仅刷新一次。
+- 照片支持从原位置放大、关闭返回；Escape、关闭按钮及背景点击均可退出并恢复焦点，聊天草稿与滚动位置保留。照片和小游戏打开时暂停追问。
+
+### AI 按钮更新
+
+- You could ask 可折叠为仅含四角星的晶莹玻璃泡泡，展开 / 收起时五个快捷入口同步弹性左移 / 右移；折叠后六个控件同排并限制在输入框宽度内。
+- 透明玻璃壳、细虹彩边缘、轻高光和小星芒；内外光圈持续缓慢流动，hover 表面轻微磁吸、拉伸并弹回，48px / 44px 点击区域保持固定。
+- 修复原有两颗尾巴圆点被折叠 clip 裁切的问题；折叠不额外调用 API，保留问题引用、草稿、回答缓存与问答次数。触屏不启用磁吸，reduced motion 停止相关动效。
+- 视觉参考：[Apple Materials](https://developer.apple.com/design/human-interface-guidelines/materials)、[Codrops Magnetic Buttons](https://tympanus.net/codrops/2020/08/05/magnetic-buttons/)。未新增动画依赖。
+
+### 预览与发布
+
+- `/preview/fun-facts` 和 `/preview/followups` 提供标明示例文案的开发预览，不调用 AI；生产环境均返回 404。
+- GitHub 源码版本发布；服务器部署单独执行和记录，该 Release 不代表服务器已更新。
+- 验证：build、TypeScript、30 项 API 检查、88 项页面回归全部通过；lint 无错误、6 条已有图片警告。API 使用 mock，未宣称真实模型或生产环境验收通过。页面导航过程中仍观察到 Vinext 视频流 Premature close 日志，页面检查均通过。
+
 ## 2026-10-24
 
 ### 资料与入口
