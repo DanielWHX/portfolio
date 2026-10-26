@@ -1,9 +1,10 @@
 "use client";
 
-import { useId, useState } from "react";
-import { funFactLinks } from "@/lib/portfolio/fun-facts";
-import AnimatedText from "./AnimatedText";
+import Image from "next/image";
+import { useCallback, useId, useRef, useState } from "react";
+import { funFactLinks, funFactPhoto } from "@/lib/portfolio/fun-facts";
 import GymExperienceDialog from "./GymExperienceDialog";
+import FunFactPhotoDialog from "./FunFactPhotoDialog";
 import "./fun-facts.css";
 
 function InterestIcon({ kind }: { kind: "gym" | "code" | "live" | "travel" }) {
@@ -15,25 +16,38 @@ function InterestIcon({ kind }: { kind: "gym" | "code" | "live" | "travel" }) {
   </svg>;
 }
 
-export default function FunFactCard({ summary, onGymOpenChange }: { summary: string; onGymOpenChange?: (open: boolean) => void }) {
-  const [gymOpen, setGymOpen] = useState(false);
+export default function FunFactCard({ summary, onOverlayOpenChange }: { summary: string; onOverlayOpenChange?: (open: boolean) => void }) {
+  const [overlay, setOverlay] = useState<"photo" | "gym" | null>(null);
+  const photoButtonRef = useRef<HTMLButtonElement>(null);
+  const photoId = useId();
   const gymId = useId();
+  const gymOpen = overlay === "gym";
 
-  function setOpen(open: boolean) {
-    setGymOpen(open);
-    onGymOpenChange?.(open);
-  }
+  const setOpen = useCallback((next: "photo" | "gym" | null) => {
+    setOverlay(next);
+    onOverlayOpenChange?.(next !== null);
+  }, [onOverlayOpenChange]);
+  const closeOverlay = useCallback(() => setOpen(null), [setOpen]);
 
   return <article className="fun-facts-card" aria-label="Fun Facts">
-    <p className="fun-facts-summary"><AnimatedText text={summary} /></p>
+    <figure className="fun-facts-figure">
+      <button ref={photoButtonRef} type="button" className="fun-facts-photo" aria-label="View skydiving photo" aria-haspopup="dialog"
+        aria-expanded={overlay === "photo"} aria-controls={overlay === "photo" ? photoId : undefined} onClick={() => setOpen("photo")}>
+        <Image {...funFactPhoto} className="fun-facts-photo-image" unoptimized />
+        <span className="fun-facts-photo-expand" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><path d="M14 4h6v6M20 4l-7 7M10 20H4v-6M4 20l7-7" /></svg></span>
+      </button>
+      <figcaption><span>Skydiving</span><span>Beyond the everyday.</span></figcaption>
+    </figure>
+    <p className="fun-facts-summary">{summary}</p>
     <div className="fun-facts-links" role="group" aria-label="Explore my interests">
-      <button type="button" className="fun-facts-link fun-facts-link-gym" aria-expanded={gymOpen} aria-haspopup="dialog" aria-controls={gymOpen ? gymId : undefined} onClick={() => setOpen(true)}>
+      <button type="button" className="fun-facts-link fun-facts-link-gym" aria-expanded={gymOpen} aria-haspopup="dialog" aria-controls={gymOpen ? gymId : undefined} onClick={() => setOpen("gym")}>
         <InterestIcon kind="gym" /><span>Big Three Record</span><span className="fun-facts-chevron" aria-hidden="true">↗</span>
       </button>
       <a className="fun-facts-link fun-facts-link-code" href={funFactLinks.leetcode} target="_blank" rel="noreferrer"><InterestIcon kind="code" /><span>LeetCode notes</span><span className="fun-facts-external" aria-hidden="true">↗</span></a>
       <a className="fun-facts-link" href={funFactLinks.whatnot} target="_blank" rel="noreferrer"><InterestIcon kind="live" /><span>Whatnot</span><span className="fun-facts-external" aria-hidden="true">↗</span></a>
       <button type="button" className="fun-facts-link" disabled><InterestIcon kind="travel" /><span>Footprints</span><small>Coming soon</small></button>
     </div>
-    {gymOpen ? <GymExperienceDialog id={gymId} onClose={() => setOpen(false)} /> : null}
+    {overlay === "photo" ? <FunFactPhotoDialog id={photoId} openerRef={photoButtonRef} onClose={closeOverlay} /> : null}
+    {gymOpen ? <GymExperienceDialog id={gymId} onClose={closeOverlay} /> : null}
   </article>;
 }

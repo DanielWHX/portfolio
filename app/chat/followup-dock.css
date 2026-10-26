@@ -1,0 +1,44 @@
+.chat-dock { --dock-slot: 64px; --dock-orb: 48px; --dock-spring: cubic-bezier(.22,1.18,.36,1); --dock-fold: cubic-bezier(.4,0,.2,1); flex-shrink: 0; width: 100%; min-width: 0; position: relative; }
+.chat-dock-panel { position: relative; width: 100%; min-width: 0; transition: height 560ms var(--dock-spring), margin-bottom 560ms var(--dock-spring); }
+.chat-dock .chat-followups-tail { margin-bottom: 0; }
+.chat-dock[data-expanded=true] .chat-dock-panel { margin-bottom: 12px; }
+.chat-dock-panel-inner { position: absolute; inset: auto 0 0; width: 100%; transform-origin: 24px calc(100% + 36px); transition: transform 520ms var(--dock-fold), opacity 240ms ease, filter 440ms ease, clip-path 520ms var(--dock-fold), visibility 0s 520ms; will-change: transform; }
+.chat-dock[data-expanded=true] .chat-dock-panel-inner { opacity: 1; visibility: visible; transform: scale(1); filter: blur(0); clip-path: polygon(0 0,50% 0,100% 0,100% 50%,100% 100%,50% 100%,0 100%,0 50%); transition: transform 620ms var(--dock-spring), opacity 260ms ease 60ms, filter 500ms ease, clip-path 560ms var(--dock-spring), visibility 0s; }
+.chat-dock[data-expanded=false] .chat-dock-panel-inner { opacity: 0; visibility: hidden; transform: scale(.035,.16); filter: blur(2px); clip-path: polygon(8% 0,50% 0,92% 0,75% 50%,54% 100%,50% 100%,46% 100%,25% 50%); }
+.chat-dock .chat-dock-panel-inner[data-ready=false] { visibility: hidden; }
+.chat-dock-controls { display: flex; align-items: center; justify-content: center; min-width: 0; width: 100%; }
+.chat-dock .chat-quick-questions { display: grid; grid-template-columns: repeat(5,minmax(0,1fr)); gap: 10px; flex: 0 1 100%; min-width: 0; max-width: 100%; width: 100%; padding: 0; transition: flex-basis 560ms var(--dock-spring); }
+.chat-dock[data-available=true] .chat-quick-questions { flex-basis: calc(100% - var(--dock-slot)); }
+.chat-dock .chat-quick-question { min-width: 0; padding-left: 8px; padding-right: 8px; }
+.chat-dock-orb-slot { display: flex; align-items: center; justify-content: flex-start; flex: 0 0 0px; min-width: 0; opacity: 0; visibility: hidden; transform: scale(.6); transform-origin: left center; transition: flex-basis 560ms var(--dock-spring), opacity 180ms ease, transform 480ms var(--dock-spring), visibility 0s 220ms; }
+.chat-dock[data-available=true][data-expanded=false] .chat-dock-orb-slot { flex-basis: var(--dock-slot); opacity: 1; visibility: visible; transform: scale(1); transition: flex-basis 560ms var(--dock-spring), opacity 260ms ease 130ms, transform 580ms var(--dock-spring), visibility 0s; }
+.chat-dock-orb { --orb-x: 0px; --orb-y: 0px; --orb-sx: 1; --orb-sy: 1; --orb-skew: 0deg; position: relative; isolation: isolate; display: block; flex-shrink: 0; width: var(--dock-orb); height: var(--dock-orb); padding: 0; border: 0; border-radius: 50%; background: transparent; cursor: pointer; }
+.chat-dock-orb::before { content: ""; position: absolute; inset: 3px; border-radius: 50%; background: conic-gradient(from 45deg,#d3fff130,#d4d9ff26,#ffd9f02b,#c6eeff30,#d3fff130); filter: blur(5px); pointer-events: none; }
+.chat-dock-orb-surface { position: absolute; inset: 4px; display: block; overflow: hidden; isolation: isolate; pointer-events: none; border: 1px solid #c7d9f478; border-radius: 50%; background: radial-gradient(ellipse at 28% 16%,#ffffffc9,#ffffff00 48%),linear-gradient(145deg,#ffffff47,#dff5ff12); box-shadow: inset 0 .8px 1px #fffffff2,inset 0 -1.4px 2px #bdd7f475,0 1px 3px #bacce92b; backdrop-filter: blur(2px) saturate(1.15); transform: translate3d(var(--orb-x),var(--orb-y),0) skew(var(--orb-skew)) scale(var(--orb-sx),var(--orb-sy)); }
+.chat-dock-orb-film { position: absolute; inset: -22%; border-radius: 50%; background: conic-gradient(from 30deg,#ffd6f54d,#d9d7ff35 19%,#c0f5e65c 32%,#ffffff00 46%,#bbddff59 59%,#e1cdff52 72%,#ffd6f54d); filter: blur(4px); opacity: .7; animation: dock-film-flow 17s linear infinite; }
+.chat-dock-orb-film::after { content: ""; position: absolute; inset: 17%; border: 2px solid #fff9; border-left-color: #d0baff85; border-right-color: #b8f7eb9c; border-radius: 50%; filter: blur(.7px); transform: rotate(-28deg) scale(.94,1.06); }
+.chat-dock-orb-rim { position: absolute; inset: 0; padding: 1.1px; border-radius: inherit; background: conic-gradient(from 10deg,#fff 0deg,#b4effac2 60deg,#e6c7ffc4 130deg,#fff 185deg,#c7f9eccc 240deg,#f6ceecb8 300deg,#fff); mask: linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0); mask-composite: exclude; animation: dock-rim-flow 23s linear infinite; }
+.chat-dock-orb-glint { position: absolute; left: 12%; top: 12%; width: 42%; height: 13%; border-radius: 50%; background: linear-gradient(120deg,#ffffffeb,#ffffff42); filter: blur(.35px); transform: rotate(-38deg); }
+.chat-dock-orb-glint::after { content: ""; position: absolute; left: 16px; top: 27px; width: 11px; height: 3px; border-radius: 50%; background: #ffffffc4; filter: blur(.6px); }
+.chat-dock-orb-star { position: absolute; inset: 0; width: 100%; height: 100%; filter: drop-shadow(0 0 .6px #fff); transform: translate(calc(var(--orb-x) * -.16),calc(var(--orb-y) * -.16)); }
+.chat-dock-orb[data-motion=paused] *,.chat-dock-orb[data-motion=paused] *::after { animation-play-state: paused; }
+.chat-dock-orb:focus-visible,.chat-followups-collapse:focus-visible { outline: 2px solid #7b9bd7; outline-offset: 3px; }
+.chat-followups-title { display: flex; align-items: center; gap: 4px; }
+.chat-followups-collapse { display: grid; place-items: center; width: 28px; height: 28px; padding: 0; border-radius: 50%; background: transparent; color: #8296b0; cursor: pointer; transition: background 160ms ease,color 160ms ease; }
+.chat-followups-collapse:hover { background: #edf3fc; color: #4e75a6; }
+@keyframes dock-film-flow { to { transform: rotate(360deg); } }
+@keyframes dock-rim-flow { to { transform: rotate(-360deg); } }
+@media (max-width: 700px) {
+  .chat-dock { --dock-slot: 50px; --dock-orb: 44px; }
+  .chat-dock .chat-quick-questions { gap: 5px; }
+  .chat-dock .chat-quick-question { gap: 5px; padding: 8px 1px; }
+  .chat-dock-panel-inner { transform-origin: 22px calc(100% + 42px); }
+}
+@media (max-width: 360px) {
+  .chat-dock .chat-quick-questions { gap: 4px; }
+  .chat-dock .chat-quick-question { font-size: 9px; }
+}
+@media (pointer: coarse) { .chat-followups-collapse { width: 36px; height: 36px; } }
+@media (prefers-reduced-motion: reduce) {
+  .chat-dock *,.chat-dock *::before,.chat-dock *::after { transition: none !important; animation: none !important; }
+}

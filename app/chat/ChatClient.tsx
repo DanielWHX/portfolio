@@ -9,7 +9,7 @@ import SkillsCard from "./SkillsCard";
 import FunFactCard from "./FunFactCard";
 import QuickQuestionIcon from "./QuickQuestionIcon";
 import AnimatedText from "./AnimatedText";
-import FollowupQuestions from "./FollowupQuestions";
+import FollowupDock from "./FollowupDock";
 import useFollowupQuestions from "./useFollowupQuestions";
 import { getQuickQuestion, quickQuestions } from "@/lib/portfolio/quick-questions";
 import { FUN_FACTS_REVISION } from "@/lib/portfolio/fun-facts";
@@ -27,7 +27,7 @@ export default function ChatClient({ initialQuery }: { initialQuery: string }) {
   const [draft, setDraft] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [gymOpen, setGymOpen] = useState(false);
+  const [overlayOpen, setOverlayOpen] = useState(false);
   const [projectsActive, setProjectsActive] = useState(false);
   const projectRef = useRef<ProjectId | undefined>(undefined);
   const retryReference = useRef<{ content: string; reference: InterviewReference } | null>(null);
@@ -43,8 +43,8 @@ export default function ChatClient({ initialQuery }: { initialQuery: string }) {
 
   const userTurns = messages.filter((message) => message.role === "user").length;
   const limitReached = userTurns >= MAX_USER_TURNS;
-  const handleGymOpenChange = useCallback((open: boolean) => {
-    setGymOpen(open);
+  const handleOverlayOpenChange = useCallback((open: boolean) => {
+    setOverlayOpen(open);
     if (open) suspendFollowups();
   }, [suspendFollowups]);
 
@@ -230,11 +230,11 @@ export default function ChatClient({ initialQuery }: { initialQuery: string }) {
             ) : message.role === "assistant" && message.module?.type === "skills" ? (
               <SkillsCard />
             ) : message.role === "assistant" && message.module?.type === "projects" ? (
-              <ProjectsCard active={projectsActive && !loading && !gymOpen} onProjectChange={handleProjectChange} />
+              <ProjectsCard active={projectsActive && !loading && !overlayOpen} onProjectChange={handleProjectChange} />
             ) : message.role === "assistant" && message.module?.type === "contact" ? (
               <ContactCard contact={message.module.contact} />
             ) : message.role === "assistant" && (message.module?.type === "fun_facts" || message.preset === "Fun Facts") ? (
-              <FunFactCard summary={message.content} onGymOpenChange={handleGymOpenChange} />
+              <FunFactCard summary={message.content} onOverlayOpenChange={handleOverlayOpenChange} />
             ) : (
               <div className={`chat-message chat-message-${message.role}`}>
                 {message.role === "assistant" ? <AnimatedText text={message.content} /> : message.content}
@@ -252,13 +252,13 @@ export default function ChatClient({ initialQuery }: { initialQuery: string }) {
         </p>
       ) : null}
 
-      {!gymOpen ? <FollowupQuestions questions={followupQuestions} questionIds={followupQuestionIds} revision={followupRevision} generating={generatingFollowups}
+      <FollowupDock visible={!overlayOpen} questions={followupQuestions} questionIds={followupQuestionIds} revision={followupRevision} generating={generatingFollowups}
         disabled={!sessionReady || loading || limitReached} onRefresh={refreshFollowups}
         onSelect={(question, questionId) => {
           void sendMessage(question, { ...(projectRef.current ? { projectId: projectRef.current } : {}), ...(questionId ? { questionId } : {}) }).then(() => window.requestAnimationFrame(() => {
             document.getElementById("chat-query")?.focus({ preventScroll: true });
           }));
-        }} /> : null}
+        }}>
 
       <nav className="chat-quick-questions" aria-label="Quick questions">
         {quickQuestions.map(({ label, tone, query }) => (
@@ -269,6 +269,7 @@ export default function ChatClient({ initialQuery }: { initialQuery: string }) {
           </button>
         ))}
       </nav>
+      </FollowupDock>
 
       <form className="chat-form" onSubmit={handleSubmit}>
         <label className="sr-only" htmlFor="chat-query">
