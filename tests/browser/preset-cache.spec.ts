@@ -37,7 +37,7 @@ for (const width of [1280, 390]) {
         expect(requests).toHaveLength(index + 1);
         await expect(page.locator(".chat-turn-assistant")).toHaveCount(index + 1);
       }
-      const letters = answer.locator(".answer-reveal > span");
+      const letters = answer.locator(".answer-reveal");
       if (await letters.count()) await expect(letters.last()).toHaveCSS("animation-name", "none");
     }
     await page.reload();

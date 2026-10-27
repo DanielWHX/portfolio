@@ -30,7 +30,7 @@ for (const viewport of [{ width: 1280, height: 900 }, { width: 390, height: 844 
     await expect(card.getByText("GET IN TOUCH", { exact: true })).toHaveCount(0);
     await expect(card.getByText("Here are my contact details.", { exact: true })).toHaveCount(0);
     await expect(card).toHaveCSS("background-color", "rgb(255, 255, 255)");
-    await expect(card).toHaveCSS("border-top-color", "rgb(228, 237, 249)");
+    await expect(card).toHaveCSS("border-top-width", "0px");
     await expect(card).toHaveCSS("box-shadow", "none");
     await expect(page.getByRole("article", { name: "Hongxiang Wang profile" })).toHaveCount(0);
     expect(requests[0]).toEqual([{ role: "user", content: "How can I contact you?" }]);
@@ -47,12 +47,18 @@ for (const viewport of [{ width: 1280, height: 900 }, { width: 390, height: 844 
       ["WeChat ID", "KeepMySpiritAliv3"],
     ]) {
       await expect(card.getByText(value, { exact: true })).toBeVisible();
-      const button = card.getByRole("button", { name: `Copy ${label}`, exact: true });
+      const row = card.getByRole("listitem").filter({ hasText: value });
+      const button = row.getByRole("button");
+      await expect(button).toHaveAccessibleName(`Copy ${label}`);
+      const before = await button.boundingBox();
       await button.click();
       if (viewport.width === 1280) {
-        await expect(card.getByRole("status")).toHaveText(`${label} copied.`);
-        await expect(button).toHaveText("Copied ✓");
-        await expect(card.getByRole("button").filter({ hasText: "Copied ✓" })).toHaveCount(1);
+        await expect(button).toHaveText("");
+        await expect(button).toHaveAccessibleName(`${label} copied`);
+        await expect(button.locator("svg")).toHaveCount(1);
+        await expect(card.getByRole("status")).toHaveCount(0);
+        await expect(card.getByRole("button", { name: / copied$/ })).toHaveCount(1);
+        expect(await button.boundingBox()).toEqual(before);
         expect(copied).toBe(value);
       } else {
         await expect(card.getByRole("status")).toHaveText(`Copy unavailable. Select the ${label} value to copy it.`);

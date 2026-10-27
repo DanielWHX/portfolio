@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { portfolioProjects } from "@/lib/portfolio/projects";
 import { isProjectId, type ProjectId } from "@/lib/portfolio/interview-context";
+import PortfolioIcon from "./PortfolioIcon";
 
 const covers: Record<string, { category: string; image?: string; href?: string }> = {
   portfolio: { category: "AI Portfolio", image: "/projects/portfolio/homepage.jpg", href: "/" },
@@ -67,7 +68,12 @@ export default function ProjectsCard({ active = false, onProjectChange }: { acti
 
   return (
     <article className="projects-card" aria-label="Hongxiang's projects">
-      <header className="projects-heading"><h2>Project</h2></header>
+      <header className="projects-heading"><h2>Project</h2>
+        <div className="project-pagination" aria-label="Project navigation">
+          <button type="button" aria-label="Previous projects" disabled={edges.start} onClick={() => move(-1)}><PortfolioIcon name="arrow-left" size={18} /></button>
+          <button type="button" aria-label="Next projects" disabled={edges.end} onClick={() => move(1)}><PortfolioIcon name="arrow-right" size={18} /></button>
+        </div>
+      </header>
       <ul className="project-track" ref={track} onScroll={updateEdges} aria-label="Projects">
         {portfolioProjects.map(project => {
           const cover = covers[project.id];
@@ -81,10 +87,6 @@ export default function ProjectsCard({ active = false, onProjectChange }: { acti
           </li>;
         })}
       </ul>
-      <div className="project-pagination" aria-label="Project navigation">
-        <button type="button" aria-label="Previous projects" disabled={edges.start} onClick={() => move(-1)}>←</button>
-        <button type="button" aria-label="Next projects" disabled={edges.end} onClick={() => move(1)}>→</button>
-      </div>
     </article>
   );
 }

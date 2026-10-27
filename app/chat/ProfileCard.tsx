@@ -1,5 +1,6 @@
 import Image from "next/image";
 import AnimatedText from "./AnimatedText";
+import PortfolioIcon from "./PortfolioIcon";
 
 import type { ResumeOverviewCard } from "@/lib/portfolio/resume-profile";
 
@@ -18,21 +19,21 @@ export default function ProfileCard({ profile }: { profile: ResumeOverviewCard }
         </div>
         <div className="profile-card-intro">
           <div className="profile-card-identity">
-            <p className="profile-card-kicker">A little about me <span aria-hidden="true">👋</span></p>
+            <p className="profile-card-kicker">A little about me</p>
             <h2>{profile.name}</h2>
             <p className="profile-card-headline">{profile.headline}</p>
           </div>
           <p className="profile-card-summary"><AnimatedText text={profile.summary} /></p>
           <ul className="profile-card-interests" aria-label="Interests">
             {profile.interests.map((interest, index) => (
-              <li key={interest}><span aria-hidden="true">{index === 0 ? "💪" : "🚀"}</span> {interest}</li>
+              <li key={interest}><PortfolioIcon name={index === 0 ? "dumbbell" : "rocket"} size={16} />{interest}</li>
             ))}
           </ul>
         </div>
       </header>
 
       <section className="profile-card-education" aria-label="Education">
-        <h3><span aria-hidden="true">🎓</span> Education</h3>
+        <h3><PortfolioIcon name="graduation" size={18} />Education</h3>
         <div className="profile-card-schools">
           {profile.schools.map((school) => (
             <section className={`profile-school profile-school-${school.id}`} key={school.id} aria-label={school.school}>
@@ -61,7 +62,7 @@ export default function ProfileCard({ profile }: { profile: ResumeOverviewCard }
       </section>
 
       <section className="profile-card-experience" aria-label="Experience">
-        <h3><span aria-hidden="true">💻</span> Where I&apos;ve been building</h3>
+        <h3><PortfolioIcon name="briefcase" size={18} />Where I&apos;ve been building</h3>
         <ul>{profile.experience.map((item) => <li key={item}>{item}</li>)}</ul>
       </section>
       <ul className="profile-card-skills" aria-label="Core skills">

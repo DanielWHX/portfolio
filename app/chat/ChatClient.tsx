@@ -9,6 +9,7 @@ import SkillsCard from "./SkillsCard";
 import FunFactCard from "./FunFactCard";
 import QuickQuestionIcon from "./QuickQuestionIcon";
 import AnimatedText from "./AnimatedText";
+import PortfolioIcon from "./PortfolioIcon";
 import FollowupDock from "./FollowupDock";
 import useFollowupQuestions from "./useFollowupQuestions";
 import { getQuickQuestion, quickQuestions } from "@/lib/portfolio/quick-questions";
@@ -243,7 +244,7 @@ export default function ChatClient({ initialQuery }: { initialQuery: string }) {
           </div>
         ))}
 
-        {loading ? <div className="chat-loading">Thinking…</div> : null}
+        {loading ? <div className="chat-loading"><span className="chat-loading-dots" aria-hidden="true"><i /><i /><i /></span><span>Thinking…</span></div> : null}
       </div>
 
       {error ? (
@@ -290,7 +291,7 @@ export default function ChatClient({ initialQuery }: { initialQuery: string }) {
           disabled={!sessionReady || loading || limitReached || !draft.trim()}
           aria-label="Send question"
         >
-          <span aria-hidden="true">↑</span>
+          <PortfolioIcon name="arrow-up" />
         </button>
       </form>
 

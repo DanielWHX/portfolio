@@ -1,5 +1,32 @@
 # 修改日志
 
+## 2026-10-28 · v0.2.4 — Refined Visuals & Motion
+
+### 全端视觉更新
+
+- 保留封面页，统一聊天区的 system sans 字体、黑灰信息层级、borderless 内容、轻灰输入框、深色发送按钮及线性图标；适配桌面和 320px / 390px 手机布局。
+- Me、Projects、Skills、Fun Facts、Contact 五个入口保留细边框和彩色图标；Projects 恢复蓝色渐变与倾斜截图，轮播箭头移到标题旁；Me 的 Fitness / SaaS companies 标签使用柔和绿紫色。
+- Skills 深蓝突出 Python、Java、Spring Boot、Flask、RAG、LLM Integration、Tool Calling；浅蓝强调 Spring AI、TypeScript、React、PostgreSQL、pgvector、Docker。Soft Skills 与其他常规标签统一，视觉强调不代表熟练度评分。
+
+### AI 动画与交互优化
+
+- AI 按钮静止时保留晶莹泡泡与四角星；hover 或键盘 focus 时切换到粉蓝液体动画，鼠标停止移动后继续循环，移开自然回到星星。
+- 使用用户提供切片中重复的一圈：15 帧、1.5 秒循环、显示帧率插值，呈现 S 形卷曲与饱满圆球的变化；单张 WebP 图集约 56 KB。素材只含球体，来源与生成说明见 `public/ai/README.md`。
+- 保留追问折叠、五个入口的弹性联动、两颗尾巴圆点和固定点击范围；加载中 / 失败、触屏及 reduced motion 保留静态入口，失焦和卸载停止动画。
+- 回答以完整文字轻浮淡入，取消逐字等待；缓存和刷新恢复不重复播放，继续保留回答缓存、项目关联追问及取消过时请求。
+
+### 内容与体验细化
+
+- Big Three Record 移除小游戏、计分和主题效果，改为 borderless 视频选项卡：Squat 200 kg、Bench press 160 kg、Deadlift 200 kg，560 kg 合计紧邻标题。
+- 三段训练视频按需加载、完整显示纵向画面，切换 / 关闭暂停；保留原生控件、键盘操作、失败回退、弹窗焦点和草稿恢复。照片及视频弹窗打开时暂停追问。
+- Whatnot 使用黄色标识；Contact 复制成功仅显示对勾，按钮尺寸不跳动，无额外成功提示，失败时保留手动复制说明。
+- 新增仅开发环境开放的 `/preview/chat`，集中展示最终卡片与交互；预览使用标明的示例内容，不请求模型，生产环境返回 404。
+
+### 验证与发布
+
+- 发布复验：构建、TypeScript、30 项 mock API 与 92 项浏览器回归通过；ESLint 无错误，保留 3 条已有图片警告。覆盖缓存 / 刷新、项目追问、照片 / 视频弹窗、球体循环与加载降级、复制反馈及手机布局。未执行真实模型或生产服务器验收。
+- 本次发布范围为 GitHub 源码、版本 Tag 与 Release；服务器部署另行执行，不代表线上网站已更新。
+
 ## 2026-10-26 · v0.2.3
 
 ### Fun Facts 更新

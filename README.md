@@ -2,14 +2,14 @@
 
 Interactive portfolio for Hongxiang Wang, a full-stack software engineer.
 
-Current source release: **v0.2.3 — Fun Facts & AI Bubble**.
+Current source release: **v0.2.4 — Refined Visuals & Motion**.
 
 ## Features
 
 - Minimal single-screen introduction and question interface
 - Conversational portfolio voice powered by `gpt-5.6-luna`
 - Read-only `get_resume_profile` tool backed by approved resume facts and shared interests
-- Two context-aware AI follow-up suggestions that fold into a clear glass star bubble, with magnetic hover, linked shortcut movement and reduced-motion support
+- Two context-aware AI follow-up suggestions that fold into a still glass-star bubble, with a hover-triggered liquid thinking effect, linked shortcut movement and reduced-motion support
 - Photo-led Fun Facts with a skydiving lightbox, a compact introduction and on-demand interest destinations
 - Personal Profile Card with a corrected portrait, university logos, and sourced rankings
 - Contact Card with copy buttons for email, phone, GitHub, LinkedIn, and WeChat
@@ -49,7 +49,7 @@ conversation, technology, fitness, and SaaS ideas. Personal claims stay grounded
 in the shared profile. All five quick questions are available on the homepage and above the chat input.
 Me, Contact, Projects, and Skills can return cards. Fun Facts starts with a skydiving
 photo and a compact AI summary, followed by Big Three Record, LeetCode notes, Whatnot and travel Footprints entries;
-Big Three Record opens in a focused game dialog with real squat, bench and deadlift clips; Whatnot opens the supplied account link, while Footprints remains coming soon.
+Big Three Record opens a simple borderless video dialog with Squat, Bench press and Deadlift tabs, self-reported personal records and the supplied training clips. Its chat overlay follows the conversation's neutral typography and controls, with no game or impact effects. Videos play only when requested and stop when switching tabs or closing the dialog; Whatnot opens the supplied account link, while Footprints remains coming soon.
 Ask for contact details in English or Chinese to receive a Contact Card.
 
 ## Verification
@@ -84,13 +84,13 @@ copy feedback and the manual-copy fallback, valid follow-ups, and return navigat
 After a successful build, use `npm run test:api` or `npm run test:ui` to rerun
 only the relevant checks. Browser failures save traces under `test-results/`.
 
-Before release, also check the real model on the private deployed site:
+For a server deployment, separately check the real model on the private deployed site:
 
 - Sign in as the site owner and ask `What are your skills?`.
-- Confirm a readable text answer appears and no Profile Card is shown.
+- Confirm the current Skills Card appears for the broad preset and a focused follow-up receives a readable text answer.
 - Confirm the answer agrees with the approved resume and Thinking stops.
 
-Mocks verify the UI and API contract; this live check verifies real-model behavior.
+Mocks verify the source release's UI and API contract; this separate live check verifies real-model behavior and deployment acceptance.
 
 The Cloudflare development Worker reads `.dev.vars`; when that file exists,
 Wrangler skips `.env*` and host environment variables for its bindings. Restart
@@ -186,15 +186,34 @@ in scope notes. Shared agent facts live in `lib/portfolio/projects.ts` under
 
 ## Chat motion
 
-Cards and portraits enter with a short staggered slide. Answer text reveals over
-at most about 2.4 seconds after the complete JSON response arrives; this is a
-frontend presentation effect, not API streaming. Existing messages do not replay
-when a new question or Copy action updates the page. Reduced-motion preferences
-disable these animations.
+The collapsed AI bubble stays still until hover or visible keyboard focus. Its
+blue / pink liquid then follows a 1.5-second reference cycle even when the pointer
+stops, changing between a folded wave and a full sphere. Fifteen tightly cropped
+owner-supplied frames live in one 56 KB WebP atlas and blend at display cadence.
+This is an asset-based animation, not a reconstructed 3D model. Leaving reverses
+the existing transition. Pending / failed loading, touch and reduced motion keep
+the static star. See `public/ai/README.md` for the source and rebuild notes.
+
+The conversation uses a route-scoped system font, neutral text, borderless cards,
+outline SVG icons and a quiet charcoal send action. Quick questions keep fine borders
+and coloured icons; Profile interests use soft green and violet tags. Projects keep
+their blue gradient covers and tilted screenshots, with navigation beside the heading.
+Skills use deep blue for backend / AI focus, lighter blue for supporting project tools,
+and a consistent grey surface for all other tags, including Soft Skills. These are
+visual priorities, not proficiency scores. The homepage keeps its original design;
+project-aware suggestions and the glass AI bubble retain their existing behavior.
+
+Cards enter with one short upward fade. Complete answer text appears with a 320ms
+fade and 6px movement after the JSON response arrives; it is a frontend effect,
+not model streaming. There is no artificial letter-by-letter delay. Cached messages
+do not replay when a new question or Copy action updates the page. Reduced-motion
+preferences disable movement, including the suggestion dock's existing effects.
 
 The five quick questions continue the current conversation. New replies scroll
 to their beginning unless the visitor scrolls up while waiting. Profile and
-Contact retain their existing data and copy actions.
+Contact retain their existing data. Copy success shows only a check icon without
+resizing the button; its accessible name confirms success, while clipboard failure
+still offers manual-copy guidance.
 
 ## Conversation continuity
 
@@ -213,8 +232,15 @@ and interests at full width underneath so education appears earlier.
 
 ### Local Fun Facts design preview
 
+`/preview/chat` previews the redesigned conversation with all five real cards,
+sample content, the suggestion fold, photo and video overlays, and a local sample
+input. It is explicitly labelled as a design preview, makes no API calls and returns
+404 in production. Normal `/chat` continues to use the configured Resume Agent.
+
 With the development server running, `/preview/fun-facts` shows the real photo-led card with clearly labelled sample copy and no API request. It is unavailable in production. The normal `/chat` flow still uses the Resume Agent; the photo viewer and Big Three Record do not call the model.
 
 `/preview/followups` provides a development-only review of the real collapsible suggestion dock with sample questions. Toggle the chevron beside You could ask or the coloured star bubble; New ideas rotates local samples. It makes no API calls and returns 404 in production.
 
-The follow-up preview also includes a clear glass star bubble: hover with a mouse or pen to feel a small magnetic deformation and spring return. The light continues at rest; reduced motion disables the motion. Both original thought-bubble tail circles remain visible.
+The follow-up preview includes the glass star bubble: it is completely still at rest. Hover with a fine pointer, or focus it by keyboard, to blend the star into a blue-violet and pink liquid sphere. Moving away reverses the same blend without restarting its phase. The fixed hit target and neighboring shortcuts stay still. Touch and reduced motion retain the static icon; Canvas-unavailable browsers keep the usable glass-star fallback. No animation frames run at rest, and blur, hidden documents, folding and unmount cancel work. Both original thought-bubble tail circles remain visible.
+
+The liquid is a procedural Canvas 2D interpretation of [Gleb Kuznetsov's Thinking Reaction reference](https://dribbble.com/shots/25202172-Thinking-Reaction-for-AI-sphere-by-Gleb-Kuznetsov). Its official still was inspected; the original animation was not accessible, so no frame-for-frame motion match is claimed. No external media or new graphics library is included.

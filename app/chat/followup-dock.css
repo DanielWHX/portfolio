@@ -12,22 +12,16 @@
 .chat-dock .chat-quick-question { min-width: 0; padding-left: 8px; padding-right: 8px; }
 .chat-dock-orb-slot { display: flex; align-items: center; justify-content: flex-start; flex: 0 0 0px; min-width: 0; opacity: 0; visibility: hidden; transform: scale(.6); transform-origin: left center; transition: flex-basis 560ms var(--dock-spring), opacity 180ms ease, transform 480ms var(--dock-spring), visibility 0s 220ms; }
 .chat-dock[data-available=true][data-expanded=false] .chat-dock-orb-slot { flex-basis: var(--dock-slot); opacity: 1; visibility: visible; transform: scale(1); transition: flex-basis 560ms var(--dock-spring), opacity 260ms ease 130ms, transform 580ms var(--dock-spring), visibility 0s; }
-.chat-dock-orb { --orb-x: 0px; --orb-y: 0px; --orb-sx: 1; --orb-sy: 1; --orb-skew: 0deg; position: relative; isolation: isolate; display: block; flex-shrink: 0; width: var(--dock-orb); height: var(--dock-orb); padding: 0; border: 0; border-radius: 50%; background: transparent; cursor: pointer; }
-.chat-dock-orb::before { content: ""; position: absolute; inset: 3px; border-radius: 50%; background: conic-gradient(from 45deg,#d3fff130,#d4d9ff26,#ffd9f02b,#c6eeff30,#d3fff130); filter: blur(5px); pointer-events: none; }
-.chat-dock-orb-surface { position: absolute; inset: 4px; display: block; overflow: hidden; isolation: isolate; pointer-events: none; border: 1px solid #c7d9f478; border-radius: 50%; background: radial-gradient(ellipse at 28% 16%,#ffffffc9,#ffffff00 48%),linear-gradient(145deg,#ffffff47,#dff5ff12); box-shadow: inset 0 .8px 1px #fffffff2,inset 0 -1.4px 2px #bdd7f475,0 1px 3px #bacce92b; backdrop-filter: blur(2px) saturate(1.15); transform: translate3d(var(--orb-x),var(--orb-y),0) skew(var(--orb-skew)) scale(var(--orb-sx),var(--orb-sy)); }
-.chat-dock-orb-film { position: absolute; inset: -22%; border-radius: 50%; background: conic-gradient(from 30deg,#ffd6f54d,#d9d7ff35 19%,#c0f5e65c 32%,#ffffff00 46%,#bbddff59 59%,#e1cdff52 72%,#ffd6f54d); filter: blur(4px); opacity: .7; animation: dock-film-flow 17s linear infinite; }
-.chat-dock-orb-film::after { content: ""; position: absolute; inset: 17%; border: 2px solid #fff9; border-left-color: #d0baff85; border-right-color: #b8f7eb9c; border-radius: 50%; filter: blur(.7px); transform: rotate(-28deg) scale(.94,1.06); }
-.chat-dock-orb-rim { position: absolute; inset: 0; padding: 1.1px; border-radius: inherit; background: conic-gradient(from 10deg,#fff 0deg,#b4effac2 60deg,#e6c7ffc4 130deg,#fff 185deg,#c7f9eccc 240deg,#f6ceecb8 300deg,#fff); mask: linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0); mask-composite: exclude; animation: dock-rim-flow 23s linear infinite; }
-.chat-dock-orb-glint { position: absolute; left: 12%; top: 12%; width: 42%; height: 13%; border-radius: 50%; background: linear-gradient(120deg,#ffffffeb,#ffffff42); filter: blur(.35px); transform: rotate(-38deg); }
-.chat-dock-orb-glint::after { content: ""; position: absolute; left: 16px; top: 27px; width: 11px; height: 3px; border-radius: 50%; background: #ffffffc4; filter: blur(.6px); }
-.chat-dock-orb-star { position: absolute; inset: 0; width: 100%; height: 100%; filter: drop-shadow(0 0 .6px #fff); transform: translate(calc(var(--orb-x) * -.16),calc(var(--orb-y) * -.16)); }
-.chat-dock-orb[data-motion=paused] *,.chat-dock-orb[data-motion=paused] *::after { animation-play-state: paused; }
+.chat-dock-orb { --orb-activity: 0; position: relative; isolation: isolate; display: block; flex-shrink: 0; width: var(--dock-orb); height: var(--dock-orb); padding: 0; border: 0; border-radius: 50%; background: transparent; cursor: pointer; }
+.chat-dock-orb::before { content: ""; position: absolute; inset: 4px; border-radius: 50%; background: radial-gradient(circle,#e4dbfa24,transparent 74%); filter: blur(3px); pointer-events: none; }
+.chat-dock-orb-surface { position: absolute; inset: 4px; display: block; overflow: hidden; isolation: isolate; pointer-events: none; border: .65px solid #d5d2e54d; border-radius: 50%; background: radial-gradient(ellipse at 30% 20%,#fffffffa,#ffffff59 42%,#e7e5f538 78%,#d2c8e940); box-shadow: inset 0 1px 2px #fffffff2,inset -1px -1.5px 3px #c8b9e647,0 1px 4px #9b8abd14; }
+.chat-dock-orb-liquid { position: absolute; inset: 0; display: block; width: 100%; height: 100%; opacity: var(--orb-activity); }
+.chat-dock-orb-glint { position: absolute; left: 15%; top: 12%; width: 32%; height: 12%; border-radius: 50%; background: linear-gradient(120deg,#ffffffb3,#ffffff00); filter: blur(.6px); transform: rotate(-36deg); opacity: calc(1 - var(--orb-activity)); }
+.chat-dock-orb-star { position: absolute; inset: 0; width: 100%; height: 100%; opacity: calc(1 - var(--orb-activity)); filter: drop-shadow(0 0 .6px #fff); transform: scale(calc(1 - var(--orb-activity) * .18)) rotate(calc(var(--orb-activity) * -12deg)); }
 .chat-dock-orb:focus-visible,.chat-followups-collapse:focus-visible { outline: 2px solid #7b9bd7; outline-offset: 3px; }
 .chat-followups-title { display: flex; align-items: center; gap: 4px; }
 .chat-followups-collapse { display: grid; place-items: center; width: 28px; height: 28px; padding: 0; border-radius: 50%; background: transparent; color: #8296b0; cursor: pointer; transition: background 160ms ease,color 160ms ease; }
 .chat-followups-collapse:hover { background: #edf3fc; color: #4e75a6; }
-@keyframes dock-film-flow { to { transform: rotate(360deg); } }
-@keyframes dock-rim-flow { to { transform: rotate(-360deg); } }
 @media (max-width: 700px) {
   .chat-dock { --dock-slot: 50px; --dock-orb: 44px; }
   .chat-dock .chat-quick-questions { gap: 5px; }

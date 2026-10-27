@@ -14,7 +14,7 @@ for (const viewport of [{ width: 1280, height: 900 }, { width: 390, height: 844 
     await expect(card).toBeVisible();
     await expect(card.getByText(introduction, { exact: true })).toBeVisible();
     await expect(card).toHaveCSS("background-color", "rgb(255, 255, 255)");
-    await expect(card).toHaveCSS("border-top-color", "rgb(228, 237, 249)");
+    await expect(card).toHaveCSS("border-top-width", "0px");
     await expect(card).toHaveCSS("box-shadow", "none");
     await expect(card.getByRole("list", { name: "Interests" })).toContainText("Fitness");
     await expect(card.getByRole("list", { name: "Interests" })).toContainText("SaaS companies");

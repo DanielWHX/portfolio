@@ -22,7 +22,7 @@ test("retains cards, drafts and follow-up context through home navigation and re
   await page.getByRole("link", { name: "Me", exact: true }).click();
   await expect(input).toHaveValue("What are your skills?");
   await expect(page.getByRole("article", { name: "Hongxiang Wang profile" })).toHaveCount(1);
-  await expect(page.locator(".answer-reveal > span").last()).toHaveCSS("animation-name", "none");
+  await expect(page.locator(".answer-reveal").last()).toHaveCSS("animation-name", "none");
   expect(requests).toHaveLength(1);
   await page.getByRole("button", { name: "Send question" }).click();
   await expect(page.getByText(skills, { exact: true })).toBeVisible();
@@ -104,7 +104,8 @@ test("restores a Contact card with working copy actions", async ({ page }) => {
   await expect(page.getByRole("article", { name: "Contact Hongxiang" })).toBeVisible();
   await page.reload();
   await page.getByRole("button", { name: "Copy Email", exact: true }).click();
-  await expect(page.getByRole("status")).toHaveText("Email copied.");
+  await expect(page.getByRole("button", { name: "Email copied", exact: true })).toHaveText("");
+  await expect(page.getByRole("status")).toHaveCount(0);
   expect(copied).toBe("hxjob1017@gmail.com");
 });
 

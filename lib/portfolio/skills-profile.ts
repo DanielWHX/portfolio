@@ -22,7 +22,10 @@ export const skillsFocus = {
   primaryLanguages: ["Python", "Java"],
   headline: "Python & Java backend engineering",
   summary: "My primary focus is backend engineering with Python and Java: building APIs, connecting data, and integrating AI workflows. I also work across the stack with TypeScript and React.",
-  highlighted: ["Python", "Java", "Spring Boot", "Flask"],
+  highlighted: ["Python", "Java", "Spring Boot", "Flask", "RAG", "LLM Integration", "Tool Calling"],
+  // Lighter visual emphasis for tools supported by project and deployment evidence,
+  // not a proficiency rating or a claim of equal mastery.
+  supporting: ["Spring AI", "TypeScript", "React", "PostgreSQL", "pgvector", "Docker"],
   capabilities: ["Backend APIs", "Data workflows", "AI integration"],
   groups: skillGroups,
   experience: [
