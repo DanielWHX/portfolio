@@ -24,4 +24,4 @@ ffmpeg -ss "$POSTER_SECONDS" -i "$LIFT.mp4" -frames:v 1 \
   -vf 'scale=540:-2' -q:v 3 "$LIFT-poster.jpg"
 ```
 
-The page should use `controls`, `playsInline`, `muted`, and `preload="none"` so visitors choose when to download and play a clip; unmuting exposes the retained original sound. Both visual themes share these assets.
+The video tabs use `controls`, `playsInline`, `muted`, and `preload="none"` so visitors choose when to download and play a clip; unmuting exposes the retained original sound. Switching tabs or closing the record dialog stops and unloads the current player. The full portrait framing is retained.

@@ -1,4 +1,6 @@
 import ChatClient from "./ChatClient";
+import PortfolioIcon from "./PortfolioIcon";
+import "./chat-design.css";
 
 type ChatPageProps = {
   searchParams: Promise<{ query?: string | string[] }>;
@@ -10,12 +12,12 @@ export default async function ChatPage({ searchParams }: ChatPageProps) {
   const initialQuery = (rawQuery ?? "").trim().slice(0, 1000);
 
   return (
-    <main className="chat-page">
+    <main className="chat-page chat-design">
       <section className="chat-shell" aria-labelledby="chat-title">
         <header className="chat-header">
           {/* eslint-disable-next-line @next/next/no-html-link-for-pages -- Native navigation avoids the pinned vinext Link runtime error. */}
           <a className="chat-back" href="/" aria-label="Back to portfolio">
-            <span aria-hidden="true">←</span>
+            <PortfolioIcon name="arrow-left" />
           </a>
           <span className="chat-avatar" aria-hidden="true" />
           <h1 id="chat-title" className="sr-only">Ask about me</h1>

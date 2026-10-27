@@ -2,10 +2,10 @@
 
 import { useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
-import TopGymCard from "./TopGymCard";
-import "./gym-dialog.css";
+import BigThreeRecord from "./BigThreeRecord";
+import PortfolioIcon from "./PortfolioIcon";
 
-export default function GymExperienceDialog({ id, onClose }: { id: string; onClose: () => void }) {
+export default function BigThreeDialog({ id, onClose }: { id: string; onClose: () => void }) {
   const dialogRef = useRef<HTMLDialogElement>(null);
 
   useEffect(() => {
@@ -22,12 +22,13 @@ export default function GymExperienceDialog({ id, onClose }: { id: string; onClo
     };
   }, []);
 
-  return createPortal(<dialog id={id} ref={dialogRef} className="gym-dialog" aria-label="Big Three Record" data-theme="iron" data-gym-impact-root
+  return createPortal(<dialog id={id} ref={dialogRef} className="big-three-dialog chat-design-overlay" aria-label="Big Three Record"
     onCancel={event => { event.preventDefault(); onClose(); }}>
-    <div className="gym-dialog-toolbar">
-      <span>Big Three Record</span>
-      <button type="button" aria-label="Close Big Three Record" onClick={onClose}><span aria-hidden="true">×</span></button>
+    <div className="big-three-dialog-toolbar">
+      <button type="button" aria-label="Close Big Three Record" onClick={onClose}>
+        <PortfolioIcon name="close" size={18} />
+      </button>
     </div>
-    <div className="gym-dialog-content"><TopGymCard /></div>
+    <BigThreeRecord />
   </dialog>, document.body);
 }

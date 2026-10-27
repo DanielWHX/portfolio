@@ -1,6 +1,0 @@
-.gym-design-preview { display: flex; align-items: center; flex-wrap: wrap; gap: 6px; margin: -5px 0 20px; font: 11px/1.4 ui-monospace, SFMono-Regular, Menlo, monospace; }
-.gym-design-preview > span { color: #8b9896; font-size: 9px; letter-spacing: 1.4px; margin-right: auto; }
-.gym-design-preview a { padding: 10px 12px; border: 1px solid #e0e7e2; border-radius: 7px; color: #658174; background: #fafbf9; }
-.gym-design-preview a[aria-current=page] { color: #35584c; border-color: #83aa97; background: #edf4ef; }
-.gym-page[data-theme=iron] { max-width: 900px; }
-@media (max-width: 480px) { .gym-design-preview > span { flex-basis: 100%; margin-bottom: 5px; } .gym-design-preview a { min-height: 44px; display: inline-flex; align-items: center; } }

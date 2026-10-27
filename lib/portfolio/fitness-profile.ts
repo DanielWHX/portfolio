@@ -1,4 +1,4 @@
-// Personal records explicitly supplied by Hongxiang; gameplay never changes them.
+// Personal records explicitly supplied by Hongxiang, separate from the training footage.
 export const fitnessProfile = {
   tagline: "Strong typing. Heavy lifting.",
   source: "Shared directly by Hongxiang Wang",

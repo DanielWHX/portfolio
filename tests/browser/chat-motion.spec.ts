@@ -40,20 +40,19 @@ for (const width of [1280, 390]) {
   });
 }
 
-test("answers reveal progressively and reduced motion shows the complete answer immediately", async ({ page }) => {
+test("answers reveal as complete blocks and reduced motion shows them immediately", async ({ page }) => {
   await page.route("**/api/chat", route => route.fulfill({ json: { message: answer } }));
   await page.goto("/chat?query=Hello");
-  const letters = page.locator(".answer-reveal > span");
-  await expect(letters.first()).toHaveCSS("opacity", "1");
-  await expect(letters.last()).toHaveCSS("opacity", "0");
-  await expect(letters.last()).toHaveCSS("opacity", "1");
-  await expect(page.locator(".answer-reveal")).toHaveText(answer);
+  const reveal = page.locator(".answer-reveal");
+  await expect(reveal).toHaveText(answer);
+  await expect(reveal).toHaveCSS("animation-name", "chat-text-arrive");
+  await expect(reveal).toHaveCSS("opacity", "1");
   await page.getByRole("button", { name: "New chat", exact: true }).click();
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.goto("/chat?query=Hello");
-  await expect(letters.last()).toHaveCSS("animation-name", "none");
-  await expect(letters.last()).toHaveCSS("opacity", "1");
-  await expect(page.locator(".answer-reveal")).toHaveText(answer);
+  await expect(reveal).toHaveCSS("animation-name", "none");
+  await expect(reveal).toHaveCSS("opacity", "1");
+  await expect(reveal).toHaveText(answer);
 });
 
 test("waiting disables quick questions and reading earlier messages prevents reply scroll takeover", async ({ page }) => {

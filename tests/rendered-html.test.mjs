@@ -31,7 +31,7 @@ async function request(path = "/", init = {}) {
 }
 
 test("development-only design previews are unavailable in production", async () => {
-  for (const path of ["/preview/fun-facts", "/preview/followups"]) {
+  for (const path of ["/preview/fun-facts", "/preview/followups", "/preview/chat"]) {
     const response = await request(path);
     assert.equal(response.status, 404);
     assert.doesNotMatch(await response.text(), /Sample introduction|Sample questions|No AI request/);
@@ -100,7 +100,7 @@ test("renders the minimal resume chat page", async () => {
   assert.equal(response.status, 200);
   const html = visibleMarkup(await response.text());
 
-  assert.match(html, /<main class="chat-page">/i);
+  assert.match(html, /<main\b[^>]*class="[^"\n]*\bchat-page\b[^"\n]*"/i);
   assert.match(html, /<h1[^>]*>Ask about me<\/h1>/i);
   assert.match(html, /class="chat-form"/i);
   assert.match(html, /Hongxiang(?:&#x27;|')s AI portfolio/i);
