@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useCallback, useId, useRef, useState } from "react";
 import { funFactLinks, funFactPhoto } from "@/lib/portfolio/fun-facts";
+import { funFactPhotos } from "@/lib/portfolio/photo-collection";
 import BigThreeDialog from "./BigThreeDialog";
 import FunFactPhotoDialog from "./FunFactPhotoDialog";
 import "./fun-facts.css";
@@ -31,12 +32,12 @@ export default function FunFactCard({ summary, onOverlayOpenChange }: { summary:
 
   return <article className="fun-facts-card" aria-label="Fun Facts">
     <figure className="fun-facts-figure">
-      <button ref={photoButtonRef} type="button" className="fun-facts-photo" aria-label="View skydiving photo" aria-haspopup="dialog"
+      <button ref={photoButtonRef} type="button" className="fun-facts-photo" aria-label="Open photo collection" aria-haspopup="dialog"
         aria-expanded={overlay === "photo"} aria-controls={overlay === "photo" ? photoId : undefined} onClick={() => setOpen("photo")}>
         <Image {...funFactPhoto} className="fun-facts-photo-image" unoptimized />
         <span className="fun-facts-photo-expand" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><path d="M14 4h6v6M20 4l-7 7M10 20H4v-6M4 20l7-7" /></svg></span>
       </button>
-      <figcaption><span>Skydiving</span><span>Beyond the everyday.</span></figcaption>
+      <figcaption><span>Skydiving</span><span>{funFactPhotos.length} moments · Click to explore</span></figcaption>
     </figure>
     <p className="fun-facts-summary">{summary}</p>
     <div className="fun-facts-links" role="group" aria-label="Explore my interests">

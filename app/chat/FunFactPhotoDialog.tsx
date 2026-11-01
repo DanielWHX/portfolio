@@ -1,9 +1,21 @@
 "use client";
 
 import Image from "next/image";
-import { useCallback, useEffect, useRef, type RefObject } from "react";
+import { useCallback, useEffect, useRef, useState, type CSSProperties, type RefObject } from "react";
 import { createPortal } from "react-dom";
-import { funFactPhoto } from "@/lib/portfolio/fun-facts";
+import { funFactPhotos } from "@/lib/portfolio/photo-collection";
+
+const count = funFactPhotos.length;
+const slots = [-2, -1, 0, 1, 2];
+const half = Math.floor(count / 2);
+const wrap = (value: number) => (value + count) % count;
+
+function Photo({ index, full = false }: { index: number; full?: boolean }) {
+  const [failed, setFailed] = useState(false);
+  const photo = funFactPhotos[index];
+  return failed ? <span className="fun-photo-unavailable" role="img" aria-label={photo.alt}>Photo unavailable</span>
+    : <Image src={full ? photo.src : photo.thumbnail} width={photo.width} height={photo.height} alt={photo.alt} unoptimized onError={() => setFailed(true)} />;
+}
 
 export default function FunFactPhotoDialog({ id, openerRef, onClose }: {
   id: string;
@@ -11,77 +23,109 @@ export default function FunFactPhotoDialog({ id, openerRef, onClose }: {
   onClose: () => void;
 }) {
   const dialogRef = useRef<HTMLDialogElement>(null);
-  const frameRef = useRef<HTMLDivElement>(null);
-  const animationRef = useRef<Animation | null>(null);
+  const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const closingRef = useRef(false);
-
-  const sourceTransform = useCallback(() => {
-    const source = openerRef.current?.querySelector("img")?.getBoundingClientRect();
-    const destination = frameRef.current?.getBoundingClientRect();
-    if (!source || !destination || !source.width || !destination.width) return null;
-    return `translate(${source.left - destination.left}px, ${source.top - destination.top}px) scale(${source.width / destination.width}, ${source.height / destination.height})`;
-  }, [openerRef]);
+  const backRef = useRef<HTMLButtonElement>(null);
+  const [active, setActive] = useState(0);
+  const [focused, setFocused] = useState(false);
+  const [loaded, setLoaded] = useState(() => new Set(slots.map(wrap)));
 
   const close = useCallback(() => {
     if (closingRef.current) return;
     closingRef.current = true;
-    const currentTransform = frameRef.current ? getComputedStyle(frameRef.current).transform : "none";
-    animationRef.current?.cancel();
-    const destination = sourceTransform();
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches || !destination || !frameRef.current) {
-      onClose();
-      return;
-    }
-    const animation = frameRef.current.animate([{ transform: currentTransform, borderRadius: "16px" }, { transform: destination, borderRadius: "14px" }],
-      { duration: 300, easing: "cubic-bezier(.4,0,.2,1)", fill: "forwards" });
-    animationRef.current = animation;
+    setFocused(false);
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) { onClose(); return; }
     dialogRef.current?.setAttribute("data-closing", "true");
-    void animation.finished.then(onClose, () => { /* Unmount or reduced motion cancels the transition. */ });
-  }, [onClose, sourceTransform]);
+    dialogRef.current?.removeAttribute("data-spread");
+    closeTimer.current = setTimeout(onClose, 380);
+  }, [onClose]);
 
   useEffect(() => {
     const dialog = dialogRef.current;
-    const frame = frameRef.current;
-    if (!dialog || !frame) return;
+    if (!dialog) return;
     const opener = openerRef.current;
     const overflow = document.body.style.overflow;
-    const motion = window.matchMedia("(prefers-reduced-motion: reduce)");
     document.body.style.overflow = "hidden";
     dialog.showModal();
-    // Both images retain the same full frame, so the transition never stretches
-    // or crops the photograph to fit a differently shaped viewer.
-    const origin = sourceTransform();
-    if (!motion.matches && origin) {
-      animationRef.current = frame.animate([{ transform: origin, borderRadius: "14px" }, { transform: "none", borderRadius: "16px" }],
-        { duration: 460, easing: "cubic-bezier(.22,1,.36,1)" });
-    }
-    const stopMotion = () => {
-      animationRef.current?.cancel();
-      if (closingRef.current) onClose();
-    };
+    // Two frames let the browser paint the compact deck before spreading it.
+    let secondFrame = 0;
+    const firstFrame = requestAnimationFrame(() => {
+      secondFrame = requestAnimationFrame(() => {
+        if (!closingRef.current) dialog.setAttribute("data-spread", "true");
+      });
+    });
     const closeOnBackdrop = (event: MouseEvent) => { if (event.target === dialog) close(); };
+    const motion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const finishClose = () => { if (closingRef.current) { if (closeTimer.current) clearTimeout(closeTimer.current); onClose(); } };
     dialog.addEventListener("click", closeOnBackdrop);
-    motion.addEventListener("change", stopMotion);
-    window.addEventListener("resize", stopMotion);
+    motion.addEventListener("change", finishClose);
     return () => {
-      motion.removeEventListener("change", stopMotion);
-      window.removeEventListener("resize", stopMotion);
+      cancelAnimationFrame(firstFrame); cancelAnimationFrame(secondFrame);
+      if (closeTimer.current) clearTimeout(closeTimer.current);
       dialog.removeEventListener("click", closeOnBackdrop);
-      animationRef.current?.cancel();
+      motion.removeEventListener("change", finishClose);
       dialog.close();
       document.body.style.overflow = overflow;
       if (opener?.isConnected) opener.focus({ preventScroll: true });
     };
-  }, [openerRef, onClose, sourceTransform, close]);
+  }, [openerRef, onClose, close]);
 
-  return createPortal(<dialog id={id} ref={dialogRef} className="fun-photo-dialog" aria-label="Skydiving photo"
-    onCancel={event => { event.preventDefault(); close(); }}>
+  function select(index: number) {
+    const next = wrap(index);
+    setActive(next);
+    setLoaded(previous => new Set([...previous, ...slots.map(offset => wrap(next + offset))]));
+  }
+  function backToFan() {
+    setFocused(false);
+    requestAnimationFrame(() => dialogRef.current?.querySelector<HTMLButtonElement>(`[aria-label="Enlarge photo ${active + 1}"]`)?.focus());
+  }
+
+  return createPortal(<dialog id={id} ref={dialogRef} className="fun-photo-dialog" aria-label="Photo collection"
+    onCancel={event => { event.preventDefault(); if (focused) backToFan(); else close(); }}
+    onKeyDown={event => {
+      if (event.key === "ArrowRight" || event.key === "ArrowLeft") {
+        event.preventDefault();
+        const next = wrap(active + (event.key === "ArrowRight" ? 1 : -1));
+        const moveCardFocus = event.target instanceof Element && event.target.closest(".fun-photo-card");
+        select(next);
+        if (moveCardFocus) requestAnimationFrame(() => dialogRef.current?.querySelector<HTMLButtonElement>(`[aria-label="Enlarge photo ${next + 1}"]`)?.focus());
+      }
+    }}>
     <div className="fun-photo-viewer">
-      <div ref={frameRef} className="fun-photo-frame">
-        <Image {...funFactPhoto} unoptimized />
-        <button type="button" className="fun-photo-close" aria-label="Close skydiving photo" onClick={close}><span aria-hidden="true">×</span></button>
+      <header className="fun-photo-heading"><div><p>BEYOND THE EVERYDAY</p><h2>A few moments from my life.</h2></div>
+        <button type="button" className="fun-photo-close" aria-label="Close photo collection" onClick={close}><span aria-hidden="true">×</span></button>
+      </header>
+      <div className="fun-photo-stage" data-focused={focused || undefined}>
+        <div className="fun-photo-fan" aria-hidden={focused} inert={focused}>
+          {funFactPhotos.map((photo, index) => {
+            // Keep neighbours in reading order. Hidden cards sit beyond the
+            // edges so entering/leaving cards slide through, never cross the centre.
+            const offset = wrap(index - active + half) - half;
+            const visible = Math.abs(offset) <= 2;
+            const slot = Math.max(-3, Math.min(3, offset));
+            return <button key={photo.src} type="button" className="fun-photo-card"
+              aria-label={`Enlarge photo ${index + 1}`} aria-hidden={!visible} tabIndex={visible && !focused ? 0 : -1}
+              data-visible={visible} data-active={offset === 0 || undefined}
+              style={{ "--slot": slot, "--angle": `${slot * 11}deg`, "--lift": `${Math.abs(slot) * 14}px`, "--stack": `${offset * 1.5}deg`, zIndex: visible ? 10 - Math.abs(offset) : 0 } as CSSProperties}
+              onClick={() => { select(index); setFocused(true); requestAnimationFrame(() => backRef.current?.focus()); }}>
+              {loaded.has(index) ? <Photo index={index} /> : null}
+            </button>;
+          })}
+        </div>
+        {focused ? <div className="fun-photo-focus">
+          <Photo key={active} index={active} full />
+          <button ref={backRef} type="button" className="fun-photo-back" onClick={backToFan}>← <span>Back to photo fan</span></button>
+        </div> : null}
       </div>
-      <p className="fun-photo-caption">Hongxiang · Skydiving</p>
+      <footer className="fun-photo-footer">
+        <p>{focused ? funFactPhotos[active].alt : "Little adventures. Good company. Life in between."}</p>
+        <div className="fun-photo-navigation" role="group" aria-label="Browse photos">
+          <button type="button" aria-label="Previous photo" onClick={() => select(active - 1)}>←</button>
+          <span role="status" aria-live="polite" aria-atomic="true">{active + 1} / {count}</span>
+          <button type="button" aria-label="Next photo" onClick={() => select(active + 1)}>→</button>
+        </div>
+        <small>{focused ? "Use the arrows to keep exploring" : "Tap a photo for a closer look"}</small>
+      </footer>
     </div>
   </dialog>, document.body);
 }

@@ -1,246 +1,155 @@
-# Hongxiang Wang — Portfolio
+# Hongxiang Wang · AI Portfolio
 
-Interactive portfolio for Hongxiang Wang, a full-stack software engineer.
+**An interactive portfolio that lets visitors explore an engineer's work through conversation.**
 
-Current source release: **v0.2.4 — Refined Visuals & Motion**.
+[Live website](https://hongxiangwang1017.com) · [Ask the portfolio](https://hongxiangwang1017.com/chat) · [中文学习手册](docs/handbook/README.md) · [v0.9 release notes](docs/releases/v0.9.0.md)
 
-## Features
+![Homepage with an interactive introduction and five quick questions](docs/media/homepage.png)
 
-- Minimal single-screen introduction and question interface
-- Conversational portfolio voice powered by `gpt-5.6-luna`
-- Read-only `get_resume_profile` tool backed by approved resume facts and shared interests
-- Two context-aware AI follow-up suggestions that fold into a still glass-star bubble, with a hover-triggered liquid thinking effect, linked shortcut movement and reduced-motion support
-- Photo-led Fun Facts with a skydiving lightbox, a compact introduction and on-demand interest destinations
-- Personal Profile Card with a corrected portrait, university logos, and sourced rankings
-- Contact Card with copy buttons for email, phone, GitHub, LinkedIn, and WeChat
-- WebGL fluid cursor with colorful, fading ink trails
-- Glassmorphism controls layered above the animation
-- Responsive desktop and mobile layouts
-- Accessible labels, reduced-motion support, and click-through canvas behavior
+**v0.9.0 — Demo Preview** is the milestone before the formal demo release. It packages the current experience, the ordered photo collection and a source-based architecture handbook. The latest verified production deployment is recorded separately in [the deployment log](docs/deployment-2026-10-29.md); publishing a GitHub release does not update that server.
 
-## Tech stack
+## What you can explore
 
-- React 19
-- TypeScript
-- Vite and Vinext
-- Cloudflare Worker-compatible runtime
+Choose **Me**, **Projects**, **Skills**, **Fun Facts** or **Contact**, or ask a question in English or Chinese. The AI writes a short answer from approved context; the application renders the corresponding interface.
 
-## Local development
+| Experience | What it does |
+| --- | --- |
+| Me | Personal overview with portrait, education, experience and sourced rankings. |
+| Projects | Browse selected work, then open the JChatMind or Lyntra case study. Follow-up questions track the selected project. |
+| Skills | Capability groups led by Python/Java backend and AI integration; visual emphasis is positioning, not a proficiency score. |
+| Fun Facts | A single skydiving cover opens an ordered 29-photo fan; enlarge an image or explore three training videos. Media browsing makes no chat-model call. |
+| Contact | Copy the five approved contact methods, with accessible success feedback and a manual fallback. |
+| Conversation | Typed questions, retry after failures, cached presets, tab-local history and drafts, and optional contextual follow-ups. |
 
-Requires Node.js 22.13 or newer.
+![Skills and conversational interface — labelled local design preview](docs/media/chat-skills.png)
 
-Create `.dev.vars` in the project root with a runtime key (never commit it):
+*The chat screenshots use the development preview's labelled sample copy. They show the real UI components, not generated mockups or evidence of model quality.*
 
-```bash
-OPENAI_API_KEY=your_new_key_here
+<details>
+<summary>See the ordered photo collection</summary>
+
+![Photo collection with previous photos on the left and next photos on the right](docs/media/photo-fan.png)
+
+</details>
+
+## Why this project is interesting
+
+- **A bounded AI workflow.** Every uncached chat answer uses a read-only `get_resume_profile` tool before the final response. Visitor messages cannot edit the source profile.
+- **Typed presentation.** The model selects one of six presentation values; React owns the actual cards and exact contact/profile data. Model prose is not executed as HTML.
+- **Context with useful limits.** Forty curated interview entries support project-aware follow-ups through local lexical selection and optional question references. This Portfolio does not use a live vector database or runtime Notion access.
+- **Interaction beyond the chat box.** A WebGL fluid cursor, a glass-star follow-up control, a reference-frame liquid animation, ordered photo transitions and on-demand videos make the portfolio personal.
+- **Recoverable browser behavior.** Successful presets reuse their answer; failures restore the question; completed turns and unsent text survive refresh in the same tab. Suggestions have their own cancellation and stale-response handling.
+- **Explicit system boundaries.** The recorded JChatMind replay is local evidence. Its optional live iframe connects to a separate Spring Boot / pgvector / Ollama application; that stack is not this repository's chat backend.
+
+## Architecture at a glance
+
+```mermaid
+flowchart LR
+  V[Visitor] --> UI[React interface]
+  UI <--> TAB[Tab sessionStorage]
+  UI --> CHAT[POST /api/chat]
+  UI --> FOLLOW[POST /api/followups]
+  CHAT --> AGENT[Bounded Resume Agent]
+  AGENT --> API[OpenAI Responses API]
+  AGENT --> FACTS[Approved local profile and interview context]
+  FOLLOW --> SELECT[Context and question-bank selection]
+  SELECT --> API
+  CHAT --> CARDS[JSON message and typed module]
+  CARDS --> UI
+  UI --> MEDIA[Static photos and videos]
+  UI -. optional case-study iframe .-> JCM[Separate JChatMind guest application]
 ```
 
-Any key previously shared in a chat or screenshot must be revoked rather than reused.
+The server sends one complete JSON answer. Text arrival animation is a frontend effect; this Portfolio does **not** stream model tokens. On a normal uncached turn, `/api/chat` makes two Responses calls; generating a suggestion pair makes one additional call. Cached answers avoid the two chat calls, while refreshing suggestions still has a model cost.
 
-```bash
-npm install
-npm run dev
-```
+## Stack
 
-Open [http://localhost:3000](http://localhost:3000).
+| Layer | Current implementation |
+| --- | --- |
+| UI | React 19, TypeScript, CSS, native dialogs and media controls |
+| Routing and build | Vinext, Vite; App Router-style `app/` structure |
+| AI | OpenAI Responses API via server-side `fetch`, function calling and strict structured output |
+| Data | Versioned TypeScript profile objects and a server-side JSON interview snapshot |
+| Browser state | React state/refs and `sessionStorage`; no account sync |
+| Validation | Node test runner with mocked upstream, Playwright, TypeScript and ESLint |
+| Production | Node build in Docker, Compose, Nginx and HTTPS on Tencent Lighthouse |
+| Additional target | Cloudflare Worker entry and retained Sites configuration; separate from the current VPS deployment |
 
-The agent can discuss Hongxiang's background and interests, as well as general
-conversation, technology, fitness, and SaaS ideas. Personal claims stay grounded
-in the shared profile. All five quick questions are available on the homepage and above the chat input.
-Me, Contact, Projects, and Skills can return cards. Fun Facts starts with a skydiving
-photo and a compact AI summary, followed by Big Three Record, LeetCode notes, Whatnot and travel Footprints entries;
-Big Three Record opens a simple borderless video dialog with Squat, Bench press and Deadlift tabs, self-reported personal records and the supplied training clips. Its chat overlay follows the conversation's neutral typography and controls, with no game or impact effects. Videos play only when requested and stop when switching tabs or closing the dialog; Whatnot opens the supplied account link, while Footprints remains coming soon.
-Ask for contact details in English or Chinese to receive a Contact Card.
+Exact dependency versions live in [package.json](package.json) and [package-lock.json](package-lock.json). The configured model is currently `gpt-5.6-luna` in [resume-agent.ts](lib/agent/resume-agent.ts); provider access is required for real answers and is separate from the mock test suite.
 
-## Verification
+## Run locally
 
-Install the locked dependencies and Chromium once:
+Use **Node.js 22.13+** and the locked dependencies:
 
 ```bash
 npm ci
-npx playwright install chromium
 ```
 
-Run the complete build, Worker API checks, and browser regression suite:
+For real AI requests, create an ignored `.dev.vars` file in the checkout:
+
+```dotenv
+OPENAI_API_KEY=replace_with_your_own_runtime_key
+```
 
 ```bash
+npm run dev
+```
+
+Open the URL printed by the dev server, normally [localhost:3000](http://localhost:3000). Restart after changing Worker bindings. `.dev.vars` takes precedence over `.env*` for the local Cloudflare Worker; production secrets are configured separately. Do not commit keys.
+
+For UI work without a model key, open `/preview/chat`, `/preview/fun-facts` or `/preview/followups`. These routes label their sample data, make no model requests and return 404 in production.
+
+For the Node deployment build:
+
+```bash
+PORTFOLIO_DEPLOY_TARGET=node npm run build
+npm run start -- --hostname 127.0.0.1 --port 3000
+```
+
+Configure the runtime key in the process/container environment when running this target. See [development and operations](docs/handbook/04-development-and-operations.md) for target differences and deployment verification.
+
+## Verify changes
+
+```bash
+npx playwright install chromium
 npm test
+node node_modules/typescript/bin/tsc --noEmit --incremental false
 npm run lint
 ```
 
-If Google Chrome is already installed, `PLAYWRIGHT_CHANNEL=chrome npm test`
-can use it instead of downloading Chromium.
+If Chrome is already installed, use `PLAYWRIGHT_CHANNEL=chrome npm test` instead. `npm test` builds the app, runs mocked API checks and starts a production server on `127.0.0.1:3103` for the browser suite. It does not need a live API key. Failures retain Playwright traces under `test-results/`.
 
-The automated checks use mock responses and do not require an OpenAI API key.
-Browser tests start the built app on `127.0.0.1:3103` and stop it when finished.
-They cover an initial-question failure, a failed follow-up, and a stalled request:
-the question must be restored, Thinking must stop, and retry must send a valid
-conversation without duplicate user messages. Skills answers must render as text.
-Desktop and mobile navigation checks enter a conversation from Me, receive a
-Profile Card, and verify that the back arrow restores the actual homepage.
-Contact checks verify all five clipboard values without navigation, successful
-copy feedback and the manual-copy fallback, valid follow-ups, and return navigation.
+Fresh release evidence belongs in [v0.9 notes](docs/releases/v0.9.0.md). Mock tests prove the tested contracts and browser behavior; the [October 29 production record](docs/deployment-2026-10-29.md) separately records real API and desktop/mobile acceptance for source `018a0d3`.
 
-After a successful build, use `npm run test:api` or `npm run test:ui` to rerun
-only the relevant checks. Browser failures save traces under `test-results/`.
+## Learn the implementation
 
-For a server deployment, separately check the real model on the private deployed site:
+The [Chinese handbook](docs/handbook/README.md) follows the path from a visitor action to a rendered answer, then explains how to change and operate the project.
 
-- Sign in as the site owner and ask `What are your skills?`.
-- Confirm the current Skills Card appears for the broad preset and a focused follow-up receives a readable text answer.
-- Confirm the answer agrees with the approved resume and Thinking stops.
+| Chapter | Questions it answers |
+| --- | --- |
+| [1 · System architecture](docs/handbook/01-architecture.md) | What runs where? Which repository owns each capability? |
+| [2 · Agent and data](docs/handbook/02-agent-and-data.md) | How do tool calls, API contracts, approved facts and interview references work? |
+| [3 · UI and state](docs/handbook/03-ui-and-state.md) | How do cache, drafts, retries, suggestions, scrolling and media lifecycles interact? |
+| [4 · Development and operations](docs/handbook/04-development-and-operations.md) | How do I run, test, debug, release, deploy and recover it? |
+| [5 · Learning and improvement](docs/handbook/05-learning-and-roadmap.md) | What should I read first, what can I experiment with, and what remains unfinished? |
 
-Mocks verify the source release's UI and API contract; this separate live check verifies real-model behavior and deployment acceptance.
+For maintainers, [CONTEXT.md](CONTEXT.md) defines project vocabulary; [CHANGELOG.md](CHANGELOG.md) records changes. The [question-bank review](docs/question-bank-review.md) records the source snapshot and factual boundaries.
 
-The Cloudflare development Worker reads `.dev.vars`; when that file exists,
-Wrangler skips `.env*` and host environment variables for its bindings. Restart
-`npm run dev` after changing the key. A 503 response saying the agent is not
-configured means the running local Worker has no key. Production server secrets
-are separate and are not copied automatically to local checkouts.
+## Before the formal demo
 
-## Suggested questions
+This is a functioning preview, with limits worth understanding before expanding it:
 
-After a successful Me, Projects, Skills, or Fun Facts answer, two relevant
-questions appear above the five shortcuts. They use the approved profile and
-project facts plus the recent conversation. Clicking one sends a normal chat
-question; New ideas generates a fresh pair. The last 12 displayed suggestions
-and recently asked questions are excluded to reduce repetition. Unknown personal
-details such as nationality, visa status, and sponsorship are not suggested.
+- No Portfolio accounts, database-backed conversation history or cross-device sync.
+- The 15-turn limit is a request/client conversation limit, not a durable per-user usage quota. This repository does not implement server-side visitor authentication or distributed rate limiting.
+- Browser cancellation does not currently propagate into the Agent's upstream `fetch` controller. Prompt length guidance is not an independently enforced semantic guarantee.
+- No Portfolio vector retrieval, arbitrary tool execution, background agent jobs or model-token streaming.
+- Footprints and some project case-study destinations remain explicitly marked as upcoming.
+- The Node model-evaluation scripts make real paid requests and include historical expectations; they require review against the version being evaluated. They are not part of `npm test`.
 
-Main answers retain the existing tab-local cache. Repeating a preset immediately
-focuses its cached answer while `/api/followups` generates new questions in the
-background. Each suggestion generation makes one additional bounded model call;
-it is not free just because the main answer is cached. Rapid switches cancel
-outdated requests, and failed generation never blocks the answer or input.
-Contact, New chat, and the 15-question limit hide suggestions. There is no static
-question-bank fallback and no claim that this Portfolio currently queries a
-live vector database.
+The [prioritized roadmap](docs/handbook/05-learning-and-roadmap.md) separates these gaps from implemented features and gives a verification path for each proposed change.
 
-## Interview Question Bank
+## Assets and credits
 
-The 40 curated entries and factual boundaries are recorded in [docs/question-bank-review.md](docs/question-bank-review.md). The owner authorized release of the latest follow-up system on 2026-10-23; this records release authorization, not a claim that every entry was individually reviewed. The server-only snapshot is `lib/agent/interview-bank.snapshot.json`, revision `2026-10-23-question-bank-1`, status `release-authorized`. Do not copy the raw Notion page or preparation notes into this repo. Updates are released with the app, with no runtime Notion access.
+The UI contains owner-supplied personal content and media; see [asset sources](public/ASSET_SOURCES.md), [photo processing](public/life/collection/README.md), [video notes](public/gym/videos/README.md) and [AI animation notes](public/ai/README.md). Profile facts and personal photos serve different roles: gallery captions do not become Agent biography.
 
-Projects follows the settled carousel selection; explicit project names in a question override that selection. One model call generates a bank-inspired question plus a conversational extension, carrying aligned `questionIds` alongside the existing `questions`. Clicking sends the optional reference to `/api/chat`; typed questions use project/Chinese-English keyword matching (at most four answers). No extra model classifier or vector database is involved. Fun Facts/Contact keep their original directions. Answers preserve personal/team, current/proposed and historical-fix boundaries.
-
-To exercise real local models after configuring the ignored runtime key, run `node scripts/evaluate-interview-bank.mjs http://127.0.0.1:3121`. This sends the curated portfolio facts and test questions to the configured model; mock tests alone do not establish factual response quality. The review document's generated examples and earlier passing checks are development evidence; this release requires its own build/API regression checks and deployment acceptance record.
-
-## Conversational acceptance check
-
-With the version under review running and its runtime key configured:
-
-```bash
-node scripts/evaluate-persona.mjs http://127.0.0.1:3104
-```
-
-This makes real model requests. It checks response shape and prints answers
-for human review: contact requests, general GitHub questions, current education,
-introduction, interests, SaaS, a coding joke, unshared personal details, and AI identity. Mock tests do not establish real-model
-personality. Evaluate against the new app version, not an older deployment.
-
-## Profile content and sources
-
-Portrait editing and school-logo sources are recorded in `public/ASSET_SOURCES.md`.
-School ranking links are stored with the profile data and visible in the card:
-
-- [UIUC: #36 National Universities, U.S. News 2026](https://www.archive.admissions.illinois.edu/discover/illinois-facts).
-- [Ohio State: #41 National Universities, U.S. News 2026](https://news.osu.edu/ohio-state-maintains-position-as-one-of-nations-top-public-universities-in-new-rankings/).
-- [UIUC: #5 Graduate Computer Science, U.S. News 2026](https://siebelschool.illinois.edu/about/facts-and-rankings).
-
-Fitness and interest in SaaS companies were supplied by Hongxiang. The portrait
-is an AI-assisted edit of his supplied photograph. Neither interest implies a
-specific workout record, business ownership, or other unshared biography.
-
-## Acknowledgements
-
-The fluid simulation is adapted from [React Bits Splash Cursor](https://www.reactbits.dev/animations/splash-cursor). See [THIRD_PARTY_NOTICES.md](./THIRD_PARTY_NOTICES.md) for its license notice.
-
-## JChatMind case study
-
-The compact first screen contains the project name, one sentence, and the demo
-entry point. The original Spring Boot / pgvector / Ollama application was
-deployed on Tencent Lighthouse on 2026-10-23. Production enables the existing
-inline guest experience with the server-side
-`JCHATMIND_DEMO_URL=https://demo.hongxiangwang1017.com/demo`. Public HTTPS/API,
-five real RAG questions and guest/admin isolation passed. Public browser
-automation was explicitly rejected by automatic approval review, so visual
-acceptance and the embedded desktop/mobile experience remain unverified in
-that deployment. See [the deployment record](docs/deployment-v0.2.0.md).
-The recorded walkthrough remains independently available; without a valid
-configured URL, the entry shows availability status and links to that replay.
-Admin APIs stay private and guest sessions are isolated. Do not use a localhost
-URL in production.
-
-The second project links to `/projects/jchatmind`. The English walkthrough uses
-eight original local-app screenshots and three highlighted handbook references
-to show five stages: recommendation, follow-up pricing, date-tool use, documented
-uncertainty, and a customer reply draft. Desktop and phone visitors can change
-stages, browse each stage's captures, and open full-size screenshots or readable
-annotated source pages. The gallery is static evidence; browsing it does not call
-JChatMind or an LLM and does not depend on localhost services.
-
-Assets live in `public/projects/jchatmind/`; the original sample handbook is
-included. Local API snapshots and credentials are not deployed. The page labels
-OrbitDesk as a fictional SaaS example and retains the original answer limitations
-in scope notes. Shared agent facts live in `lib/portfolio/projects.ts` under
-`jchatmindCaseStudy`.
-
-## Chat motion
-
-The collapsed AI bubble stays still until hover or visible keyboard focus. Its
-blue / pink liquid then follows a 1.5-second reference cycle even when the pointer
-stops, changing between a folded wave and a full sphere. Fifteen tightly cropped
-owner-supplied frames live in one 56 KB WebP atlas and blend at display cadence.
-This is an asset-based animation, not a reconstructed 3D model. Leaving reverses
-the existing transition. Pending / failed loading, touch and reduced motion keep
-the static star. See `public/ai/README.md` for the source and rebuild notes.
-
-The conversation uses a route-scoped system font, neutral text, borderless cards,
-outline SVG icons and a quiet charcoal send action. Quick questions keep fine borders
-and coloured icons; Profile interests use soft green and violet tags. Projects keep
-their blue gradient covers and tilted screenshots, with navigation beside the heading.
-Skills use deep blue for backend / AI focus, lighter blue for supporting project tools,
-and a consistent grey surface for all other tags, including Soft Skills. These are
-visual priorities, not proficiency scores. The homepage keeps its original design;
-project-aware suggestions and the glass AI bubble retain their existing behavior.
-
-Cards enter with one short upward fade. Complete answer text appears with a 320ms
-fade and 6px movement after the JSON response arrives; it is a frontend effect,
-not model streaming. There is no artificial letter-by-letter delay. Cached messages
-do not replay when a new question or Copy action updates the page. Reduced-motion
-preferences disable movement, including the suggestion dock's existing effects.
-
-The five quick questions continue the current conversation. New replies scroll
-to their beginning unless the visitor scrolls up while waiting. Profile and
-Contact retain their existing data. Copy success shows only a check icon without
-resizing the button; its accessible name confirms success, while clipboard failure
-still offers manual-copy guidance.
-
-## Conversation continuity
-
-The browser tab retains completed turns and unsent drafts in sessionStorage.
-Refresh or return through Me to continue without another automatic introduction.
-Other homepage questions continue the saved conversation. Interrupted requests
-restore as drafts for manual retry; they are never inserted as unmatched history
-turns. New chat clears the session and resets the 15-question limit. Storage that
-is unavailable or corrupt does not prevent ordinary chat. This is tab-local
-storage, with no account sync or server-side conversation database.
-
-Saved records contain only message text and card type. Profile and Contact cards
-are rebuilt from the current approved data and do not replay old entrance or text
-animations. On phones, the portrait and identity share a row, with the introduction
-and interests at full width underneath so education appears earlier.
-
-### Local Fun Facts design preview
-
-`/preview/chat` previews the redesigned conversation with all five real cards,
-sample content, the suggestion fold, photo and video overlays, and a local sample
-input. It is explicitly labelled as a design preview, makes no API calls and returns
-404 in production. Normal `/chat` continues to use the configured Resume Agent.
-
-With the development server running, `/preview/fun-facts` shows the real photo-led card with clearly labelled sample copy and no API request. It is unavailable in production. The normal `/chat` flow still uses the Resume Agent; the photo viewer and Big Three Record do not call the model.
-
-`/preview/followups` provides a development-only review of the real collapsible suggestion dock with sample questions. Toggle the chevron beside You could ask or the coloured star bubble; New ideas rotates local samples. It makes no API calls and returns 404 in production.
-
-The follow-up preview includes the glass star bubble: it is completely still at rest. Hover with a fine pointer, or focus it by keyboard, to blend the star into a blue-violet and pink liquid sphere. Moving away reverses the same blend without restarting its phase. The fixed hit target and neighboring shortcuts stay still. Touch and reduced motion retain the static icon; Canvas-unavailable browsers keep the usable glass-star fallback. No animation frames run at rest, and blur, hidden documents, folding and unmount cancel work. Both original thought-bubble tail circles remain visible.
-
-The liquid is a procedural Canvas 2D interpretation of [Gleb Kuznetsov's Thinking Reaction reference](https://dribbble.com/shots/25202172-Thinking-Reaction-for-AI-sphere-by-Gleb-Kuznetsov). Its official still was inspected; the original animation was not accessible, so no frame-for-frame motion match is claimed. No external media or new graphics library is included.
+The fluid simulation is adapted from React Bits Splash Cursor. Attribution and third-party license notices are retained in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md). This release does not add a blanket license grant for personal photographs or introduce a new repository license.
