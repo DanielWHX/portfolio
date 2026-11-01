@@ -140,8 +140,8 @@ test("Contact, New chat and immersive overlays leave no residual collapsed bubbl
   await expect.poll(async () => await expand(page).isVisible() || await collapse(page).isVisible()).toBe(true);
   if (await collapse(page).isVisible()) await collapse(page).click();
   await expect(expand(page)).toBeVisible();
-  await page.getByRole("button", { name: "View skydiving photo", exact: true }).click();
-  const photo = page.getByRole("dialog", { name: "Skydiving photo", exact: true });
+  await page.getByRole("button", { name: "Open photo collection", exact: true }).click();
+  const photo = page.getByRole("dialog", { name: "Photo collection", exact: true });
   await expect(photo).toBeVisible();
   await expect(expand(page)).toHaveCount(0);
   await expect(panel(page)).toHaveCount(0);
