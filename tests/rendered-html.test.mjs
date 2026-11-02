@@ -279,9 +279,10 @@ test(
         "background is supplied only for the current direct question, not every tool result");
 
       if (testCase.presentation === "profile_card") {
-        const { schools, interests, portrait, ...legacyProfile } = payload.module.profile;
+        const { schools, interests, portrait, personalNote, ...legacyProfile } = payload.module.profile;
         assert.equal(portrait, "/hongxiang-profile.jpg");
-        assert.deepEqual(interests, ["Fitness", "SaaS companies"]);
+        assert.match(personalNote, /candid conversations.*living room/);
+        assert.deepEqual(interests, ["Fitness", "SaaS companies", "ENTP", "Travel", "Apex Legends", "Anime", "Nature"]);
         assert.equal(schools.length, 2);
         assert.equal(schools[0].programRanking.label, "CS #5");
         assert.equal(schools[0].programRanking.category, "Graduate Computer Science");
@@ -334,7 +335,7 @@ test(
     assert.equal(answerCount, cases.length);
     assert.match(requests[0].instructions, /介绍一下你自己/);
     const toolResult = requests[1].input.find(item => item.type === "function_call_output");
-    assert.deepEqual(JSON.parse(toolResult.output).interests, ["Fitness", "SaaS companies"]);
+    assert.deepEqual(JSON.parse(toolResult.output).interests, ["Fitness", "SaaS companies", "ENTP", "Travel", "Apex Legends", "Anime", "Nature"]);
     assert.equal(JSON.parse(toolResult.output).contact.email, "hxjob1017@gmail.com");
     assert.deepEqual(JSON.parse(toolResult.output).projects.slice(0, 3).map(project => project.id), ["portfolio", "jchatmind", "lyntra"]);
     assert.match(JSON.parse(toolResult.output).lyntraCaseStudy.architecture, /Flask/);
@@ -355,9 +356,10 @@ test(
     assert.deepEqual(fitness.unsharedDetails, ["Body weight", "Training history", "Training frequency", "Competition results"]);
     const personal = JSON.parse(toolResult.output).personal;
     assert.equal(personal.personality.mbti, "ENTP");
+    assert.match(personal.personality.conversationStyle, /candid conversations.*whole evening.*living room/);
     assert.deepEqual(personal.pet, { name: "Luca", breed: "Bichon Frise", reportedAgeYears: 11, ageReportedAt: "2026-10-21" });
     assert.match(personal.personality.note, /not a scientific assessment/);
-    assert.deepEqual(personal.interests, ["Fitness", "Travel", "Skydiving", "Skiing", "Gaming", "Spending time with friends", "LeetCode", "SaaS companies"]);
+    assert.deepEqual(personal.interests, ["Fitness", "Travel", "Skydiving", "Skiing", "Gaming", "Spending time with friends", "LeetCode", "SaaS companies", "Anime", "Nature"]);
     assert.equal(personal.notion.url, "https://app.notion.com/p/316ea0b55422803cbd1dd44fe5bfb6ff?source=copy_link");
     assert.equal(personal.whatnot.peakMonthlyGrossSalesUsd, 22_000);
     assert.equal(personal.whatnot.lifetimeGrossSalesUsd, 150_000);

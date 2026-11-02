@@ -14,7 +14,7 @@ for (const width of [1280, 390, 320]) {
     const card = page.getByRole("article", { name: "Hongxiang's skills" });
     await expect(card).toBeVisible();
     await expect(card.getByRole("heading", { level: 2 })).toHaveText("Skills & Expertise.");
-    await expect(card.getByText("Python & Java backend.", { exact: true })).toBeVisible();
+    await expect(card.getByText("Python & Java backend.", { exact: true })).toHaveCount(0);
     await expect(card.getByRole("heading", { level: 3 })).toHaveText(["Backend & Systems", "AI & Agent Workflows", "Frontend Development", "Data & Storage", "Tools & Cloud", "Soft Skills"]);
     const backend = card.getByRole("list", { name: "Backend & Systems" });
     await expect(backend.getByRole("listitem").nth(0)).toHaveText("Python");

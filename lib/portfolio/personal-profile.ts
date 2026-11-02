@@ -12,9 +12,10 @@ export const personalProfile = {
         "Curious about many subjects",
         "Enjoys exchanging ideas with people from different countries and regions",
       ],
+      conversationStyle: "I value candid conversations and the exchange of ideas. I often spend the whole evening talking with friends in the living room.",
       note: "Self-described personality and MBTI, not a scientific assessment or proof of ability.",
     },
-    interests: ["Fitness", "Travel", "Skydiving", "Skiing", "Gaming", "Spending time with friends", "LeetCode", "SaaS companies"],
+    interests: ["Fitness", "Travel", "Skydiving", "Skiing", "Gaming", "Spending time with friends", "LeetCode", "SaaS companies", "Anime", "Nature"],
     gaming: {
       game: "Apex Legends",
       highestRank: "Diamond I",

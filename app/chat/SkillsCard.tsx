@@ -3,7 +3,6 @@ import { skillGroups, skillsFocus } from "@/lib/portfolio/skills-profile";
 
 type SkillGroup = (typeof skillGroups)[number]["id"];
 const highlighted = new Set<string>(skillsFocus.highlighted);
-const supporting = new Set<string>(skillsFocus.supporting);
 
 function CategoryIcon({ category }: { category: SkillGroup }) {
   const paths: Record<SkillGroup, ReactNode> = {
@@ -23,7 +22,6 @@ export default function SkillsCard() {
     <article className="skills-card" aria-label="Hongxiang's skills">
       <header className="skills-card-header">
         <h2>Skills &amp; Expertise<span aria-hidden="true">.</span></h2>
-        <p className="skills-intro"><strong>Python &amp; Java backend.</strong> AI workflows. Full-stack delivery.</p>
       </header>
 
       <div className="skills-categories">
@@ -34,7 +32,7 @@ export default function SkillsCard() {
               <h3>{category.title}</h3>
             </div>
             <ul className="skills-tags" aria-label={category.title}>
-              {category.skills.map(skill => <li key={skill} className={highlighted.has(skill) ? "skills-tag-primary" : supporting.has(skill) ? "skills-tag-supporting" : undefined}>{skill}</li>)}
+              {category.skills.map(skill => <li key={skill} className={highlighted.has(skill) ? "skills-tag-primary" : undefined}>{skill}</li>)}
             </ul>
           </section>
         ))}

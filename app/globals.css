@@ -656,6 +656,8 @@ h1 {
   list-style: none;
 }
 
+.profile-card-personal-note { margin: 0 0 14px; color: #6f7885; font-size: .875rem; line-height: 1.65; overflow-wrap: anywhere; }
+
 .profile-card-interests,
 .profile-card-skills {
   display: flex;
@@ -886,6 +888,7 @@ h1 {
   .profile-card-identity { grid-column: 2; grid-row: 1; min-width: 0; }
   .profile-card-header .profile-card-portrait { grid-column: 1; grid-row: 1; }
   .profile-card-header .profile-card-summary { grid-column: 1 / -1; margin: 0; }
+  .profile-card-header .profile-card-personal-note { grid-column: 1 / -1; margin: 0; }
   .profile-card-header .profile-card-interests { grid-column: 1 / -1; }
   .chat-footer .chat-disclosure { text-align: center; }
   .chat-reset { font-size: 11px; }
@@ -1043,8 +1046,6 @@ a.project-tile:focus-visible, .project-track:focus-visible { outline: 3px solid 
 .skills-card-header { margin-bottom: 26px; }
 .skills-card h2 { margin: 0; color: #203954; font-size: clamp(25px, 3vw, 30px); font-weight: 680; letter-spacing: -.045em; line-height: 1.2; }
 .skills-card h2 > span { color: #5f94db; }
-.skills-intro { margin: 9px 0 0; color: #62758e; font-size: 13px; line-height: 1.7; }
-.skills-intro strong { color: #315f9a; font-weight: 600; }
 .skills-categories { display: grid; gap: 24px; }
 .skills-category { min-width: 0; }
 .skills-category-heading { display: flex; align-items: center; gap: 9px; margin-bottom: 11px; }
@@ -1054,11 +1055,9 @@ a.project-tile:focus-visible, .project-track:focus-visible { outline: 3px solid 
 .skills-tags { display: flex; flex-wrap: wrap; list-style: none; gap: 7px; padding: 0; margin: 0; }
 .skills-tags li { max-width: 100%; padding: 7px 11px; border: 1px solid #dfebfb; border-radius: 7px; background: #edf4ff; color: #355b8a; font-size: 12px; font-weight: 500; line-height: 1.35; overflow-wrap: anywhere; }
 .skills-tags .skills-tag-primary { background: #3265a6; border-color: #3265a6; color: #fff; font-weight: 600; }
-.skills-category-collaboration .skills-tags li { background: #fff; border-color: #dce6f4; color: #526984; }
 @media (max-width: 600px) {
   .skills-card { padding: 22px 18px; border-radius: 16px; }
   .skills-card-header { margin-bottom: 24px; }
-  .skills-intro { font-size: 12px; }
   .skills-categories { gap: 22px; }
   .skills-tags { gap: 6px; }
   .skills-tags li { padding: 7px 9px; }

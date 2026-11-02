@@ -14,6 +14,11 @@ const paths = {
   briefcase: <><rect x="3" y="7" width="18" height="13" rx="3" /><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M3 12a22 22 0 0 0 18 0M10 12v3h4v-3" /></>,
   graduation: <><path d="m2 9 10-5 10 5-10 5L2 9Zm4 2v6c4 3 8 3 12 0v-6M22 9v7" /></>,
   dumbbell: <path d="m6 6 12 12M3 8l5-5M16 21l5-5M2 6l4-4M18 22l4-4M5 10l5-5M14 19l5-5" />,
+  sparkles: <><path d="m12 3 2.5 6.5L21 12l-6.5 2.5L12 21l-2.5-6.5L3 12l6.5-2.5L12 3Z" /><path d="M20 2v4m-2-2h4" /></>,
+  plane: <path d="m22 2-7 20-4-9-9-4L22 2ZM11 13l6-6" />,
+  gamepad: <><path d="M8 8h8a4 4 0 0 1 4 3l1 5a3 3 0 0 1-5 3l-2-2h-4l-2 2a3 3 0 0 1-5-3l1-5a4 4 0 0 1 4-3Z" /><path d="M8 11v4m-2-2h4m5-1h.01M18 15h.01" /></>,
+  play: <><rect x="3" y="4" width="18" height="16" rx="4" /><path d="m10 8 6 4-6 4V8Z" /></>,
+  leaf: <><path d="M20 3c1 6 1 11-3 15a7 7 0 0 1-10-10c4-4 9-3 13-5Z" /><path d="M4 21 15 10" /></>,
   rocket: <><path d="M14 5c2-2 6-2 6-2s0 4-2 6l-7 7-5-5 8-6ZM6 11l-3 1 4-7 5-1M11 16l-1 5 7-4 1-5M4 17l-1 4 4-1" /><circle cx="15" cy="8" r="1" /></>,
 } satisfies Record<string, ReactNode>;
 
