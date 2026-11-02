@@ -1,5 +1,14 @@
 # 修改日志
 
+## 2026-11-02 · v0.9.1 — Demo Preview refinements
+
+- Me 保留 Fitness / SaaS companies，新增 ENTP、Travel、Apex Legends、Anime、Nature 标签及配套线性图标与柔和配色。
+- 新增独立个人介绍：重视坦诚的思想交流，常与朋友在客厅聊上一整个晚上；刷新恢复也使用最新公开资料。
+- 同步 Agent 与 Me 追问的公开 personality / interests；不推断喜爱的作品、旅行目的地或 MBTI 能力。
+- 验证：构建、TypeScript、30 项 API 和 106 项浏览器回归通过；另核对 320px / 390px / 桌面实际样式，38 个 Skills 标签仅有深浅蓝两种底色，标题介绍行已移除。ESLint 无错误，保留 3 条既有图片警告。
+- Skills 统一为深蓝核心技能和浅蓝常规技能两种标签，Soft Skills 同步浅蓝；移除标题下的介绍行。
+- GitHub 源码、package/lockfile、Tag 和 Pre-release 更新至 v0.9.1，包含前述 Me 改进；保留 v0.9.0，生产部署另行记录。
+
 ## 2026-11-01 · v0.9.0 — Demo Preview
 
 - 正式 Demo 前的 Pre-release：将已完成的顺序相册与现有体验纳入源码发布，package/lockfile 统一为 0.9.0；不修改业务逻辑。

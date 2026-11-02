@@ -261,7 +261,7 @@ flowchart TD
 
 `resumeProfile.source` 是 provenance 文件名，不触发每次请求解析 PDF。网页链接表示提供了该链接，不表示系统已读取其页面或验证其内容。
 
-追问总有 name / headline，其他 approvedProfile 字段按 context 裁剪：Me 提供教育、经历、原有 interests、skills summary；Projects 提供项目证据；Skills 另加 skillsFocus 和经历；Fun Facts 提供 public personal 与 fitness。它不包含 contact 或 request-only background；访客主动发进 history 的文本仍作为上下文传入，不能据此声称已做历史内容脱敏。
+追问总有 name / headline，其他 approvedProfile 字段按 context 裁剪：Me 提供教育、经历、公开 interests / personality、skills summary；Projects 提供项目证据；Skills 另加 skillsFocus 和经历；Fun Facts 提供 public personal 与 fitness。它不包含 contact 或 request-only background；访客主动发进 history 的文本仍作为上下文传入，不能据此声称已做历史内容脱敏。
 
 request-only background 通过最后一条问题的正则表达式选择，而非任意模型请求；本章不复制其个人值。它不属于广义 Profile Card、Fun Facts summary 或主动追问的资料来源。
 

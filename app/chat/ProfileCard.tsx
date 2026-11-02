@@ -1,8 +1,18 @@
 import Image from "next/image";
 import AnimatedText from "./AnimatedText";
-import PortfolioIcon from "./PortfolioIcon";
+import PortfolioIcon, { type PortfolioIconName } from "./PortfolioIcon";
 
 import type { ResumeOverviewCard } from "@/lib/portfolio/resume-profile";
+
+const interestIcons: Record<string, PortfolioIconName> = {
+  Fitness: "dumbbell",
+  "SaaS companies": "rocket",
+  ENTP: "sparkles",
+  Travel: "plane",
+  "Apex Legends": "gamepad",
+  Anime: "play",
+  Nature: "leaf",
+};
 
 export default function ProfileCard({ profile }: { profile: ResumeOverviewCard }) {
   return (
@@ -24,9 +34,10 @@ export default function ProfileCard({ profile }: { profile: ResumeOverviewCard }
             <p className="profile-card-headline">{profile.headline}</p>
           </div>
           <p className="profile-card-summary"><AnimatedText text={profile.summary} /></p>
+          <p className="profile-card-personal-note">{profile.personalNote}</p>
           <ul className="profile-card-interests" aria-label="Interests">
-            {profile.interests.map((interest, index) => (
-              <li key={interest}><PortfolioIcon name={index === 0 ? "dumbbell" : "rocket"} size={16} />{interest}</li>
+            {profile.interests.map((interest) => (
+              <li key={interest} data-interest={interest}><PortfolioIcon name={interestIcons[interest] ?? "chat"} size={16} />{interest}</li>
             ))}
           </ul>
         </div>

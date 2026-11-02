@@ -10,7 +10,7 @@ export const resumeProfile = {
   projects: portfolioProjects,
   lyntraCaseStudy,
   jchatmindCaseStudy,
-  interests: ["Fitness", "SaaS companies"],
+  interests: ["Fitness", "SaaS companies", personalProfile.public.personality.mbti, "Travel", personalProfile.public.gaming.game, "Anime", "Nature"],
   fitness: fitnessProfile,
   personal: personalProfile.public,
   name: "Hongxiang Wang",
@@ -80,6 +80,7 @@ export type ResumeOverviewCard = {
   name: string;
   headline: string;
   summary: string;
+  personalNote: string;
   education: readonly string[];
   schools: typeof resumeProfile.education;
   interests: typeof resumeProfile.interests;
@@ -89,6 +90,7 @@ export type ResumeOverviewCard = {
 };
 
 const resumeOverviewCard: Omit<ResumeOverviewCard, "summary"> = {
+  personalNote: personalProfile.public.personality.conversationStyle,
   schools: resumeProfile.education,
   interests: resumeProfile.interests,
   portrait: "/hongxiang-profile.jpg",

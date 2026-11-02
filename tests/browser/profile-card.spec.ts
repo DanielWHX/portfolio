@@ -62,3 +62,28 @@ for (const width of [320, 390]) {
     await page.screenshot({ path: testInfo.outputPath("profile-mobile.png") });
   });
 }
+
+for (const width of [320, 390, 1280]) {
+  test(`Me includes the shared personality and interests at ${width}px`, async ({ page }) => {
+    await page.setViewportSize({ width, height: 900 });
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    let requests = 0;
+    await page.route("**/api/chat", route => {
+      requests++;
+      return route.fulfill({ json: { message: introduction, module: { type: "profile", profile: getResumeOverviewCard(introduction) } } });
+    });
+    await page.goto("/chat?query=Who%20are%20you%3F");
+    const card = page.getByRole("article", { name: "Hongxiang Wang profile" });
+    const tags = card.getByRole("list", { name: "Interests" }).getByRole("listitem");
+    await expect(tags).toHaveText(["Fitness", "SaaS companies", "ENTP", "Travel", "Apex Legends", "Anime", "Nature"]);
+    await expect(card.getByText(/I value candid conversations.*living room/)).toBeVisible();
+    await expect(card.getByRole("heading", { name: "Education", exact: true })).toBeVisible();
+    expect(await card.evaluate(el => el.scrollWidth <= el.clientWidth)).toBe(true);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+    await page.reload();
+    await expect(tags).toHaveText(["Fitness", "SaaS companies", "ENTP", "Travel", "Apex Legends", "Anime", "Nature"]);
+    await expect(card.getByText(/I value candid conversations.*living room/)).toBeVisible();
+    expect(requests).toBe(1);
+    await page.screenshot({ path: `/private/tmp/portfolio-me-personality-${width}.png` });
+  });
+}

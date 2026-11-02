@@ -157,12 +157,12 @@ flowchart LR
 
 | 对象 | 标识 | 改变了什么 |
 | --- | --- | --- |
-| package version | `0.9.0` | 源码包的 milestone 元信息 |
+| package version | `0.9.1` | 源码包的 milestone 元信息 |
 | Git commit/tree | 完整 hash | 可比较的代码/文档内容 |
-| GitHub Tag/Release | `v0.9.0`，Pre-release | 可下载、可引用的源码发布和说明 |
+| GitHub Tag/Release | `v0.9.1`，Pre-release | 可下载、可引用的源码发布和说明 |
 | Production image | image digest + source revision | 当前真正对访客提供服务的 build |
 
-本次 v0.9 是正式 Demo 前的源码预览版，包含介绍、手册和已完成照片功能，不默认重部署生产服务器。最后验证过的生产 source 是 `018a0d3`，日期为 2026-10-29。
+v0.9.0 是正式 Demo 前的源码预览版，包含介绍、手册和已完成照片功能；v0.9.1 追加 Me 个人介绍与 Skills 视觉精简。这些源码发布不默认重部署生产服务器。最后验证过的生产 source 是 `018a0d3`，日期为 2026-10-29。
 
 发布前：核对 remote main、审阅 diff、保留其他人的改动、验证准确 tree、更新 version/lockfile/changelog，再通过 PR、Tag 和 Release 发布。禁止用强推覆盖不相干的 remote history。
 

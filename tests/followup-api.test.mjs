@@ -133,9 +133,13 @@ test("contextual follow-ups through the public Worker endpoint", { concurrency: 
         assert.equal(input.approvedProfile.education, undefined);
       }
       if (input.context === "Me" || input.context === "Fun Facts") {
-        assert.deepEqual(input.approvedProfile.interests, input.context === "Me" ? ["Fitness", "SaaS companies"] :
-          ["Fitness", "Travel", "Skydiving", "Skiing", "Gaming", "Spending time with friends", "LeetCode", "SaaS companies"]);
+        assert.deepEqual(input.approvedProfile.interests, input.context === "Me" ? ["Fitness", "SaaS companies", "ENTP", "Travel", "Apex Legends", "Anime", "Nature"] :
+          ["Fitness", "Travel", "Skydiving", "Skiing", "Gaming", "Spending time with friends", "LeetCode", "SaaS companies", "Anime", "Nature"]);
         assert.equal(input.approvedProfile.projects, undefined);
+      }
+      if (input.context === "Me") {
+        assert.match(input.approvedProfile.personality.conversationStyle, /candid conversations.*living room/);
+        assert.match(input.approvedProfile.personality.note, /not a scientific assessment/);
       }
       if (input.context === "Fun Facts") {
         assert.equal(input.approvedProfile.experience, undefined);

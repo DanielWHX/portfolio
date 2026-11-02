@@ -76,7 +76,10 @@
 .chat-design .profile-card-summary .answer-reveal { animation: none; }
 .chat-design .profile-card-interests { gap: 8px; }
 .chat-design .profile-card-interests li { display: inline-flex; align-items: center; gap: 7px; padding: 7px 10px; border-radius: 9px; background: #eef6f1; color: #42725d; font-size: 12px; }
-.chat-design .profile-card-interests li:nth-child(2) { background: #f1eefb; color: #75619e; }
+.chat-design .profile-card-interests li[data-interest="SaaS companies"], .chat-design .profile-card-interests li[data-interest="ENTP"] { background: #f1eefb; color: #75619e; }
+.chat-design .profile-card-interests li[data-interest="Travel"], .chat-design .profile-card-interests li[data-interest="Apex Legends"] { background: #edf3fa; color: #547ba3; }
+.chat-design .profile-card-interests li[data-interest="Anime"] { background: #faeff4; color: #a06b87; }
+.chat-design .profile-card-personal-note { color: var(--chat-muted); font-size: 13px; line-height: 1.65; }
 .chat-design .profile-card h3 { display: flex; align-items: center; gap: 8px; color: var(--chat-ink); font-size: 14px; font-weight: 600; }
 .chat-design .profile-card h3 svg { color: var(--chat-muted); }
 .chat-design .profile-card-education { margin-top: 32px; }
@@ -95,14 +98,11 @@
 
 .chat-design .skills-card-header { margin-bottom: 28px; }
 .chat-design .skills-card h2 > span { color: #a5a5ae; }
-.chat-design .skills-intro { color: var(--chat-muted); font-size: 13px; }
-.chat-design .skills-intro strong { color: var(--chat-ink); font-weight: 550; }
 .chat-design .skills-categories { gap: 24px; }
 .chat-design .skills-card h3 { color: var(--chat-ink); font-size: 14px; font-weight: 600; }
 .chat-design .skills-category-icon { color: #6b87b2; }
-.chat-design .skills-tags li, .chat-design .skills-category-collaboration .skills-tags li { padding: 7px 10px; border: 0; border-radius: 7px; color: #67676f; background: var(--chat-surface); font-size: 11px; }
+.chat-design .skills-tags li, .chat-design .skills-category-collaboration .skills-tags li { padding: 7px 10px; border: 0; border-radius: 7px; color: #41618b; background: #edf3fc; font-size: 11px; }
 .chat-design .skills-tags .skills-tag-primary { background: #3464a8; color: #fff; font-weight: 500; }
-.chat-design .skills-tags .skills-tag-supporting { background: #edf3fc; color: #41618b; }
 
 .chat-design .contact-card { max-width: 620px; }
 .chat-design .contact-card h2 { margin-bottom: 22px; }

@@ -2,11 +2,11 @@
 
 **An interactive portfolio that lets visitors explore an engineer's work through conversation.**
 
-[Live website](https://hongxiangwang1017.com) · [Ask the portfolio](https://hongxiangwang1017.com/chat) · [中文学习手册](docs/handbook/README.md) · [v0.9 release notes](docs/releases/v0.9.0.md)
+[Live website](https://hongxiangwang1017.com) · [Ask the portfolio](https://hongxiangwang1017.com/chat) · [中文学习手册](docs/handbook/README.md) · [v0.9.1 release notes](docs/releases/v0.9.1.md)
 
 ![Homepage with an interactive introduction and five quick questions](docs/media/homepage.png)
 
-**v0.9.0 — Demo Preview** is the milestone before the formal demo release. It packages the current experience, the ordered photo collection and a source-based architecture handbook. The latest verified production deployment is recorded separately in [the deployment log](docs/deployment-2026-10-29.md); publishing a GitHub release does not update that server.
+**v0.9.1 — Demo Preview** adds personal interests and a note on candid conversations to Me, and simplifies Skills to deep-blue and light-blue tags. It builds on the ordered photo collection and source-based architecture handbook introduced in v0.9.0. The latest verified production deployment is recorded separately in [the deployment log](docs/deployment-2026-10-29.md); publishing a GitHub release does not update that server.
 
 ## What you can explore
 
@@ -14,7 +14,7 @@ Choose **Me**, **Projects**, **Skills**, **Fun Facts** or **Contact**, or ask a 
 
 | Experience | What it does |
 | --- | --- |
-| Me | Personal overview with portrait, education, experience and sourced rankings. |
+| Me | Personal overview with portrait, education, experience, sourced rankings, interest tags and a personal note on candid conversations. |
 | Projects | Browse selected work, then open the JChatMind or Lyntra case study. Follow-up questions track the selected project. |
 | Skills | Capability groups led by Python/Java backend and AI integration; visual emphasis is positioning, not a proficiency score. |
 | Fun Facts | A single skydiving cover opens an ordered 29-photo fan; enlarge an image or explore three training videos. Media browsing makes no chat-model call. |
@@ -119,7 +119,7 @@ npm run lint
 
 If Chrome is already installed, use `PLAYWRIGHT_CHANNEL=chrome npm test` instead. `npm test` builds the app, runs mocked API checks and starts a production server on `127.0.0.1:3103` for the browser suite. It does not need a live API key. Failures retain Playwright traces under `test-results/`.
 
-Fresh release evidence belongs in [v0.9 notes](docs/releases/v0.9.0.md). Mock tests prove the tested contracts and browser behavior; the [October 29 production record](docs/deployment-2026-10-29.md) separately records real API and desktop/mobile acceptance for source `018a0d3`.
+Fresh release evidence belongs in [v0.9.1 notes](docs/releases/v0.9.1.md). Mock tests prove the tested contracts and browser behavior; the [October 29 production record](docs/deployment-2026-10-29.md) separately records real API and desktop/mobile acceptance for source `018a0d3`.
 
 ## Learn the implementation
 
