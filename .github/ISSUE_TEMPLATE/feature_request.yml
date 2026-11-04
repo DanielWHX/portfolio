@@ -1,0 +1,33 @@
+name: Feature request
+description: Suggest a focused improvement to the portfolio.
+title: "[Feature] "
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem or use case
+      description: Who needs this, and what are they trying to do?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed behavior
+      description: Describe the smallest useful change from the visitor's or maintainer's perspective.
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance criteria
+      description: What observable result would show that this is complete?
+      placeholder: |
+        - When ..., the visitor can ...
+        - On mobile, ...
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives and context
+      description: Optional alternatives, screenshots, related issues or limits on scope.

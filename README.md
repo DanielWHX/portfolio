@@ -133,7 +133,7 @@ The [Chinese handbook](docs/handbook/README.md) follows the path from a visitor 
 | [4 · Development and operations](docs/handbook/04-development-and-operations.md) | How do I run, test, debug, release, deploy and recover it? |
 | [5 · Learning and improvement](docs/handbook/05-learning-and-roadmap.md) | What should I read first, what can I experiment with, and what remains unfinished? |
 
-For maintainers, [CONTEXT.md](CONTEXT.md) defines project vocabulary; [CHANGELOG.md](CHANGELOG.md) records changes. The [question-bank review](docs/question-bank-review.md) records the source snapshot and factual boundaries.
+For contributors, [CONTRIBUTING.md](CONTRIBUTING.md) covers local setup, verification and pull requests. For maintainers, [CONTEXT.md](CONTEXT.md) defines project vocabulary; [CHANGELOG.md](CHANGELOG.md) records changes. The [question-bank review](docs/question-bank-review.md) records the source snapshot and factual boundaries.
 
 ## Before the formal demo
 
