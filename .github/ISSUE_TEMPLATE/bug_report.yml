@@ -1,0 +1,46 @@
+name: Bug report
+description: Report a reproducible problem with the portfolio.
+title: "[Bug] "
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What happened?
+      description: Describe the actual behavior and which page or feature is affected.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Open ...
+        2. Click or ask ...
+        3. Observe ...
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+      description: What should have happened instead?
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: Environment
+      description: Include the page URL, browser/version and device or operating system.
+      placeholder: Local /chat, Chrome, macOS; or production URL, Safari, iPhone
+    validations:
+      required: true
+  - type: input
+    id: revision
+    attributes:
+      label: Version or commit, if known
+      description: A GitHub release and the deployed website can run different versions.
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Screenshots or relevant errors
+      description: Attach screenshots or a short error excerpt if useful. Remove API keys and personal conversation content.
