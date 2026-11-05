@@ -164,6 +164,8 @@ test(
     t.after(() => restoreApiKey(previousKey));
 
     const cases = [
+      { question: "Can I download your resume?", message: "You can preview or download my resume below.", presentation: "resume_card" },
+      { question: "我想看看你的简历", message: "你可以在下方预览或下载我的简历。", presentation: "resume_card" },
       { question: "Could you give me an overview of your technical strengths?", message: "My focus is Python and Java backend engineering.", presentation: "skills_card" },
       { question: "Could I see some of your selected work?", message: "Here is my selected work.", presentation: "projects_card" },
       { question: "Tell me about projects from your listed work and research experience.", message: "Here is my selected work.", presentation: "projects_card" },
@@ -306,6 +308,9 @@ test(
             skills: ["TypeScript", "Java", "Python", "React", "Spring Boot", "Docker"],
           },
         });
+      } else if (testCase.presentation === "resume_card") {
+        assert.deepEqual(payload, { message: testCase.message, module: { type: "resume" } });
+        assert.equal(JSON.parse(toolRequest.output).resumeDocument.href, "/resume/Hongxiang_Wang_Resume.pdf");
       } else if (testCase.presentation === "skills_card") {
         assert.deepEqual(payload, { message: testCase.message, module: { type: "skills" } });
       } else if (testCase.presentation === "projects_card") {
@@ -389,6 +394,7 @@ test(
       "projects_card",
       "skills_card",
       "fun_facts_card",
+      "resume_card",
     ]);
   },
 );
@@ -607,4 +613,22 @@ test("Skills overview and focused follow-ups both require the agent", async () =
     });
     assert.equal(specific.status, 503, "specific technical questions still use the agent");
   } finally { restoreApiKey(previousKey); }
+});
+
+test("the public resume endpoint serves original PDF bytes with preview and download headers", async () => {
+  const worker = await loadWorker();
+  const original = await readFile(new URL("../app/resume/Hongxiang_Wang_Resume.pdf/document.pdf", import.meta.url));
+  for (const [suffix, disposition] of [["", "inline"], ["?download=1", "attachment"]]) {
+    const response = await dispatch(worker, "/resume/Hongxiang_Wang_Resume.pdf" + suffix);
+    assert.equal(response.status, 200);
+    assert.equal(response.headers.get("content-type"), "application/pdf");
+    assert.equal(response.headers.get("content-disposition"), `${disposition}; filename="Hongxiang_Wang_Resume.pdf"`);
+    assert.equal(Number(response.headers.get("content-length")), original.byteLength);
+    assert.deepEqual(Buffer.from(await response.arrayBuffer()), original);
+  }
+  const head = await dispatch(worker, "/resume/Hongxiang_Wang_Resume.pdf", { method: "HEAD" });
+  assert.equal(head.status, 200);
+  assert.equal(head.headers.get("content-type"), "application/pdf");
+  assert.equal(Number(head.headers.get("content-length")), original.byteLength);
+  assert.equal((await head.arrayBuffer()).byteLength, 0);
 });

@@ -146,7 +146,7 @@ type SavedSession = {
   messages: Array<{
     role: "user" | "assistant";
     content: string;
-    card?: "profile" | "contact" | "projects" | "skills" | "fun_facts";
+    card?: "profile" | "contact" | "projects" | "skills" | "fun_facts" | "resume";
     preset?: "Me" | "Projects" | "Skills" | "Fun Facts" | "Contact";
     factsRevision?: string;
     projectId?: ProjectId;
@@ -168,7 +168,7 @@ type SavedSession = {
 
 任一记录无效就返回空 session，避免半份历史产生错位；JSON 损坏或 storage 被浏览器禁止，也走空 session。保存与清除同样 catch storage exception，对话仍能在当前内存运行。[实现](../../lib/portfolio/chat-session.ts)
 
-恢复时所有消息都标记 `restored: true`；Profile / Contact / Skills / Projects 使用当前代码数据重建，旧 session 中的卡片数据不会覆盖当前 approved data。`restored` 只控制显示，不写回 schema。
+恢复时所有消息都标记 `restored: true`；Profile / Contact / Skills / Projects / Resume 使用当前代码数据重建，旧 session 中的卡片数据不会覆盖当前 approved data。`restored` 只控制显示，不写回 schema。
 
 Fun Facts 的 AI summary 带 `FUN_FACTS_REVISION`。旧 revision 的文字仍可读，但去掉 fun_facts card 与成功 preset marker；下一次点击该 preset 才重新请求摘要。[session 恢复](../../lib/portfolio/chat-session.ts)、[revision 定义](../../lib/portfolio/fun-facts.ts)
 

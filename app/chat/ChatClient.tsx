@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState, type FormEvent } from "react";
 
 import ProfileCard from "./ProfileCard";
+import ResumeLinks from "./ResumeLinks";
 import ContactCard from "./ContactCard";
 import ProjectsCard from "./ProjectsCard";
 import SkillsCard from "./SkillsCard";
@@ -228,6 +229,11 @@ export default function ChatClient({ initialQuery }: { initialQuery: string }) {
           <div className={`chat-turn chat-turn-${message.role}${message.restored ? " chat-turn-restored" : ""}`} data-message-index={index} key={`${message.role}-${index}`}>
             {message.role === "assistant" && message.module?.type === "profile" ? (
               <ProfileCard profile={message.module.profile} />
+            ) : message.role === "assistant" && message.module?.type === "resume" ? (
+              <div className="resume-answer">
+                <div className="chat-message chat-message-assistant"><AnimatedText text={message.content} /></div>
+                <ResumeLinks />
+              </div>
             ) : message.role === "assistant" && message.module?.type === "skills" ? (
               <SkillsCard />
             ) : message.role === "assistant" && message.module?.type === "projects" ? (

@@ -14,7 +14,7 @@ Choose **Me**, **Projects**, **Skills**, **Fun Facts** or **Contact**, or ask a 
 
 | Experience | What it does |
 | --- | --- |
-| Me | Personal overview with portrait, education, experience, sourced rankings, interest tags and a personal note on candid conversations. |
+| Me | Personal overview with portrait, education, experience, sourced rankings, interest tags, a personal note on candid conversations, and resume PDF preview/download. |
 | Projects | Browse selected work, then open the JChatMind or Lyntra case study. Follow-up questions track the selected project. |
 | Skills | Capability groups led by Python/Java backend and AI integration; visual emphasis is positioning, not a proficiency score. |
 | Fun Facts | A single skydiving cover opens an ordered 29-photo fan; enlarge an image or explore three training videos. Media browsing makes no chat-model call. |
@@ -35,7 +35,7 @@ Choose **Me**, **Projects**, **Skills**, **Fun Facts** or **Contact**, or ask a 
 ## Why this project is interesting
 
 - **A bounded AI workflow.** Every uncached chat answer uses a read-only `get_resume_profile` tool before the final response. Visitor messages cannot edit the source profile.
-- **Typed presentation.** The model selects one of six presentation values; React owns the actual cards and exact contact/profile data. Model prose is not executed as HTML.
+- **Typed presentation.** The model selects one of seven presentation values; React owns the actual cards and exact contact/profile data. Model prose is not executed as HTML.
 - **Context with useful limits.** Forty curated interview entries support project-aware follow-ups through local lexical selection and optional question references. This Portfolio does not use a live vector database or runtime Notion access.
 - **Interaction beyond the chat box.** A WebGL fluid cursor, a glass-star follow-up control, a reference-frame liquid animation, ordered photo transitions and on-demand videos make the portfolio personal.
 - **Recoverable browser behavior.** Successful presets reuse their answer; failures restore the question; completed turns and unsent text survive refresh in the same tab. Suggestions have their own cancellation and stale-response handling.

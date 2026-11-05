@@ -89,6 +89,7 @@ route 对外返回：
 | `projects_card` | `{ type: "projects" }` | 前端读取共享 Projects 数据 |
 | `skills_card` | `{ type: "skills" }` | 前端读取共享 Skills 数据 |
 | `fun_facts_card` | `{ type: "fun_facts" }` | 前端组合 approved 内容、图片与入口 |
+| `resume_card` | `{ type: "resume" }` | 共享 resumeDocument 与 ResumeLinks；链接由代码提供 |
 
 例如，Projects overview 的响应形状为：
 

@@ -3,9 +3,11 @@ import { portfolioProjects, lyntraCaseStudy, jchatmindCaseStudy } from "./projec
 import { contactProfile } from "./contact-profile";
 import { fitnessProfile } from "./fitness-profile";
 import { personalProfile } from "./personal-profile";
+import { resumeDocument } from "./resume-document";
 
 export const resumeProfile = {
   source: "Hongxiang_wang_resume_revised.pdf",
+  resumeDocument,
   contact: contactProfile,
   projects: portfolioProjects,
   lyntraCaseStudy,
