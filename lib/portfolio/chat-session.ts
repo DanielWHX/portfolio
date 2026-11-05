@@ -7,7 +7,7 @@ import { isProjectId, isQuestionId, type ProjectId } from "./interview-context";
 export type ConversationMessage = {
   role: "user" | "assistant";
   content: string;
-  module?: { type: "profile"; profile: ResumeOverviewCard } | { type: "contact"; contact: ContactCardData } | { type: "projects" } | { type: "skills" } | { type: "fun_facts" };
+  module?: { type: "profile"; profile: ResumeOverviewCard } | { type: "contact"; contact: ContactCardData } | { type: "projects" } | { type: "skills" } | { type: "fun_facts" } | { type: "resume" };
   restored?: boolean;
   preset?: QuickQuestionLabel;
   factsRevision?: string;
@@ -30,7 +30,7 @@ export function readChatSession(): { messages: ConversationMessage[]; draft: str
     for (const [index, item] of saved.messages.entries()) {
       if (!item || item.role !== (index % 2 ? "assistant" : "user") ||
         typeof item.content !== "string" || !item.content.trim() || item.content.length > 1000 ||
-        (item.card !== undefined && (item.role !== "assistant" || !["profile", "contact", "projects", "skills", "fun_facts"].includes(item.card))) ||
+        (item.card !== undefined && (item.role !== "assistant" || !["profile", "contact", "projects", "skills", "fun_facts", "resume"].includes(item.card))) ||
         (item.preset !== undefined && (item.role !== "assistant" || getQuickQuestion(messages[index - 1]?.content ?? "")?.label !== item.preset)) ||
         (item.factsRevision !== undefined && (item.role !== "assistant" || typeof item.factsRevision !== "string" || item.factsRevision.length > 80)) ||
         (item.projectId !== undefined && !isProjectId(item.projectId)) ||
@@ -50,6 +50,7 @@ export function readChatSession(): { messages: ConversationMessage[]; draft: str
         // Rebuild cards from current approved data rather than stored copies.
         ...(card === "fun_facts" || (!staleFacts && card === undefined && item.preset === "Fun Facts") ? { module: { type: "fun_facts" } } :
           card === "profile" ? { module: { type: "profile", profile: getResumeOverviewCard(item.content) } } :
+          card === "resume" ? { module: { type: "resume" } } :
           card === "skills" ? { module: { type: "skills" } } :
           card === "projects" ? { module: { type: "projects" } } :
           card === "contact" ? { module: { type: "contact", contact: contactProfile } } : {}),

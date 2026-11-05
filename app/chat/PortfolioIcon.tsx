@@ -1,6 +1,8 @@
 import type { ReactNode } from "react";
 
 const paths = {
+  document: <><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6Z" /><path d="M14 2v6h6M8 13h8M8 17h6" /></>,
+  download: <path d="M12 3v12m-5-5 5 5 5-5M4 16v4a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-4" />,
   "arrow-left": <path d="m12 5-7 7 7 7M5 12h15" />,
   "arrow-right": <path d="m12 5 7 7-7 7M19 12H4" />,
   "arrow-up": <path d="m5 12 7-7 7 7M12 5v15" />,

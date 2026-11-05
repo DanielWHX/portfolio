@@ -1,5 +1,6 @@
 import Image from "next/image";
 import AnimatedText from "./AnimatedText";
+import ResumeLinks from "./ResumeLinks";
 import PortfolioIcon, { type PortfolioIconName } from "./PortfolioIcon";
 
 import type { ResumeOverviewCard } from "@/lib/portfolio/resume-profile";
@@ -79,6 +80,7 @@ export default function ProfileCard({ profile }: { profile: ResumeOverviewCard }
       <ul className="profile-card-skills" aria-label="Core skills">
         {profile.skills.map((skill) => <li key={skill}>{skill}</li>)}
       </ul>
+      <ResumeLinks />
     </article>
   );
 }

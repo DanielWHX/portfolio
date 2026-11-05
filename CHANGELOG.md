@@ -1,5 +1,13 @@
 # 修改日志
 
+## Unreleased · 2026-11-05 · Resume links
+
+- Me 的 Profile Card 底部增加 Resume 区域，提供新标签页 PDF 预览与原文件下载；保留五个 Quick questions。
+- 新增 Agent `resume_card` presentation 与 API `resume` module；中英文简历文件请求可返回同一组代码链接，刷新恢复不重复请求模型。
+- 原样接入用户提供的一页 PDF；文件与页面履历的日期差异记录在 docs/resume-document.md，未自动变更个人事实。
+- PDF 由跨运行时的独立 route 返回，明确 application/pdf 与 inline / attachment，修正当前 Vinext Node 静态服务将 PDF 识别为通用二进制的问题。
+- 验证：构建、TypeScript、31 项 API 和 22 项相关浏览器测试通过；实际检查预览新标签页、原文件下载、移动端、缓存恢复与文件 SHA-256。ESLint 无错误，保留 3 条既有图片警告。
+
 ## 2026-11-02 · v0.9.1 — Demo Preview refinements
 
 - Me 保留 Fitness / SaaS companies，新增 ENTP、Travel、Apex Legends、Anime、Nature 标签及配套线性图标与柔和配色。
