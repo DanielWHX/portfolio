@@ -1,5 +1,10 @@
 # 修改日志
 
+## 2026-11-10 · Development notes
+
+- 简历预览与下载已通过 [PR #29](https://github.com/DanielWHX/portfolio/pull/29) 合入 main；Me 底部和聊天中的入口共用同一份 PDF。
+- 补充 [PDF 维护说明](docs/resume-document.md) 的日志入口，便于查找文件校验值、替换方法和待统一的履历日期。
+
 ## Unreleased · 2026-11-05 · Resume links
 
 - Me 的 Profile Card 底部增加 Resume 区域，提供新标签页 PDF 预览与原文件下载；保留五个 Quick questions。
